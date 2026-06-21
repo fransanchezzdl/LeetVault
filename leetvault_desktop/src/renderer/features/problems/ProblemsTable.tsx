@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import {
   createColumnHelper,
   flexRender,
@@ -12,7 +12,7 @@ import { Pencil, Trash2 } from 'lucide-react';
 import type { Problem } from '@shared/types/problem';
 import { DifficultyBadge, StatusBadge } from '../../components/badges/Badges';
 import { cn } from '../../lib/cn';
-import { useElasticScroll } from '../../lib/useElasticScroll';
+// import { useElasticScroll } from '../../lib/useElasticScroll'; // Unused for now
 import { useUi } from '../../store/ui';
 
 const col = createColumnHelper<Problem>();
@@ -97,9 +97,8 @@ export function ProblemsTable({ problems }: Props) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-
-  const rows = table.getRowModel().rows;
-  const { ref: parentRef, onWheel, style: bounceStyle } = useElasticScroll<HTMLDivElement>();
+ const rows = table.getRowModel().rows;
+  const parentRef = useRef<HTMLDivElement>(null);
 
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
@@ -111,7 +110,6 @@ export function ProblemsTable({ problems }: Props) {
   return (
     <div
       ref={parentRef}
-      onWheel={onWheel}
       className="relative h-full overflow-auto scroll-thin rounded-2xl border border-glass-stroke bg-glass-fill"
     >
       <div
@@ -132,49 +130,47 @@ export function ProblemsTable({ problems }: Props) {
         )}
       </div>
 
-      <div style={bounceStyle}>
-        <div
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            position: 'relative',
-          }}
-        >
-          {rowVirtualizer.getVirtualItems().map((vRow) => {
-            const row = rows[vRow.index];
-            const isLast = vRow.index === rows.length - 1;
-            return (
-              <div
-                key={row.id}
-                className={cn(
-                  'absolute inset-x-0 grid items-center hover:bg-white/5',
-                  isLast ? 'rounded-b-2xl' : 'border-b border-glass-stroke/20'
-                )}
-                style={{
-                  top: 0,
-                  transform: `translateY(${vRow.start}px)`,
-                  height: `${vRow.size}px`,
-                  gridTemplateColumns: GRID_TEMPLATE,
-                }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <div
-                    key={cell.id}
-                    className="px-3 py-2.5 text-sm min-w-0 truncate"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </div>
-                ))}
-              </div>
-            );
-          })}
-        </div>
-
-        {rows.length === 0 ? (
-          <div className="absolute inset-x-0 top-12 flex justify-center text-sm text-fgMuted">
-            Sin resultados
-          </div>
-        ) : null}
+      <div
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          position: 'relative',
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((vRow) => {
+          const row = rows[vRow.index];
+          const isLast = vRow.index === rows.length - 1;
+          return (
+            <div
+              key={row.id}
+              className={cn(
+                'absolute inset-x-0 grid items-center hover:bg-white/5',
+                isLast ? 'rounded-b-2xl' : 'border-b border-glass-stroke/20'
+              )}
+              style={{
+                top: 0,
+                transform: `translateY(${vRow.start}px)`,
+                height: `${vRow.size}px`,
+                gridTemplateColumns: GRID_TEMPLATE,
+              }}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <div
+                  key={cell.id}
+                  className="px-3 py-2.5 text-sm min-w-0 truncate"
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
+              ))}
+            </div>
+          );
+        })}
       </div>
+
+      {rows.length === 0 ? (
+        <div className="absolute inset-x-0 top-12 flex justify-center text-sm text-fgMuted">
+          Sin resultados
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -7,6 +7,9 @@ import {
   type WheelEvent 
 } from 'react';
 
+// CURRENTLY NOT BEING USED, it provoked lag and was ugly
+// Redo in future TODOs
+
 const BOUNCE_MAX = 96; 
 const SETTLE_MS = 80; 
 // 1. Cut the duration in half. 150ms feels instantaneous but retains smoothness.

@@ -19,7 +19,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '../../components/ui/Button';
 import { cn } from '../../lib/cn';
-import { useElasticScroll } from '../../lib/useElasticScroll';
+//import { useElasticScroll } from '../../lib/useElasticScroll'; // Unused for now
 
 type Extra = 'extension' | 'groq' | undefined;
 type Item = [question: string, answer: string, extra?: Extra];
@@ -172,7 +172,7 @@ const SECTIONS: Section[] = [
 ];
 
 export function HelpView() {
-  const { ref, onWheel, style } = useElasticScroll<HTMLDivElement>();
+  //const { ref, onWheel, style } = useElasticScroll<HTMLDivElement>(); // Unused for now
   const [query, setQuery] = useState('');
   const normalized = query.trim().toLowerCase();
 
@@ -193,8 +193,8 @@ export function HelpView() {
   const totalHits = filteredSections.reduce((n, s) => n + s.items.length, 0);
 
   return (
-    <div ref={ref} onWheel={onWheel} className="h-full overflow-auto scroll-thin">
-      <div style={style} className="px-8 py-7">
+    <div /*ref={ref} onWheel={onWheel}*/ className="h-full overflow-auto scroll-thin">
+      <div /*style={style}*/ className="px-8 py-7">
       <header className="mb-6 flex items-center gap-2">
         <HelpCircle className="h-5 w-5 text-brand-400" />
         <h1 className="text-2xl font-bold text-fg">Ayuda y preguntas frecuentes</h1>

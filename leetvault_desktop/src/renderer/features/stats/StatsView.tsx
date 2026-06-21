@@ -13,7 +13,7 @@ import {
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { Sparkles } from 'lucide-react';
-import { useElasticScroll } from '../../lib/useElasticScroll';
+// import { useElasticScroll } from '../../lib/useElasticScroll'; // Unused for now
 import { useInterviewStats, useStatsBundle } from './hooks';
 import type { DateCount, DifficultyCount, PatternCount } from '@shared/types/stats';
 import type {
@@ -38,15 +38,15 @@ const HEATMAP_PALETTE = [
 export function StatsView() {
   const { data, isLoading } = useStatsBundle();
   const { data: interview } = useInterviewStats();
-  const { ref, onWheel, style } = useElasticScroll<HTMLDivElement>();
+  // const { ref, onWheel, style } = useElasticScroll<HTMLDivElement>(); // Unused for now
 
   if (isLoading || !data) {
     return <div className="p-6 text-sm text-fgMuted">Cargando estadísticas…</div>;
   }
 
   return (
-    <div ref={ref} onWheel={onWheel} className="h-full min-h-0 overflow-auto scroll-hide">
-      <div style={style} className="flex flex-col gap-4 p-6">
+    <div /* ref={ref} onWheel={onWheel} */ className="h-full min-h-0 overflow-auto scroll-hide">
+      <div /* style={style} */ className="flex flex-col gap-4 p-6">
         <header>
           <h1 className="text-xl font-semibold">Estadísticas</h1>
           <p className="text-xs text-fgMuted">
