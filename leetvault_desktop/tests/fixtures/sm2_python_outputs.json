@@ -1,0 +1,1165 @@
+{
+  "today": "2026-06-19",
+  "cases": [
+    {
+      "kind": "single",
+      "input": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 0
+      },
+      "output": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 1.7000000000000002,
+        "nextReviewISO": "2026-06-20"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 2
+      },
+      "output": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.1799999999999997,
+        "nextReviewISO": "2026-06-21"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 3
+      },
+      "output": {
+        "interval": 3,
+        "repetitions": 1,
+        "ease": 2.36,
+        "nextReviewISO": "2026-06-22"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 4
+      },
+      "output": {
+        "interval": 7,
+        "repetitions": 1,
+        "ease": 2.5,
+        "nextReviewISO": "2026-06-26"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 5
+      },
+      "output": {
+        "interval": 30,
+        "repetitions": 1,
+        "ease": 2.6,
+        "nextReviewISO": "2026-07-19"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 0
+      },
+      "output": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 1.7000000000000002,
+        "nextReviewISO": "2026-06-20"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 2
+      },
+      "output": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.1799999999999997,
+        "nextReviewISO": "2026-06-21"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 3
+      },
+      "output": {
+        "interval": 3,
+        "repetitions": 1,
+        "ease": 2.36,
+        "nextReviewISO": "2026-06-22"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 4
+      },
+      "output": {
+        "interval": 7,
+        "repetitions": 1,
+        "ease": 2.5,
+        "nextReviewISO": "2026-06-26"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.5,
+        "quality": 5
+      },
+      "output": {
+        "interval": 30,
+        "repetitions": 1,
+        "ease": 2.6,
+        "nextReviewISO": "2026-07-19"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 3,
+        "repetitions": 1,
+        "ease": 2.5,
+        "quality": 0
+      },
+      "output": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 1.7000000000000002,
+        "nextReviewISO": "2026-06-20"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 3,
+        "repetitions": 1,
+        "ease": 2.5,
+        "quality": 2
+      },
+      "output": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.1799999999999997,
+        "nextReviewISO": "2026-06-21"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 3,
+        "repetitions": 1,
+        "ease": 2.5,
+        "quality": 3
+      },
+      "output": {
+        "interval": 7,
+        "repetitions": 2,
+        "ease": 2.36,
+        "nextReviewISO": "2026-06-26"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 3,
+        "repetitions": 1,
+        "ease": 2.5,
+        "quality": 4
+      },
+      "output": {
+        "interval": 14,
+        "repetitions": 2,
+        "ease": 2.5,
+        "nextReviewISO": "2026-07-03"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 3,
+        "repetitions": 1,
+        "ease": 2.5,
+        "quality": 5
+      },
+      "output": {
+        "interval": 30,
+        "repetitions": 2,
+        "ease": 2.6,
+        "nextReviewISO": "2026-07-19"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 7,
+        "repetitions": 2,
+        "ease": 2.5,
+        "quality": 0
+      },
+      "output": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 1.7000000000000002,
+        "nextReviewISO": "2026-06-20"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 7,
+        "repetitions": 2,
+        "ease": 2.5,
+        "quality": 2
+      },
+      "output": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.1799999999999997,
+        "nextReviewISO": "2026-06-21"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 7,
+        "repetitions": 2,
+        "ease": 2.5,
+        "quality": 3
+      },
+      "output": {
+        "interval": 18,
+        "repetitions": 3,
+        "ease": 2.36,
+        "nextReviewISO": "2026-07-07"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 7,
+        "repetitions": 2,
+        "ease": 2.5,
+        "quality": 4
+      },
+      "output": {
+        "interval": 18,
+        "repetitions": 3,
+        "ease": 2.5,
+        "nextReviewISO": "2026-07-07"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 7,
+        "repetitions": 2,
+        "ease": 2.5,
+        "quality": 5
+      },
+      "output": {
+        "interval": 30,
+        "repetitions": 3,
+        "ease": 2.6,
+        "nextReviewISO": "2026-07-19"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 14,
+        "repetitions": 3,
+        "ease": 2.36,
+        "quality": 0
+      },
+      "output": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 1.56,
+        "nextReviewISO": "2026-06-20"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 14,
+        "repetitions": 3,
+        "ease": 2.36,
+        "quality": 2
+      },
+      "output": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.04,
+        "nextReviewISO": "2026-06-21"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 14,
+        "repetitions": 3,
+        "ease": 2.36,
+        "quality": 3
+      },
+      "output": {
+        "interval": 33,
+        "repetitions": 4,
+        "ease": 2.2199999999999998,
+        "nextReviewISO": "2026-07-22"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 14,
+        "repetitions": 3,
+        "ease": 2.36,
+        "quality": 4
+      },
+      "output": {
+        "interval": 33,
+        "repetitions": 4,
+        "ease": 2.36,
+        "nextReviewISO": "2026-07-22"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 14,
+        "repetitions": 3,
+        "ease": 2.36,
+        "quality": 5
+      },
+      "output": {
+        "interval": 33,
+        "repetitions": 4,
+        "ease": 2.46,
+        "nextReviewISO": "2026-07-22"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 30,
+        "repetitions": 5,
+        "ease": 1.7,
+        "quality": 0
+      },
+      "output": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 1.3,
+        "nextReviewISO": "2026-06-20"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 30,
+        "repetitions": 5,
+        "ease": 1.7,
+        "quality": 2
+      },
+      "output": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 1.38,
+        "nextReviewISO": "2026-06-21"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 30,
+        "repetitions": 5,
+        "ease": 1.7,
+        "quality": 3
+      },
+      "output": {
+        "interval": 51,
+        "repetitions": 6,
+        "ease": 1.56,
+        "nextReviewISO": "2026-08-09"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 30,
+        "repetitions": 5,
+        "ease": 1.7,
+        "quality": 4
+      },
+      "output": {
+        "interval": 51,
+        "repetitions": 6,
+        "ease": 1.7,
+        "nextReviewISO": "2026-08-09"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 30,
+        "repetitions": 5,
+        "ease": 1.7,
+        "quality": 5
+      },
+      "output": {
+        "interval": 51,
+        "repetitions": 6,
+        "ease": 1.8,
+        "nextReviewISO": "2026-08-09"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 60,
+        "repetitions": 8,
+        "ease": 1.3,
+        "quality": 0
+      },
+      "output": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 1.3,
+        "nextReviewISO": "2026-06-20"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 60,
+        "repetitions": 8,
+        "ease": 1.3,
+        "quality": 2
+      },
+      "output": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 1.3,
+        "nextReviewISO": "2026-06-21"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 60,
+        "repetitions": 8,
+        "ease": 1.3,
+        "quality": 3
+      },
+      "output": {
+        "interval": 78,
+        "repetitions": 9,
+        "ease": 1.3,
+        "nextReviewISO": "2026-09-05"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 60,
+        "repetitions": 8,
+        "ease": 1.3,
+        "quality": 4
+      },
+      "output": {
+        "interval": 78,
+        "repetitions": 9,
+        "ease": 1.3,
+        "nextReviewISO": "2026-09-05"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 60,
+        "repetitions": 8,
+        "ease": 1.3,
+        "quality": 5
+      },
+      "output": {
+        "interval": 78,
+        "repetitions": 9,
+        "ease": 1.4000000000000001,
+        "nextReviewISO": "2026-09-05"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 100,
+        "repetitions": 10,
+        "ease": 2.92,
+        "quality": 0
+      },
+      "output": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.12,
+        "nextReviewISO": "2026-06-20"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 100,
+        "repetitions": 10,
+        "ease": 2.92,
+        "quality": 2
+      },
+      "output": {
+        "interval": 2,
+        "repetitions": 0,
+        "ease": 2.5999999999999996,
+        "nextReviewISO": "2026-06-21"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 100,
+        "repetitions": 10,
+        "ease": 2.92,
+        "quality": 3
+      },
+      "output": {
+        "interval": 292,
+        "repetitions": 11,
+        "ease": 2.78,
+        "nextReviewISO": "2027-04-07"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 100,
+        "repetitions": 10,
+        "ease": 2.92,
+        "quality": 4
+      },
+      "output": {
+        "interval": 292,
+        "repetitions": 11,
+        "ease": 2.92,
+        "nextReviewISO": "2027-04-07"
+      }
+    },
+    {
+      "kind": "single",
+      "input": {
+        "interval": 100,
+        "repetitions": 10,
+        "ease": 2.92,
+        "quality": 5
+      },
+      "output": {
+        "interval": 292,
+        "repetitions": 11,
+        "ease": 3.02,
+        "nextReviewISO": "2027-04-07"
+      }
+    },
+    {
+      "kind": "sequence",
+      "start": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5
+      },
+      "steps": [
+        {
+          "quality": 3,
+          "interval": 3,
+          "repetitions": 1,
+          "ease": 2.36,
+          "nextReviewISO": "2026-06-22"
+        },
+        {
+          "quality": 3,
+          "interval": 7,
+          "repetitions": 2,
+          "ease": 2.2199999999999998,
+          "nextReviewISO": "2026-06-26"
+        },
+        {
+          "quality": 3,
+          "interval": 16,
+          "repetitions": 3,
+          "ease": 2.0799999999999996,
+          "nextReviewISO": "2026-07-05"
+        },
+        {
+          "quality": 3,
+          "interval": 33,
+          "repetitions": 4,
+          "ease": 1.9399999999999997,
+          "nextReviewISO": "2026-07-22"
+        },
+        {
+          "quality": 3,
+          "interval": 64,
+          "repetitions": 5,
+          "ease": 1.7999999999999998,
+          "nextReviewISO": "2026-08-22"
+        },
+        {
+          "quality": 3,
+          "interval": 115,
+          "repetitions": 6,
+          "ease": 1.66,
+          "nextReviewISO": "2026-10-12"
+        },
+        {
+          "quality": 3,
+          "interval": 191,
+          "repetitions": 7,
+          "ease": 1.52,
+          "nextReviewISO": "2026-12-27"
+        },
+        {
+          "quality": 3,
+          "interval": 290,
+          "repetitions": 8,
+          "ease": 1.3800000000000001,
+          "nextReviewISO": "2027-04-05"
+        },
+        {
+          "quality": 3,
+          "interval": 400,
+          "repetitions": 9,
+          "ease": 1.3,
+          "nextReviewISO": "2027-07-24"
+        },
+        {
+          "quality": 3,
+          "interval": 520,
+          "repetitions": 10,
+          "ease": 1.3,
+          "nextReviewISO": "2027-11-21"
+        }
+      ]
+    },
+    {
+      "kind": "sequence",
+      "start": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5
+      },
+      "steps": [
+        {
+          "quality": 4,
+          "interval": 7,
+          "repetitions": 1,
+          "ease": 2.5,
+          "nextReviewISO": "2026-06-26"
+        },
+        {
+          "quality": 4,
+          "interval": 14,
+          "repetitions": 2,
+          "ease": 2.5,
+          "nextReviewISO": "2026-07-03"
+        },
+        {
+          "quality": 4,
+          "interval": 35,
+          "repetitions": 3,
+          "ease": 2.5,
+          "nextReviewISO": "2026-07-24"
+        },
+        {
+          "quality": 4,
+          "interval": 88,
+          "repetitions": 4,
+          "ease": 2.5,
+          "nextReviewISO": "2026-09-15"
+        },
+        {
+          "quality": 4,
+          "interval": 220,
+          "repetitions": 5,
+          "ease": 2.5,
+          "nextReviewISO": "2027-01-25"
+        },
+        {
+          "quality": 4,
+          "interval": 550,
+          "repetitions": 6,
+          "ease": 2.5,
+          "nextReviewISO": "2027-12-21"
+        },
+        {
+          "quality": 4,
+          "interval": 1375,
+          "repetitions": 7,
+          "ease": 2.5,
+          "nextReviewISO": "2030-03-25"
+        },
+        {
+          "quality": 4,
+          "interval": 3438,
+          "repetitions": 8,
+          "ease": 2.5,
+          "nextReviewISO": "2035-11-17"
+        },
+        {
+          "quality": 4,
+          "interval": 8595,
+          "repetitions": 9,
+          "ease": 2.5,
+          "nextReviewISO": "2049-12-30"
+        },
+        {
+          "quality": 4,
+          "interval": 21488,
+          "repetitions": 10,
+          "ease": 2.5,
+          "nextReviewISO": "2085-04-18"
+        }
+      ]
+    },
+    {
+      "kind": "sequence",
+      "start": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5
+      },
+      "steps": [
+        {
+          "quality": 5,
+          "interval": 30,
+          "repetitions": 1,
+          "ease": 2.6,
+          "nextReviewISO": "2026-07-19"
+        },
+        {
+          "quality": 5,
+          "interval": 30,
+          "repetitions": 2,
+          "ease": 2.7,
+          "nextReviewISO": "2026-07-19"
+        },
+        {
+          "quality": 5,
+          "interval": 81,
+          "repetitions": 3,
+          "ease": 2.8000000000000003,
+          "nextReviewISO": "2026-09-08"
+        },
+        {
+          "quality": 5,
+          "interval": 227,
+          "repetitions": 4,
+          "ease": 2.9000000000000004,
+          "nextReviewISO": "2027-02-01"
+        },
+        {
+          "quality": 5,
+          "interval": 658,
+          "repetitions": 5,
+          "ease": 3.0000000000000004,
+          "nextReviewISO": "2028-04-07"
+        },
+        {
+          "quality": 5,
+          "interval": 1974,
+          "repetitions": 6,
+          "ease": 3.1000000000000005,
+          "nextReviewISO": "2031-11-14"
+        },
+        {
+          "quality": 5,
+          "interval": 6119,
+          "repetitions": 7,
+          "ease": 3.2000000000000006,
+          "nextReviewISO": "2043-03-21"
+        },
+        {
+          "quality": 5,
+          "interval": 19581,
+          "repetitions": 8,
+          "ease": 3.3000000000000007,
+          "nextReviewISO": "2080-01-28"
+        },
+        {
+          "quality": 5,
+          "interval": 64617,
+          "repetitions": 9,
+          "ease": 3.400000000000001,
+          "nextReviewISO": "2203-05-20"
+        },
+        {
+          "quality": 5,
+          "interval": 219698,
+          "repetitions": 10,
+          "ease": 3.500000000000001,
+          "nextReviewISO": "2627-12-24"
+        }
+      ]
+    },
+    {
+      "kind": "sequence",
+      "start": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5
+      },
+      "steps": [
+        {
+          "quality": 3,
+          "interval": 3,
+          "repetitions": 1,
+          "ease": 2.36,
+          "nextReviewISO": "2026-06-22"
+        },
+        {
+          "quality": 4,
+          "interval": 14,
+          "repetitions": 2,
+          "ease": 2.36,
+          "nextReviewISO": "2026-07-03"
+        },
+        {
+          "quality": 5,
+          "interval": 33,
+          "repetitions": 3,
+          "ease": 2.46,
+          "nextReviewISO": "2026-07-22"
+        },
+        {
+          "quality": 3,
+          "interval": 81,
+          "repetitions": 4,
+          "ease": 2.32,
+          "nextReviewISO": "2026-09-08"
+        },
+        {
+          "quality": 4,
+          "interval": 188,
+          "repetitions": 5,
+          "ease": 2.32,
+          "nextReviewISO": "2026-12-24"
+        },
+        {
+          "quality": 5,
+          "interval": 436,
+          "repetitions": 6,
+          "ease": 2.42,
+          "nextReviewISO": "2027-08-29"
+        },
+        {
+          "quality": 3,
+          "interval": 1055,
+          "repetitions": 7,
+          "ease": 2.28,
+          "nextReviewISO": "2029-05-09"
+        },
+        {
+          "quality": 4,
+          "interval": 2405,
+          "repetitions": 8,
+          "ease": 2.28,
+          "nextReviewISO": "2033-01-18"
+        },
+        {
+          "quality": 5,
+          "interval": 5483,
+          "repetitions": 9,
+          "ease": 2.38,
+          "nextReviewISO": "2041-06-23"
+        },
+        {
+          "quality": 3,
+          "interval": 13050,
+          "repetitions": 10,
+          "ease": 2.2399999999999998,
+          "nextReviewISO": "2062-03-12"
+        }
+      ]
+    },
+    {
+      "kind": "sequence",
+      "start": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5
+      },
+      "steps": [
+        {
+          "quality": 5,
+          "interval": 30,
+          "repetitions": 1,
+          "ease": 2.6,
+          "nextReviewISO": "2026-07-19"
+        },
+        {
+          "quality": 5,
+          "interval": 30,
+          "repetitions": 2,
+          "ease": 2.7,
+          "nextReviewISO": "2026-07-19"
+        },
+        {
+          "quality": 0,
+          "interval": 1,
+          "repetitions": 0,
+          "ease": 1.9000000000000004,
+          "nextReviewISO": "2026-06-20"
+        },
+        {
+          "quality": 3,
+          "interval": 3,
+          "repetitions": 1,
+          "ease": 1.7600000000000005,
+          "nextReviewISO": "2026-06-22"
+        },
+        {
+          "quality": 3,
+          "interval": 7,
+          "repetitions": 2,
+          "ease": 1.6200000000000006,
+          "nextReviewISO": "2026-06-26"
+        },
+        {
+          "quality": 2,
+          "interval": 2,
+          "repetitions": 0,
+          "ease": 1.3000000000000005,
+          "nextReviewISO": "2026-06-21"
+        },
+        {
+          "quality": 4,
+          "interval": 7,
+          "repetitions": 1,
+          "ease": 1.3000000000000005,
+          "nextReviewISO": "2026-06-26"
+        },
+        {
+          "quality": 4,
+          "interval": 14,
+          "repetitions": 2,
+          "ease": 1.3000000000000005,
+          "nextReviewISO": "2026-07-03"
+        },
+        {
+          "quality": 3,
+          "interval": 18,
+          "repetitions": 3,
+          "ease": 1.3,
+          "nextReviewISO": "2026-07-07"
+        },
+        {
+          "quality": 5,
+          "interval": 30,
+          "repetitions": 4,
+          "ease": 1.4000000000000001,
+          "nextReviewISO": "2026-07-19"
+        }
+      ]
+    },
+    {
+      "kind": "sequence",
+      "start": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5
+      },
+      "steps": [
+        {
+          "quality": 0,
+          "interval": 1,
+          "repetitions": 0,
+          "ease": 1.7000000000000002,
+          "nextReviewISO": "2026-06-20"
+        },
+        {
+          "quality": 0,
+          "interval": 1,
+          "repetitions": 0,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-20"
+        },
+        {
+          "quality": 0,
+          "interval": 1,
+          "repetitions": 0,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-20"
+        },
+        {
+          "quality": 2,
+          "interval": 2,
+          "repetitions": 0,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-21"
+        },
+        {
+          "quality": 2,
+          "interval": 2,
+          "repetitions": 0,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-21"
+        },
+        {
+          "quality": 2,
+          "interval": 2,
+          "repetitions": 0,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-21"
+        },
+        {
+          "quality": 3,
+          "interval": 3,
+          "repetitions": 1,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-22"
+        },
+        {
+          "quality": 3,
+          "interval": 7,
+          "repetitions": 2,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-26"
+        },
+        {
+          "quality": 4,
+          "interval": 14,
+          "repetitions": 3,
+          "ease": 1.3,
+          "nextReviewISO": "2026-07-03"
+        },
+        {
+          "quality": 5,
+          "interval": 30,
+          "repetitions": 4,
+          "ease": 1.4000000000000001,
+          "nextReviewISO": "2026-07-19"
+        }
+      ]
+    },
+    {
+      "kind": "sequence",
+      "start": {
+        "interval": 1,
+        "repetitions": 0,
+        "ease": 2.5
+      },
+      "steps": [
+        {
+          "quality": 5,
+          "interval": 30,
+          "repetitions": 1,
+          "ease": 2.6,
+          "nextReviewISO": "2026-07-19"
+        },
+        {
+          "quality": 4,
+          "interval": 14,
+          "repetitions": 2,
+          "ease": 2.6,
+          "nextReviewISO": "2026-07-03"
+        },
+        {
+          "quality": 3,
+          "interval": 36,
+          "repetitions": 3,
+          "ease": 2.46,
+          "nextReviewISO": "2026-07-25"
+        },
+        {
+          "quality": 2,
+          "interval": 2,
+          "repetitions": 0,
+          "ease": 2.1399999999999997,
+          "nextReviewISO": "2026-06-21"
+        },
+        {
+          "quality": 0,
+          "interval": 1,
+          "repetitions": 0,
+          "ease": 1.3399999999999999,
+          "nextReviewISO": "2026-06-20"
+        },
+        {
+          "quality": 5,
+          "interval": 30,
+          "repetitions": 1,
+          "ease": 1.44,
+          "nextReviewISO": "2026-07-19"
+        },
+        {
+          "quality": 4,
+          "interval": 14,
+          "repetitions": 2,
+          "ease": 1.44,
+          "nextReviewISO": "2026-07-03"
+        },
+        {
+          "quality": 3,
+          "interval": 20,
+          "repetitions": 3,
+          "ease": 1.3,
+          "nextReviewISO": "2026-07-09"
+        },
+        {
+          "quality": 2,
+          "interval": 2,
+          "repetitions": 0,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-21"
+        },
+        {
+          "quality": 0,
+          "interval": 1,
+          "repetitions": 0,
+          "ease": 1.3,
+          "nextReviewISO": "2026-06-20"
+        }
+      ]
+    }
+  ]
+}

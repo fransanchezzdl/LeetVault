@@ -1,0 +1,49 @@
+appId: com.leetvault.desktop
+productName: LeetVault
+asar: true
+asarUnpack:
+  - "**/node_modules/better-sqlite3/**"
+files:
+  - out/**
+  - resources/**
+  - "!**/{.DS_Store,.git,.vscode,.idea,tests,scripts,.dev-userdata}"
+directories:
+  buildResources: build
+  output: release
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: resources/icon.ico
+  artifactName: LeetVault-${version}-Setup.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  include: build/installer.nsh
+  shortcutName: LeetVault
+mac:
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  category: public.app-category.developer-tools
+  icon: resources/icon.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  notarize: false
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+  icon: resources/icon.png
+  category: Development
+  maintainer: Francisco Sanchez <francisco.sanchez@leetvault.local>
+  synopsis: Local LeetCode tracker with spaced repetition
+  desktop:
+    Name: LeetVault
+    StartupWMClass: LeetVault
+publish: null

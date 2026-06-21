@@ -1,0 +1,87 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            package: package:linux
+            artifact_glob: |
+              leetvault_desktop/release/*.AppImage
+              leetvault_desktop/release/*.deb
+          - os: macos-latest
+            package: package:mac
+            artifact_glob: |
+              leetvault_desktop/release/*.dmg
+          - os: windows-latest
+            package: package:win
+            artifact_glob: |
+              leetvault_desktop/release/*.exe
+
+    defaults:
+      run:
+        working-directory: leetvault_desktop
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: leetvault_desktop/package-lock.json
+
+      - name: Linux build deps
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-dev fakeroot dpkg rpm
+
+      - name: Install
+        run: npm ci
+
+      - name: Generate platform icons
+        run: |
+          npm i --no-save png-to-ico png2icons
+          node scripts/icons.cjs
+
+      - name: Package
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run ${{ matrix.package }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: leetvault-${{ matrix.os }}
+          path: ${{ matrix.artifact_glob }}
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: dist/**/*

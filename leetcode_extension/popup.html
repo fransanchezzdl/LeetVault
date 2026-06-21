@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>LeetCode Tracker</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: transparent; margin: 0; padding: 0; }
+
+    :root {
+      --orange:     #FFA116;
+      --orange-dim: #CC7A00;
+      --orange-bg:  rgba(255,161,22,0.10);
+      --brown:      #3D2B1F;
+      --brown-mid:  #2A1F15;
+      --brown-dark: #1A1208;
+      --surface:    #2C1F13;
+      --surface2:   #3A2A1A;
+      --border:     rgba(255,161,22,0.18);
+      --text:       #F0E6D3;
+      --text-muted: #9E8870;
+      --easy:       #00B8A3;
+      --medium:     #FFC01E;
+      --hard:       #EF4743;
+      --radius:     10px;
+      --radius-sm:  6px;
+    }
+
+    html { font-size: 13px; }
+    body {
+      width: 360px;
+      min-width: 360px;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: transparent;
+      color: var(--text);
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+
+    /* Chrome clips popup at body — wrap everything in a div with real radius */
+    #app-shell {
+      background: var(--brown-dark);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255,161,22,0.22);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,161,22,0.08);
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* ── Header ── */
+    header {
+      background: var(--brown-mid);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: var(--orange-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .logo-text { font-size: 13px; font-weight: 700; color: var(--orange); letter-spacing: 0.3px; }
+    .logo-sub  { font-size: 10px; color: var(--text-muted); }
+
+    .server-status {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--text-muted);
+      transition: background 0.3s ease;
+    }
+    .dot.ok  { background: var(--easy); box-shadow: 0 0 6px var(--easy); }
+    .dot.err { background: var(--hard); box-shadow: 0 0 6px var(--hard); }
+    .server-label { font-size: 10px; color: var(--text-muted); }
+
+    /* ── Main body ── */
+    .body { padding: 14px 16px 16px; }
+
+    /* ── Panels ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Empty states ── */
+    .empty-state {
+      text-align: center;
+      padding: 28px 16px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 36px; margin-bottom: 12px; display: block; }
+    .empty-state p { font-size: 12px; line-height: 1.7; }
+    .empty-state code {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--orange);
+      margin-top: 8px;
+    }
+
+    /* ── Problem header card ── */
+    .problem-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    .problem-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .prob-number {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--orange);
+      background: var(--orange-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+    }
+    .diff-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.4px;
+    }
+    .diff-Easy   { background: rgba(0,184,163,0.12); color: var(--easy);   border: 1px solid rgba(0,184,163,0.3); }
+    .diff-Medium { background: rgba(255,192,30,0.12); color: var(--medium); border: 1px solid rgba(255,192,30,0.3); }
+    .diff-Hard   { background: rgba(239,71,67,0.12);  color: var(--hard);   border: 1px solid rgba(239,71,67,0.3); }
+
+    /* Editable title */
+    .prob-title-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed transparent;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 2px 0;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .prob-title-input:hover { border-bottom-color: var(--border); }
+    .prob-title-input:focus { border-bottom-color: var(--orange); }
+    .edit-hint { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Already saved banner ── */
+    .saved-banner {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,184,163,0.08);
+      border: 1px solid rgba(0,184,163,0.25);
+      border-radius: var(--radius-sm);
+      padding: 7px 10px;
+      font-size: 11px;
+      color: var(--easy);
+      margin-bottom: 12px;
+    }
+    .saved-banner.visible { display: flex; }
+
+    /* ── Form fields ── */
+    .field { margin-bottom: 11px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 5px;
+    }
+    select, textarea, input[type="date"], input[type="text"] {
+      width: 100%;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 7px 10px;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+    select:focus, textarea:focus, input:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(255,161,22,0.10);
+    }
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E8870' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+    select option { background: var(--brown-mid); }
+    textarea {
+      resize: vertical;
+      min-height: 58px;
+      max-height: 120px;
+      line-height: 1.5;
+    }
+    .code-area {
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 11px;
+      min-height: 68px;
+      max-height: 130px;
+      background: var(--brown-dark);
+      border-color: rgba(255,161,22,0.12);
+    }
+
+    /* Tags row */
+    .tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px;
+      min-height: 22px;
+    }
+    .tag-chip {
+      font-size: 10px;
+      padding: 2px 8px;
+      background: var(--orange-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--orange);
+      cursor: default;
+    }
+    .tags-empty { font-size: 10px; color: var(--text-muted); }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+
+    /* ── Buttons ── */
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    button {
+      padding: 9px 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: var(--brown-dark);
+    }
+    .btn-primary:hover { background: #FFB347; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,161,22,0.3); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--surface); border-color: var(--orange); color: var(--orange); }
+
+    /* ── Status message ── */
+    #status-msg {
+      margin-top: 10px;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      text-align: center;
+      min-height: 0;
+      display: none;
+    }
+    #status-msg.ok  { display: block; background: rgba(0,184,163,0.10); color: var(--easy);  border: 1px solid rgba(0,184,163,0.25); }
+    #status-msg.err { display: block; background: rgba(239,71,67,0.10); color: var(--hard);  border: 1px solid rgba(239,71,67,0.25); }
+
+    /* ── Loading skeleton ── */
+    #loading {
+      padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .skel {
+      height: 14px; border-radius: 6px;
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    .skel.short { width: 40%; }
+    .skel.medium { width: 65%; }
+    .skel.full { width: 100%; }
+    .skel.tall { height: 60px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    /* ── Hint box ── */
+    .hint-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: transparent;
+      border: 1px dashed rgba(255,161,22,0.35);
+      border-radius: var(--radius-sm);
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: all 0.15s ease;
+    }
+    .hint-btn:hover {
+      background: rgba(255,161,22,0.08);
+      border-color: var(--orange);
+      transform: none;
+      box-shadow: none;
+    }
+    .hint-btn .star { font-size: 14px; }
+    .hint-btn.loading { opacity: 0.6; cursor: default; }
+
+    .hint-box {
+      display: none;
+      margin-top: 10px;
+      padding: 11px 13px;
+      background: rgba(255,161,22,0.06);
+      border: 1px solid rgba(255,161,22,0.22);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text);
+      position: relative;
+    }
+    .hint-box.visible { display: block; }
+    .hint-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .hint-api-row {
+      display: none;
+      margin-top: 8px;
+      gap: 6px;
+      flex-direction: column;
+    }
+    .hint-api-row.visible { display: flex; }
+    .hint-api-row input {
+      font-size: 11px;
+      padding: 5px 9px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      width: 100%;
+    }
+    .hint-api-row input::placeholder { color: var(--text-muted); }
+    .hint-api-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .hint-api-note a { color: var(--orange); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div id="app-shell">
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo-icon"><img src="data:image/png;base64,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" width="20" height="20" style="display:block;object-fit:contain;"/></div>
+  <div>
+    <div class="logo-text">LeetVault</div>
+    <div class="logo-sub">Tu baúl de código</div>
+  </div>
+  <div class="server-status">
+    <div class="dot" id="server-dot"></div>
+    <span class="server-label" id="server-label">—</span>
+  </div>
+</header>
+
+<div class="body">
+
+  <!-- Loading skeleton -->
+  <div id="loading">
+    <div class="skel short"></div>
+    <div class="skel medium"></div>
+    <div class="skel full tall"></div>
+    <div class="skel full"></div>
+  </div>
+
+  <!-- No estás en un problema -->
+  <div class="panel" id="panel-nopage">
+    <div class="empty-state">
+      <span class="icon">🔍</span>
+      <p>Abre un problema de LeetCode<br/>para poder guardarlo aquí.</p>
+    </div>
+  </div>
+
+  <!-- App no está corriendo -->
+  <div class="panel" id="panel-noserver">
+    <div class="empty-state">
+      <span class="icon">🔌</span>
+      <p>La app LeetVault no está abierta.<br/><br/>
+         Ábrela desde el acceso directo<br/>del escritorio o el menú inicio.
+      </p>
+    </div>
+  </div>
+
+  <!-- Formulario principal -->
+  <div class="panel" id="panel-form">
+
+    <!-- Problem card -->
+    <div class="problem-card">
+      <div class="problem-meta">
+        <span class="prob-number" id="prob-num">#—</span>
+        <span class="diff-badge" id="prob-diff"></span>
+      </div>
+      <!-- Título EDITABLE -->
+      <input
+        type="text"
+        class="prob-title-input"
+        id="prob-title"
+        placeholder="Título del problema..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <div class="edit-hint">✏️ Puedes editar el título</div>
+
+      <!-- Botón pista IA -->
+      <button class="hint-btn" id="btn-hint">
+        <span class="star">⭐</span> Pista IA
+      </button>
+
+      <!-- Panel pista -->
+      <div class="hint-box" id="hint-box">
+        <div class="hint-label">⭐ Pista</div>
+        <div id="hint-text"></div>
+
+        <!-- Campo API key si no está guardada -->
+        <div class="hint-api-row" id="hint-api-row">
+          <input type="password" id="groq-key-input" placeholder="Pega tu Groq API key (gsk_...)" />
+          <span class="hint-api-note">
+            Clave gratuita en <a href="https://console.groq.com/keys" target="_blank">console.groq.com</a>.
+            Se guarda localmente en el navegador.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ya guardado -->
+    <div class="saved-banner" id="already-saved">
+      ✅ Ya guardado — actualizando datos
+    </div>
+
+    <!-- Tags detectados -->
+    <div class="field">
+      <label>Tags detectados</label>
+      <div class="tags-wrap" id="tags-wrap">
+        <span class="tags-empty">Cargando...</span>
+      </div>
+    </div>
+
+    <!-- Estado + Patrón -->
+    <div class="field-row">
+      <div class="field">
+        <label>Estado</label>
+        <select id="status">
+          <option value="Solved">✅ Resuelto</option>
+          <option value="In Progress">🔄 En progreso</option>
+          <option value="To Review">⭐ Por revisar</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Fecha</label>
+        <input type="date" id="date-solved" />
+      </div>
+    </div>
+
+    <!-- Patrón -->
+    <div class="field">
+      <label>Patrón / Categoría</label>
+      <select id="pattern">
+        <option value="">— Sin especificar —</option>
+        <option>Array</option>
+        <option>Two Pointers</option>
+        <option>Sliding Window</option>
+        <option>Binary Search</option>
+        <option>Linked List</option>
+        <option>Stack</option>
+        <option>Queue</option>
+        <option>Tree</option>
+        <option>BST</option>
+        <option>Graph</option>
+        <option>BFS</option>
+        <option>DFS</option>
+        <option>Dynamic Programming</option>
+        <option>Backtracking</option>
+        <option>Greedy</option>
+        <option>Heap / Priority Queue</option>
+        <option>Trie</option>
+        <option>Union Find</option>
+        <option>Bit Manipulation</option>
+        <option>Math</option>
+        <option>Hash Map</option>
+        <option>Sorting</option>
+        <option>Intervals</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <!-- Notas -->
+    <div class="field">
+      <label>Notas</label>
+      <textarea id="notes" placeholder="¿Qué aprendiste? ¿Cuál fue la clave?"></textarea>
+    </div>
+
+    <!-- Código -->
+    <div class="field">
+      <label>Solución (código)</label>
+      <textarea id="solution" class="code-area" placeholder="Tu código aparecerá aquí automáticamente..."></textarea>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+      <button class="btn-secondary" id="btn-inprogress">🔄 En progreso</button>
+      <button class="btn-primary" id="btn-save">💾 Guardar</button>
+    </div>
+
+    <div id="status-msg"></div>
+  </div>
+
+</div>
+
+<script src="popup.js"></script>
+</div>
+</body>
+</html>

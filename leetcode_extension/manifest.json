@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "LeetVault",
+  "version": "2.0",
+  "description": "Guarda tus problemas de LeetCode en LeetVault automáticamente.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://leetcode.com/*",
+    "http://localhost:7842/*",
+    "https://api.groq.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src http://localhost:7842 https://api.groq.com;"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

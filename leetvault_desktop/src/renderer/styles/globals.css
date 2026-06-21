@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    color: theme('colors.fg');
+    background: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply rounded-glass border border-glass-stroke bg-glass-fill shadow-glass backdrop-blur-sm;
+  }
+  .glass-card-dim {
+    @apply rounded-glass border border-glass-stroke bg-bg-300/55 shadow-glass backdrop-blur-sm;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition;
+  }
+  .btn-primary {
+    @apply btn bg-primary-grad text-bg-100 hover:opacity-90;
+  }
+  .btn-danger {
+    @apply btn bg-diff-hard text-fg hover:opacity-90;
+  }
+  .nav-btn {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-fgSoft/80 transition hover:bg-white/5;
+  }
+  .nav-btn-active {
+    @apply nav-btn bg-nav-active-grad text-fg;
+  }
+  .input {
+    @apply h-9 w-full rounded-md border border-glass-stroke bg-bg-200/70 px-3 text-sm text-fg outline-none placeholder:text-fgMuted focus:border-brand-500;
+  }
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.brand.700') transparent;
+  }
+  .scroll-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scroll-hide::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+/* react-calendar-heatmap palette overrides (matches v1 stats_view.py:32) */
+.leetvault-heatmap .react-calendar-heatmap rect {
+  rx: 2;
+  ry: 2;
+}
+.leetvault-heatmap .react-calendar-heatmap .lv-cell-empty { fill: rgba(255,255,255,0.05); }
+.leetvault-heatmap .react-calendar-heatmap .lv-cell-0 { fill: #EDE0D0; }
+.leetvault-heatmap .react-calendar-heatmap .lv-cell-1 { fill: #F5C48A; }
+.leetvault-heatmap .react-calendar-heatmap .lv-cell-2 { fill: #F0A030; }
+.leetvault-heatmap .react-calendar-heatmap .lv-cell-3 { fill: #D97B10; }
+.leetvault-heatmap .react-calendar-heatmap .lv-cell-4 { fill: #B85C00; }
+.leetvault-heatmap .react-calendar-heatmap text {
+  fill: rgba(247,238,228,0.55);
+  font-size: 9px;
+}
+
