@@ -40,7 +40,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: npm
           cache-dependency-path: leetvault_desktop/package-lock.json
 
@@ -48,14 +48,16 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libsqlite3-dev fakeroot dpkg rpm
+          sudo apt-get install -y libsqlite3-dev fakeroot dpkg
 
       - name: Install
-        run: npm ci
+        run: 
+          npm ci --ignore-scripts
+          node scripts/rebuild-electron.cjs
 
       - name: Generate platform icons
         run: |
-          npm i --no-save png-to-ico png2icons
+          npm i --no-save png-to-ico@^2 png2icons
           node scripts/icons.cjs
 
       - name: Package
