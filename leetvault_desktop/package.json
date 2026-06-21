@@ -1,6 +1,6 @@
 {
   "name": "leetvault-desktop",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "LeetVault — local LeetCode tracker with spaced repetition (Electron + React rewrite)",
   "private": true,
   "main": "out/main/index.js",
