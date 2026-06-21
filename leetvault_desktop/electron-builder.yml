@@ -22,6 +22,10 @@ nsis:
   allowToChangeInstallationDirectory: true
   include: build/installer.nsh
   shortcutName: LeetVault
+  createDesktopShortcut: true
+  installerIcon: resources/icon.ico
+  uninstallerIcon: resources/icon.ico
+  installerHeaderIcon: resources/icon.ico
 mac:
   target:
     - target: dmg

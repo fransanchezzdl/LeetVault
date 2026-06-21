@@ -15,13 +15,19 @@ async function main() {
 
   let pngToIco, png2icons;
   try {
-    pngToIco = require('png-to-ico');
+    const pngToIcoMod = require('png-to-ico');
+    pngToIco = typeof pngToIcoMod === 'function' ? pngToIcoMod : pngToIcoMod.default;
     png2icons = require('png2icons');
   } catch (e) {
     console.error(
       '[icons] missing deps. Run: npm i -D png-to-ico png2icons'
     );
     process.exit(1);
+
+    if (typeof pngToIco !== 'function') {
+      console.error('[icons] png-to-ico export is not a function — got:', typeof pngToIco);
+      process.exit(1);
+    }
   }
 
   const buf = fs.readFileSync(SRC);

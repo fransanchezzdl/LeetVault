@@ -41,6 +41,9 @@ const NOISE_PATTERNS = [
 const child = spawn(bin, [mode], {
   env,
   stdio: ['inherit', 'inherit', 'pipe'],
+  // Node >=18.20.2/20.12.2/24 refuses to spawn .cmd/.bat on Windows
+  //  without shell:true
+  shell: process.platform === 'win32',
 });
 
 let stderrBuf = '';

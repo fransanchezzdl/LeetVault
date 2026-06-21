@@ -10,6 +10,16 @@ import { startServer, stopServer, SERVER_PORT } from './server/fastify';
 // directory named "LeetVault" (matches the v1 Inno Setup path on Windows exactly).
 app.setName(APP_NAME);
 
+// Windows taskbar/Start-menu grouping: without this Electron apps show as
+// "Electron" in dev and group oddly in prod. Must match electron-builder appId.
+if (process.platform === 'win32'){
+  app.setAppUserModelId('com.leetvault.desktop');
+}
+
+// 'resourcer/' is bundled at the app root by electron-builder. In dev,
+// app.getAppPath() resolves to the project root; in prod, to the asar root
+const ICON_PATH = join(app.getAppPath(), 'resources', 'icon.png');
+
 // Chromium on Linux silently drops speechSynthesis.speak() unless speech-dispatcher
 // is enabled. The flag is a no-op on macOS/Windows.
 if (process.platform === 'linux') {
@@ -43,6 +53,7 @@ function createMainWindow(): BrowserWindow {
       nodeIntegration: false,
       sandbox: false,
     },
+    icon: ICON_PATH,
   });
 
   win.once('ready-to-show', () => win.show());
