@@ -22,6 +22,8 @@ export const IpcChannels = {
     OpenExternal: 'app:openExternal',
     ImportDb: 'app:importDb',
     DbPath: 'app:dbPath',
+    CheckForUpdates: 'app:checkForUpdates',
+    DismissUpdate: 'app:dismissUpdate',
   },
   Settings: {
     Get: 'settings:get',
@@ -43,6 +45,16 @@ export const IpcChannels = {
     Minimize: 'window:minimize',
     ToggleMaximize: 'window:toggleMaximize',
     Close: 'window:close',
+  },
+  Analytics: {
+    ViewOpened: 'analytics:viewOpened',
+    ReviewSessionFinished: 'analytics:reviewSessionFinished',
+    GetEnabled: 'analytics:getEnabled',
+    SetEnabled: 'analytics:setEnabled',
+    GetDistinctId: 'analytics:getDistinctId',
+    IsConfigured: 'analytics:isConfigured',
+    ShouldShowNotice: 'analytics:shouldShowNotice',
+    DismissNotice: 'analytics:dismissNotice',
   },
   Events: {
     ProblemsChanged: 'events:problems-changed',

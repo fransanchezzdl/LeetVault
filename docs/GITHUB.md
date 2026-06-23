@@ -62,45 +62,50 @@ Anything that hits → scrub from history (`git filter-repo`) before pushing.
 
 ## Day-to-day workflow
 
-Once the repo is on GitHub:
+`main` is protected — every change goes through a feature branch + PR. See [`DEVELOPMENT.md` → Git workflow](DEVELOPMENT.md#git-workflow) for the full loop. Short form:
 
 ```bash
-git checkout -b feature/some-thing
+git checkout -b feat/some-thing
 # work...
 npm --prefix leetvault_desktop run typecheck
 npm --prefix leetvault_desktop run lint
 npm --prefix leetvault_desktop test
 git commit -am "feat: …"
-git push -u origin feature/some-thing
-gh pr create --fill                     # via the GitHub CLI
+git push -u origin feat/some-thing
+gh pr create --fill                            # via the GitHub CLI
+gh pr merge --squash --delete-branch           # after CI is green
 ```
 
-A bare `main` is the protected branch. PR merge → CI builds, no tag = no release artifacts.
+PR merge runs CI but produces no release artifacts. Artifacts are tag-driven (next section).
 
 ## Cutting a release
 
-Releases are tag-driven. The CI workflow lives at `.github/workflows/release.yml` (set up in BUILD.md → CI section).
+Releases are tag-driven. The CI workflow lives at `.github/workflows/release.yml`.
+
+**Order matters**: bump and tag **after** the feature PR is merged, **from `main`**. Tagging a feature branch breaks the release — squash-merge gives the merged commit a new SHA, so the tag would point to a SHA that doesn't exist in `main`'s history, and the release job would check out the wrong code.
 
 ```bash
-# 1. Bump the version in leetvault_desktop/package.json
-#    (this is the single source of truth — electron-builder reads it).
-$EDITOR leetvault_desktop/package.json
+# 1. Make sure the feature PRs you want shipped are merged + main is synced.
+git checkout main && git pull
 
-# 2. Commit the bump and tag.
-git add leetvault_desktop/package.json
-git commit -m "chore: release v2.1.0"
-git tag v2.1.0
-git push origin main v2.1.0
+# 2. Bump version. npm version edits package.json, commits "v2.3.0",
+#    and creates an annotated tag v2.3.0 on that commit — all in one step.
+npm --prefix leetvault_desktop version patch    # or minor / major
+
+# 3. Push both the commit and the tag.
+git push --follow-tags
 ```
 
 What happens next:
 
 1. GitHub Actions spins up three matrix jobs (`ubuntu-latest`, `macos-latest`, `windows-latest`).
 2. Each runs `npm ci` in `leetvault_desktop/`, then `npm run package:<os>`.
-3. Artifacts (`.exe`, `.dmg`, `.AppImage`, `.deb`) upload to a **draft** GitHub Release named `v2.1.0`.
+3. Artifacts (`.exe`, `.dmg`, `.AppImage`, `.deb`) upload to a **draft** GitHub Release named `v2.3.0`.
 4. You open the draft, smoke-test each artifact on its OS (see the BUILD.md checklist), then click **Publish release**.
 
 If a matrix job fails, the draft is still created with the artifacts that succeeded. Re-run the failed job from the Actions tab — no need to re-tag.
+
+**Solo-dev caveat**: step 3 pushes a commit directly to `main`, which requires admin bypass on the branch protection rule. Keep "Do not allow bypassing the above settings" un-ticked so the rule still catches accidental `git push`es while allowing the release commit through. If you ever turn bypass off, the version bump needs its own one-line PR, then tag `main` after that PR merges.
 
 ## Updating the Chrome extension
 

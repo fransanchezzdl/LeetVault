@@ -5,6 +5,8 @@ import { registerReviewsIpc } from './reviews';
 import { registerSettingsIpc } from './settings';
 import { registerStatsIpc } from './stats';
 import { registerWindowIpc } from './window';
+import { registerAnalyticsIpc } from './analytics';
+import { registerUpdaterIpc } from './updater';
 
 export function registerIpc(): void {
   registerProblemsIpc();
@@ -14,4 +16,6 @@ export function registerIpc(): void {
   registerImportIpc();
   registerSettingsIpc();
   registerInterviewIpc();
+  registerAnalyticsIpc();
+  registerUpdaterIpc();
 }

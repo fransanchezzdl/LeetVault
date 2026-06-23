@@ -114,6 +114,61 @@ leetvault_desktop/
 
 See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the deeper map.
 
+## Git workflow
+
+`main` is protected: every change goes through a feature branch + PR. Solo flow:
+
+```bash
+# 1. Sync
+git checkout main && git pull
+
+# 2. Branch — short, prefixed (feat/, fix/, chore/, refactor/)
+git checkout -b feat/update-modal
+
+# 3. Build
+npm --prefix leetvault_desktop run dev          # live work
+npm --prefix leetvault_desktop run typecheck    # before each commit
+npm --prefix leetvault_desktop test             # before pushing
+git add -p && git commit -m "..."               # small, focused commits
+
+# 4. Push & PR
+git push -u origin feat/update-modal
+gh pr create --fill                             # wait for CI green
+
+# 5. Merge — squash collapses your branch's commits into one clean line on main
+gh pr merge --squash --delete-branch
+
+# 6. Sync local main
+git checkout main && git pull
+```
+
+**Rules of thumb**:
+
+- **One PR = one concern.** Smaller PRs merge faster and revert cleanly.
+- **Commits inside a PR can be messy** (`wip`, `fix typo`). Squash-merge collapses them. The PR title becomes the commit message on `main` — write it like one.
+- **Self-review the diff in the GitHub PR view before merging.** Catches stray `console.log`s and commented code that editors gloss over.
+- **CI red = don't merge.** Branch protection enforces this once "Require status checks" is on.
+- **Two laptops**: always `git pull --rebase` before starting work; if you forget, `git fetch && git rebase origin/main` on your feature branch before pushing.
+- **Branch-protection escape hatch**: keep "Do not allow bypassing the above settings" **un**ticked. Rules stay on for normal pushes (catching `git push` typos to `main`), but you can bypass as admin when you genuinely need to (hotfix, release tag push).
+
+### Cutting a release
+
+Releases are tag-driven (see [`GITHUB.md`](GITHUB.md) for what the workflow does). Tag **after** the feature PR is merged, **from `main`**, never from a feature branch — the squash-merge gives the commit a new SHA, so a tag on the branch would point to a SHA that doesn't exist in `main`.
+
+```bash
+# After the feature PR is merged and main is synced locally:
+git checkout main && git pull
+
+npm --prefix leetvault_desktop version patch    # or minor / major
+# ↑ edits package.json, commits "v2.3.0", creates tag v2.3.0 on that commit
+
+git push --follow-tags                          # pushes commit + tag in one shot
+```
+
+The release workflow fires on the `v*` tag, builds artifacts on Linux/macOS/Windows, and uploads them to a draft GitHub Release. Smoke-test, then publish.
+
+Solo-dev requires admin bypass on the protection rule (above) because the version-bump commit lands on `main` outside a PR. If you ever turn bypass off, the version bump needs its own tiny PR before tagging.
+
 ## Working with the Chrome extension during dev
 
 1. Open `chrome://extensions`, enable Developer mode, "Load unpacked" → `leetcode_extension/`.

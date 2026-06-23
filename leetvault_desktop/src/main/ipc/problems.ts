@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { IpcChannels } from '@shared/ipc-channels';
 import { ProblemsRepo } from '../db/problems.repo';
 import { broadcast } from '../events/bus';
+import { capture } from '../analytics/posthog';
 import type { ProblemDraft } from '@shared/types/problem';
 
 export function registerProblemsIpc(): void {
@@ -23,6 +24,11 @@ export function registerProblemsIpc(): void {
       action: 'created',
       id: res.id,
     });
+    capture('problem_created', {
+      difficulty: draft.difficulty,
+      status: (draft.status ?? 'Solved') as 'Solved' | 'In Progress' | 'To Review',
+      has_pattern: Boolean(draft.pattern && draft.pattern.trim()),
+    });
     return res;
   });
 
@@ -36,6 +42,10 @@ export function registerProblemsIpc(): void {
         action: 'updated',
         id,
       });
+      capture('problem_updated', {
+        difficulty: draft.difficulty,
+        status: (draft.status ?? 'Solved') as 'Solved' | 'In Progress' | 'To Review',
+      });
     }
   );
 
@@ -46,6 +56,7 @@ export function registerProblemsIpc(): void {
       action: 'deleted',
       id,
     });
+    capture('problem_deleted', {});
   });
 
   ipcMain.handle(

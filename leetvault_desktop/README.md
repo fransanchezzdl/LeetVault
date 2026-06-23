@@ -12,7 +12,7 @@ npm run dev         # launches Electron with HMR for the renderer
 If `better-sqlite3` complains about ABI mismatch:
 
 ```bash
-npm run rebuild:sqlite
+npm run rebuild:electron
 ```
 
 ## Scripts

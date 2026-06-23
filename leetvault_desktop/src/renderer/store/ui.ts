@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type View = 'problems' | 'review' | 'stats' | 'roadmap' | 'interview' | 'help';
+export type View = 'problems' | 'review' | 'stats' | 'roadmap' | 'interview' | 'help' | 'settings';
 
 export type DifficultyFilter = 'all' | 'Easy' | 'Medium' | 'Hard';
 export type StatusFilter = 'all' | 'Solved' | 'In Progress' | 'To Review';
@@ -35,7 +35,10 @@ interface UiState {
 
 export const useUi = create<UiState>((set) => ({
   view: 'problems',
-  setView: (v) => set({ view: v }),
+  setView: (v) => {
+    set({ view: v });
+    void window.lv?.analytics?.viewOpened?.(v);
+  },
 
   search: '',
   setSearch: (s) => set({ search: s }),

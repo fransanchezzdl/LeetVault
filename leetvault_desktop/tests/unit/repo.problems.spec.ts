@@ -26,7 +26,7 @@ describe('ProblemsRepo — CRUD on :memory: DB', () => {
       title: 'Two Sum',
       difficulty: 'Easy',
       pattern: 'hashmap',
-      status: 'Solved',
+      status: 'To Review',
       solution: 'def f(): pass',
       notes: 'classic',
       date_solved: '2026-06-19',

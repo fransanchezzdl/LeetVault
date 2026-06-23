@@ -5,6 +5,7 @@ import {
   Map,
   MessagesSquare,
   PieChart,
+  Settings,
 } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { useUi, type View } from '../../store/ui';
@@ -23,6 +24,7 @@ const NAV: NavItem[] = [
   { id: 'roadmap', label: 'Roadmap', icon: <Map className="h-4 w-4" /> },
   { id: 'interview', label: 'Entrevista', icon: <MessagesSquare className="h-4 w-4" /> },
   { id: 'help', label: 'Ayuda', icon: <HelpCircle className="h-4 w-4" /> },
+  { id: 'settings', label: 'Ajustes', icon: <Settings className="h-4 w-4" /> },
 ];
 
 export function Sidebar() {
@@ -55,7 +57,9 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="relative mt-auto px-2 text-[10px] text-fgMuted/70">LeetVault v2</div>
+      <div className="relative mt-auto px-2 text-[10px] text-fgMuted/70">
+        LeetVault v{__APP_VERSION__}
+      </div>
     </aside>
   );
 }
