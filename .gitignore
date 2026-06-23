@@ -9,3 +9,5 @@ dist
 !.vscode/extensions.json
 .idea
 release
+.env
+.env.local

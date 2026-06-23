@@ -13,6 +13,7 @@ import type {
   InterviewStartResult,
   InterviewStatsBundle,
 } from '@shared/types/interview';
+import type { UpdateInfo } from '@shared/types/updater';
 
 type LvEventChannel = keyof IpcEventPayload;
 
@@ -43,6 +44,12 @@ export interface LvApi {
       | { ok: false; reason: 'cancelled' | 'invalid' | 'error'; message?: string }
     >;
     dbPath: () => Promise<string>;
+    checkForUpdates: () => Promise<UpdateInfo | null>;
+    dismissUpdate: (
+      version: string,
+      action: 'opened' | 'dismissed',
+      url?: string
+    ) => Promise<void>;
   };
   window: {
     minimize: () => Promise<void>;
@@ -67,6 +74,18 @@ export interface LvApi {
     list: (limit?: number) => Promise<InterviewSessionSummary[]>;
     stats: () => Promise<InterviewStatsBundle>;
   };
+  analytics: {
+    viewOpened: (
+      view: 'problems' | 'review' | 'stats' | 'roadmap' | 'help' | 'interview' | 'settings'
+    ) => Promise<void>;
+    reviewSessionFinished: (count: number) => Promise<void>;
+    getEnabled: () => Promise<boolean>;
+    setEnabled: (enabled: boolean) => Promise<void>;
+    getDistinctId: () => Promise<string | null>;
+    isConfigured: () => Promise<boolean>;
+    shouldShowNotice: () => Promise<boolean>;
+    dismissNotice: () => Promise<void>;
+  };
   on: <C extends LvEventChannel>(
     channel: C,
     handler: (payload: IpcEventPayload[C]) => void
@@ -77,6 +96,7 @@ declare global {
   interface Window {
     lv: LvApi;
   }
+  const __APP_VERSION__: string;
 }
 
 declare module '*.png' {

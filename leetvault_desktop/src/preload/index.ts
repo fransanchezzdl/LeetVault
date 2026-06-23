@@ -14,6 +14,7 @@ import type {
   InterviewStartResult,
   InterviewStatsBundle,
 } from '@shared/types/interview';
+import type { UpdateInfo } from '@shared/types/updater';
 
 const invoke = <T = unknown>(channel: string, payload?: unknown): Promise<T> =>
   ipcRenderer.invoke(channel, payload);
@@ -63,6 +64,14 @@ const api = {
       | { ok: false; reason: 'cancelled' | 'invalid' | 'error'; message?: string }
     > => invoke(IpcChannels.App.ImportDb),
     dbPath: (): Promise<string> => invoke(IpcChannels.App.DbPath),
+    checkForUpdates: (): Promise<UpdateInfo | null> =>
+      invoke(IpcChannels.App.CheckForUpdates),
+    dismissUpdate: (
+      version: string,
+      action: 'opened' | 'dismissed',
+      url?: string
+    ): Promise<void> =>
+      invoke(IpcChannels.App.DismissUpdate, { version, action, url }),
   },
   window: {
     minimize: (): Promise<void> => invoke(IpcChannels.Window.Minimize),
@@ -93,6 +102,20 @@ const api = {
       invoke(IpcChannels.Interview.List, { limit }),
     stats: (): Promise<InterviewStatsBundle> =>
       invoke(IpcChannels.Interview.Stats),
+  },
+  analytics: {
+    viewOpened: (
+      view: 'problems' | 'review' | 'stats' | 'roadmap' | 'help' | 'interview' | 'settings'
+    ): Promise<void> => invoke(IpcChannels.Analytics.ViewOpened, { view }),
+    reviewSessionFinished: (count: number): Promise<void> =>
+      invoke(IpcChannels.Analytics.ReviewSessionFinished, { count }),
+    getEnabled: (): Promise<boolean> => invoke(IpcChannels.Analytics.GetEnabled),
+    setEnabled: (enabled: boolean): Promise<void> =>
+      invoke(IpcChannels.Analytics.SetEnabled, { enabled }),
+    getDistinctId: (): Promise<string | null> => invoke(IpcChannels.Analytics.GetDistinctId),
+    isConfigured: (): Promise<boolean> => invoke(IpcChannels.Analytics.IsConfigured),
+    shouldShowNotice: (): Promise<boolean> => invoke(IpcChannels.Analytics.ShouldShowNotice),
+    dismissNotice: (): Promise<void> => invoke(IpcChannels.Analytics.DismissNotice),
   },
   on: subscribe,
 };

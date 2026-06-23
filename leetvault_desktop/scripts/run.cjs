@@ -22,12 +22,13 @@ if (mode !== 'dev' && mode !== 'preview') {
 const env = { ...process.env };
 delete env.ELECTRON_RUN_AS_NODE;
 
+const isWin = process.platform === 'win32';
 const bin = path.join(
   __dirname,
   '..',
   'node_modules',
   '.bin',
-  process.platform === 'win32' ? 'electron-vite.cmd' : 'electron-vite'
+  isWin ? 'electron-vite.cmd' : 'electron-vite'
 );
 
 const NOISE_PATTERNS = [
@@ -38,13 +39,16 @@ const NOISE_PATTERNS = [
   /Bluez may not be available/,
 ];
 
-const child = spawn(bin, [mode], {
-  env,
-  stdio: ['inherit', 'inherit', 'pipe'],
-  // Node >=18.20.2/20.12.2/24 refuses to spawn .cmd/.bat on Windows
-  //  without shell:true
-  shell: process.platform === 'win32',
-});
+const child = spawn(
+  isWin ? process.env.ComSpec || 'cmd.exe' : bin,
+  isWin ? ['/d', '/s', '/c', bin, mode] : [mode],
+  {
+    env,
+    stdio: ['inherit', 'inherit', 'pipe'],
+    // On Windows we invoke cmd.exe explicitly instead of using `shell: true`,
+    // which triggers DEP0190 in Node >=22 when combined with an args array.
+  }
+);
 
 let stderrBuf = '';
 child.stderr.on('data', (chunk) => {

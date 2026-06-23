@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { IpcChannels } from '@shared/ipc-channels';
 import { ReviewsRepo } from '../db/reviews.repo';
 import { broadcast } from '../events/bus';
+import { capture } from '../analytics/posthog';
 import type { Quality } from '@shared/types/review';
 
 export function registerReviewsIpc(): void {
@@ -14,6 +15,7 @@ export function registerReviewsIpc(): void {
     (_e, { id, quality }: { id: number; quality: Quality }) => {
       ReviewsRepo.rate(id, quality);
       broadcast(IpcChannels.Events.ReviewsChanged, { id });
+      capture('review_rated', { quality });
     }
   );
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Eye, EyeOff } from 'lucide-react';
 import type { Problem } from '@shared/types/problem';
 import type { Quality } from '@shared/types/review';
@@ -28,10 +28,24 @@ export function ReviewView() {
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [keepRevising, setKeepRevising] = useState(true);
+  const ratedCount = useRef(0);
+  const sessionReported = useRef(false);
 
   useEffect(() => {
     if (index >= due.length) setIndex(0);
   }, [due.length, index]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (due.length === 0 && ratedCount.current > 0 && !sessionReported.current) {
+      sessionReported.current = true;
+      void window.lv.analytics.reviewSessionFinished(ratedCount.current);
+      ratedCount.current = 0;
+    }
+    if (due.length > 0) {
+      sessionReported.current = false;
+    }
+  }, [due.length, isLoading]);
 
   const current = due[index];
   const isPending = rating || finishing;
@@ -44,12 +58,12 @@ export function ReviewView() {
 
   const handleRate = (q: Quality) => {
     if (!current) return;
-    rate({ id: current.id, quality: q }, { onSuccess: advance });
+    rate({ id: current.id, quality: q }, { onSuccess: () => { ratedCount.current += 1; advance(); } });
   };
 
   const handleFinish = () => {
     if (!current) return;
-    finish(current.id, { onSuccess: advance });
+    finish(current.id, { onSuccess: () => { ratedCount.current += 1; advance(); } });
   };
 
   if (isLoading) {

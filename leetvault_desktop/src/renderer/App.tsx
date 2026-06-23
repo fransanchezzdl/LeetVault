@@ -8,6 +8,9 @@ import { StatsView } from './features/stats/StatsView';
 import { RoadmapView } from './features/roadmap/RoadmapView';
 import { InterviewView } from './features/interview/InterviewView';
 import { HelpView } from './features/help/HelpView';
+import { SettingsView } from './features/settings/SettingsView';
+import { AnalyticsNotice } from './components/AnalyticsNotice';
+import { UpdateModal } from './components/UpdateModal';
 import { bindCacheInvalidation } from './lib/queryClient';
 
 export function App() {
@@ -30,9 +33,12 @@ export function App() {
             {view === 'roadmap' ? <RoadmapView /> : null}
             {view === 'interview' ? <InterviewView /> : null}
             {view === 'help' ? <HelpView /> : null}
+            {view === 'settings' ? <SettingsView /> : null}
           </div>
         </main>
       </div>
+      <AnalyticsNotice />
+      <UpdateModal />
     </div>
   );
 }

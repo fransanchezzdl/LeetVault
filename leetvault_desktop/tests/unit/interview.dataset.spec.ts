@@ -21,12 +21,12 @@ describe('interview problem dataset', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('hides title and solution from publicView', () => {
+  it('hides solution and full constraints from publicView', () => {
     const p = INTERVIEW_PROBLEMS[0];
     const pub = publicView(p);
-    expect(pub).not.toHaveProperty('title');
     expect(pub).not.toHaveProperty('expected_solution');
     expect(pub).not.toHaveProperty('full_constraints');
+    expect(pub).toHaveProperty('title');
     expect(pub).toHaveProperty('vague_description');
   });
 

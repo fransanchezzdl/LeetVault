@@ -5,6 +5,8 @@ import { resolveDbPath } from './db/path';
 import { openDb, setDb, closeDb } from './db/connection';
 import { registerIpc } from './ipc/register';
 import { startServer, stopServer, SERVER_PORT } from './server/fastify';
+import { capture, initAnalytics, shutdownAnalytics } from './analytics/posthog';
+import { isFirstLaunch, markFirstLaunchSeen } from './analytics/identity';
 
 // Must be set BEFORE any call to app.getPath('userData') so all OSes resolve to a
 // directory named "LeetVault" (matches the v1 Inno Setup path on Windows exactly).
@@ -97,6 +99,11 @@ app.whenReady().then(async () => {
 
   createMainWindow();
 
+  initAnalytics();
+  const firstLaunch = isFirstLaunch();
+  capture('app_opened', { is_first_launch: firstLaunch });
+  if (firstLaunch) markFirstLaunchSeen();
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
   });
@@ -110,6 +117,7 @@ app.on('will-quit', async (e) => {
   e.preventDefault();
   try {
     await stopServer();
+    await shutdownAnalytics();
   } finally {
     closeDb();
     app.exit(0);

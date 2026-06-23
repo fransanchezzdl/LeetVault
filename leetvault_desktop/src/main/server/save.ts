@@ -3,6 +3,7 @@ import type { ProblemDraft } from '@shared/types/problem';
 import { ProblemsRepo } from '../db/problems.repo';
 import { broadcast } from '../events/bus';
 import { IpcChannels } from '@shared/ipc-channels';
+import { capture } from '../analytics/posthog';
 
 export const MAX_BODY = 1 * 1024 * 1024;
 const MAX_TITLE = 300;
@@ -76,6 +77,7 @@ export async function handleSave(
       action: 'updated',
       id: existing.id,
     });
+    capture('extension_saved', { action: 'updated' });
     return void reply.send({ saved: true, action: 'updated', id: existing.id });
   }
 
@@ -85,5 +87,6 @@ export async function handleSave(
     action: 'created',
     id,
   });
+  capture('extension_saved', { action: 'created' });
   reply.send({ saved: true, action: 'created' });
 }

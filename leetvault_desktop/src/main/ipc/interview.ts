@@ -15,11 +15,13 @@ import { pickProblem, publicView } from '../interview/picker';
 import {
   endSession,
   finishSession,
+  getSession,
   openingTurn,
   startSession,
   userMessage,
 } from '../interview/session';
 import { InterviewRepo } from '../db/interview.repo';
+import { capture } from '../analytics/posthog';
 
 export function registerInterviewIpc(): void {
   ipcMain.handle(
@@ -42,6 +44,10 @@ export function registerInterviewIpc(): void {
       // LivePanel and subscribe to interview-stream events before the first
       // Groq delta arrives — otherwise the opening message can be lost.
       setTimeout(() => void openingTurn(started.sessionId), 50);
+      capture('interview_started', {
+        difficulty: args.difficulty,
+        language: args.language,
+      });
       return {
         sessionId: started.sessionId,
         problemPublic: publicView(started.problem),
@@ -59,19 +65,31 @@ export function registerInterviewIpc(): void {
   ipcMain.handle(
     IpcChannels.Interview.Finish,
     async (_e, args: InterviewFinishArgs): Promise<InterviewFinishResult | null> => {
-      return await finishSession(
+      const result = await finishSession(
         args.sessionId,
         args.finalCode,
         args.language,
         args.durationSec
       );
+      if (result) {
+        capture('interview_finished', {
+          duration_sec: args.durationSec,
+          verdict: result.evaluation?.overall ?? 'No Evaluation',
+          had_evaluation: Boolean(result.evaluation),
+          language: args.language,
+        });
+      }
+      return result;
     }
   );
 
   ipcMain.handle(
     IpcChannels.Interview.Abort,
     (_e, { sessionId }: { sessionId: string }): void => {
+      const session = getSession(sessionId);
+      const elapsed = session ? Math.round((Date.now() - session.startedAt) / 1000) : 0;
       endSession(sessionId);
+      capture('interview_aborted', { elapsed_sec: elapsed });
     }
   );
 

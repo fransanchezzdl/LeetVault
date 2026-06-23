@@ -51,7 +51,11 @@ jobs:
           sudo apt-get install -y libsqlite3-dev fakeroot dpkg
 
       - name: Install
-        run: 
+        # --ignore-scripts skips better-sqlite3's prebuild-install/node-gyp
+        # fallback chain (which would need VS Build Tools on Windows and
+        # distutils on Mac). We only need the Electron-ABI prebuild, fetched
+        # next by rebuild-electron.cjs via @electron/rebuild.
+        run: |
           npm ci --ignore-scripts
           node scripts/rebuild-electron.cjs
 
@@ -63,6 +67,8 @@ jobs:
       - name: Package
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
         run: npm run ${{ matrix.package }}
 
       - name: Upload artifacts
