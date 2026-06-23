@@ -1,6 +1,6 @@
 {
   "name": "leetvault-desktop",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "LeetVault — local LeetCode tracker with mock interviews, problem history, and more.",
   "private": true,
   "main": "out/main/index.js",
