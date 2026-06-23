@@ -47,8 +47,4 @@ linux:
   category: Development
   maintainer: Francisco Sanchez <francisco.sanchez@leetvault.local>
   synopsis: Local LeetCode tracker with spaced repetition
-  desktop:
-    entry:
-      Name: LeetVault
-      StartupWMClass: LeetVault
 publish: null
