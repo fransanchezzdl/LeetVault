@@ -7,6 +7,11 @@ files:
   - out/**
   - resources/**
   - "!**/{.DS_Store,.git,.vscode,.idea,tests,scripts,.dev-userdata}"
+extraResources:
+  - from: ../leetcode_extension
+    to: leetcode_extension
+    filter:
+      - "**/*"
 directories:
   buildResources: build
   output: release

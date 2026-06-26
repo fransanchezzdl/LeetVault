@@ -44,6 +44,8 @@ export interface LvApi {
       | { ok: false; reason: 'cancelled' | 'invalid' | 'error'; message?: string }
     >;
     dbPath: () => Promise<string>;
+    extensionPath: () => Promise<string>;
+    openExtensionFolder: () => Promise<void>;
     checkForUpdates: () => Promise<UpdateInfo | null>;
     dismissUpdate: (
       version: string,

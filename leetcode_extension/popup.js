@@ -18,7 +18,7 @@ async function getHint() {
 
   if (!title) {
     hintBox.classList.add("visible");
-    hintText.textContent = "⚠️ No se detectó título del problema.";
+    hintText.textContent = "No se detectó título del problema.";
     return;
   }
 
@@ -51,7 +51,8 @@ async function getHint() {
 
   // Show loading
   btn.classList.add("loading");
-  btn.textContent = "⏳ Pensando enfoque...";
+  btn.innerHTML =
+    '<svg class="icon spinner"><use href="#i-loader"/></svg><span>Pensando enfoque...</span>';
   hintBox.classList.add("visible");
   hintText.textContent = "Analizando tu código...";
 
@@ -103,7 +104,7 @@ Reglas estrictas:
     });
 
     if (res.status === 401) {
-      hintText.textContent = "❌ API key inválida. Bórrala y vuelve a introducirla.";
+      hintText.textContent = "API key inválida. Bórrala y vuelve a introducirla.";
       await chrome.storage.local.remove(GROQ_KEY_STORAGE);
       apiRow.classList.add("visible");
       return;
@@ -114,15 +115,11 @@ Reglas estrictas:
     hintText.textContent = hint || "No se pudo generar la pista.";
 
   } catch (e) {
-    hintText.textContent = "❌ Error de conexión con Groq.";
+    hintText.textContent = "Error de conexión con Groq.";
   } finally {
     btn.classList.remove("loading");
-    btn.innerHTML = "";
-    const star2 = document.createElement("span");
-    star2.className = "star";
-    star2.textContent = "⭐";
-    btn.appendChild(star2);
-    btn.appendChild(document.createTextNode(" Pista IA"));
+    btn.innerHTML =
+      '<svg class="icon"><use href="#i-sparkles"/></svg><span>Pista IA</span>';
   }
 }
 
@@ -141,8 +138,12 @@ function show(panelId) {
 
 function setStatus(msg, type) {
   const el = document.getElementById("status-msg");
-  el.textContent = msg;
-  el.className = type; // "ok" | "err" | ""
+  el.className = type || ""; // "ok" | "err" | ""
+  el.innerHTML = "";
+  if (!type) return;
+  const iconId = type === "ok" ? "i-check" : "i-x";
+  el.innerHTML = `<svg class="icon"><use href="#${iconId}"/></svg><span></span>`;
+  el.querySelector("span").textContent = msg;
 }
 
 function setServerStatus(ok) {
@@ -181,7 +182,7 @@ async function saveProblem(status) {
   const title = titleEl.value.trim() || problemInfo?.title || "";
 
   if (!title) {
-    setStatus("⚠️ Escribe un título antes de guardar", "err");
+    setStatus("Escribe un título antes de guardar", "err");
     titleEl.focus();
     return;
   }
@@ -198,7 +199,8 @@ async function saveProblem(status) {
   };
 
   const btn = document.getElementById("btn-save");
-  btn.textContent = "Guardando...";
+  const savedLabel = btn.innerHTML;
+  btn.innerHTML = '<svg class="icon spinner"><use href="#i-loader"/></svg><span>Guardando...</span>';
   btn.disabled = true;
 
   try {
@@ -212,16 +214,16 @@ async function saveProblem(status) {
 
     if (data.saved) {
       const verb = data.action === "created" ? "¡Guardado!" : "¡Actualizado!";
-      setStatus(`✅ ${verb}`, "ok");
+      setStatus(verb, "ok");
       document.getElementById("already-saved").classList.add("visible");
       setTimeout(() => window.close(), 1600);
     } else {
-      setStatus("❌ El servidor devolvió un error", "err");
+      setStatus("El servidor devolvió un error", "err");
     }
   } catch (e) {
-    setStatus("❌ No se pudo conectar con la app de escritorio", "err");
+    setStatus("No se pudo conectar con la app de escritorio", "err");
   } finally {
-    btn.textContent = "💾 Guardar";
+    btn.innerHTML = savedLabel;
     btn.disabled = false;
   }
 }
@@ -246,6 +248,7 @@ function fillForm(info, existing) {
   const tagsWrap = document.getElementById("tags-wrap");
   tagsWrap.innerHTML = ""; // limpiar
   if (info.tags && info.tags.length > 0) {
+    tagsWrap.classList.remove("is-empty");
     info.tags.forEach(t => {
       const span = document.createElement("span");
       span.className = "tag-chip";
@@ -263,10 +266,7 @@ function fillForm(info, existing) {
       }
     }
   } else {
-    const span = document.createElement("span");
-    span.className = "tags-empty";
-    span.textContent = "No detectados — selecciona patrón manualmente";
-    tagsWrap.appendChild(span);
+    tagsWrap.classList.add("is-empty");
   }
 
   // Fecha
@@ -335,10 +335,6 @@ async function init() {
   // Wire buttons
   document.getElementById("btn-save").addEventListener("click", () => {
     saveProblem(document.getElementById("status").value);
-  });
-  document.getElementById("btn-inprogress").addEventListener("click", () => {
-    document.getElementById("status").value = "In Progress";
-    saveProblem("In Progress");
   });
   document.getElementById("btn-hint").addEventListener("click", getHint);
 }

@@ -64,6 +64,8 @@ const api = {
       | { ok: false; reason: 'cancelled' | 'invalid' | 'error'; message?: string }
     > => invoke(IpcChannels.App.ImportDb),
     dbPath: (): Promise<string> => invoke(IpcChannels.App.DbPath),
+    extensionPath: (): Promise<string> => invoke(IpcChannels.App.ExtensionPath),
+    openExtensionFolder: (): Promise<void> => invoke(IpcChannels.App.OpenExtensionFolder),
     checkForUpdates: (): Promise<UpdateInfo | null> =>
       invoke(IpcChannels.App.CheckForUpdates),
     dismissUpdate: (

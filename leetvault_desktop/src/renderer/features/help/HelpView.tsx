@@ -115,7 +115,7 @@ const SECTIONS: Section[] = [
     items: [
       [
         '¿Cómo instalo la extensión?',
-        '1. Abre Chrome y ve a chrome://extensions\n2. Activa el Modo desarrollador (esquina superior derecha)\n3. Pulsa "Cargar descomprimida"\n4. Selecciona la carpeta de la extensión incluida en la instalación de LeetVault\n5. La extensión aparecerá en tu barra de Chrome.',
+        '1. Abre Chrome y ve a chrome://extensions\n2. Activa el Modo desarrollador (esquina superior derecha)\n3. Pulsa "Cargar descomprimida"\n4. Selecciona la carpeta leetcode_extension incluida con LeetVault (pulsa "Abrir carpeta de la extensión" para encontrarla)\n5. La extensión aparecerá en tu barra de Chrome.',
         'extension',
       ],
       [
@@ -383,19 +383,7 @@ function FaqItem({
           <p className="whitespace-pre-line text-sm leading-relaxed text-fgMuted">
             {renderHighlighted(answer, highlight)}
           </p>
-          {extra === 'extension' ? (
-            <Button
-              variant="outline"
-              className="mt-3 gap-2"
-              onClick={() =>
-                window.lv.app.openExternal(
-                  'https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world'
-                )
-              }
-            >
-              <Folder className="h-4 w-4" /> Abrir guía de instalación
-            </Button>
-          ) : null}
+          {extra === 'extension' ? <ExtensionPathBlock /> : null}
           {extra === 'groq' ? (
             <Button
               variant="outline"
@@ -407,6 +395,45 @@ function FaqItem({
           ) : null}
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function ExtensionPathBlock() {
+  const [path, setPath] = useState<string>('');
+
+  useEffect(() => {
+    window.lv.app.extensionPath().then(setPath).catch(() => setPath(''));
+  }, []);
+
+  return (
+    <div className="mt-3 space-y-2">
+      {path ? (
+        <p className="text-[11px] text-fgMuted/80">
+          Ruta: <code className="text-fgSoft">{path}</code>
+        </p>
+      ) : null}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={() => window.lv.app.openExtensionFolder()}
+          disabled={!path}
+        >
+          <Folder className="h-4 w-4" /> Abrir carpeta de la extensión
+        </Button>
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={() =>
+            window.lv.app.openExternal(
+              'https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world'
+            )
+          }
+        >
+          <ExternalLink className="h-4 w-4" /> Guía de instalación
+        </Button>
+      </div>
     </div>
   );
 }
