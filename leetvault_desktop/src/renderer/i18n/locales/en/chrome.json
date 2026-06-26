@@ -1,0 +1,14 @@
+{
+  "titlebar.minimize": "Minimize",
+  "titlebar.maximize": "Maximize",
+  "titlebar.close": "Close",
+  "analyticsNotice.title": "Anonymous metrics enabled",
+  "analyticsNotice.body": "LeetVault sends anonymous events (feature usage, version, operating system) to prioritise improvements. Never titles, code or notes.",
+  "analyticsNotice.openSettings": "Open settings",
+  "analyticsNotice.acknowledge": "Got it",
+  "update.title": "New version available",
+  "update.description": "You have v{{current}}. The latest version is v{{latest}}.",
+  "update.notes": "Release notes",
+  "update.later": "Later",
+  "update.download": "Download"
+}

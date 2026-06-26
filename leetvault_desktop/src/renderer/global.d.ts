@@ -2,6 +2,7 @@ import type { Problem, ProblemDraft } from '@shared/types/problem';
 import type { Quality } from '@shared/types/review';
 import type { StatsBundle } from '@shared/types/stats';
 import type { IpcEventPayload } from '@shared/ipc-channels';
+import type { Lang } from '@shared/lang';
 import type {
   InterviewDifficulty,
   InterviewFinishArgs,
@@ -52,6 +53,8 @@ export interface LvApi {
       action: 'opened' | 'dismissed',
       url?: string
     ) => Promise<void>;
+    initialLocale: Lang;
+    localeChanged: (lang: Lang) => Promise<void>;
   };
   window: {
     minimize: () => Promise<void>;

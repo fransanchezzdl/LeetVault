@@ -1,9 +1,11 @@
 import { Search, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useUi } from '../../store/ui';
 import { Input } from '../../components/ui/Input';
 import { Select, SelectOption } from '../../components/ui/Select';
 
 export function FilterBar() {
+  const { t } = useTranslation(['problems', 'common']);
   const { search, setSearch, difficulty, setDifficulty, status, setStatus, pattern, setPattern } =
     useUi();
 
@@ -14,7 +16,7 @@ export function FilterBar() {
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por título, número o patrón…"
+          placeholder={t('problems:filters.searchPlaceholder')}
           className="pl-9"
         />
       </div>
@@ -23,9 +25,9 @@ export function FilterBar() {
         value={difficulty}
         onValueChange={(v) => setDifficulty(v as typeof difficulty)}
         className="w-36"
-        aria-label="Dificultad"
+        aria-label={t('problems:filters.difficulty')}
       >
-        <SelectOption value="all">Dificultad</SelectOption>
+        <SelectOption value="all">{t('problems:filters.difficulty')}</SelectOption>
         <SelectOption value="Easy">Easy</SelectOption>
         <SelectOption value="Medium">Medium</SelectOption>
         <SelectOption value="Hard">Hard</SelectOption>
@@ -35,12 +37,12 @@ export function FilterBar() {
         value={status}
         onValueChange={(v) => setStatus(v as typeof status)}
         className="w-40"
-        aria-label="Estado"
+        aria-label={t('problems:filters.status')}
       >
-        <SelectOption value="all">Estado</SelectOption>
-        <SelectOption value="Solved">Resuelto</SelectOption>
-        <SelectOption value="In Progress">En progreso</SelectOption>
-        <SelectOption value="To Review">Por revisar</SelectOption>
+        <SelectOption value="all">{t('problems:filters.status')}</SelectOption>
+        <SelectOption value="Solved">{t('common:status.Solved')}</SelectOption>
+        <SelectOption value="In Progress">{t('common:status.InProgress')}</SelectOption>
+        <SelectOption value="To Review">{t('common:status.ToReview')}</SelectOption>
       </Select>
 
       {pattern ? (
@@ -49,7 +51,7 @@ export function FilterBar() {
           onClick={() => setPattern('')}
           className="inline-flex items-center gap-1 rounded-full border border-glass-stroke bg-white/5 px-3 py-1 text-xs text-fgSoft hover:bg-white/10"
         >
-          Patrón: <span className="font-medium">{pattern}</span>
+          {t('problems:filters.patternLabel')} <span className="font-medium">{pattern}</span>
           <X className="h-3 w-3" />
         </button>
       ) : null}

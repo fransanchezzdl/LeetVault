@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/cn';
 import type { Difficulty, Status } from '@shared/types/problem';
 
@@ -21,16 +22,17 @@ const statusMap: Record<Status, string> = {
   'To Review': 'bg-status-toreview/15 text-status-toreview',
 };
 
-export const STATUS_LABEL_ES: Record<Status, string> = {
-  Solved: 'Resuelto',
-  'In Progress': 'En progreso',
-  'To Review': 'Por revisar',
+const STATUS_KEY: Record<Status, string> = {
+  Solved: 'status.Solved',
+  'In Progress': 'status.InProgress',
+  'To Review': 'status.ToReview',
 };
 
 export function StatusBadge({ value }: { value: Status }) {
+  const { t } = useTranslation('common');
   return (
     <span className={cn('inline-flex rounded-full px-2 py-0.5 text-xs font-medium', statusMap[value])}>
-      {STATUS_LABEL_ES[value]}
+      {t(STATUS_KEY[value])}
     </span>
   );
 }

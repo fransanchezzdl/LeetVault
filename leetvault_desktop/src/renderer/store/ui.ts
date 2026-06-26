@@ -1,4 +1,7 @@
 import { create } from 'zustand';
+import type { Lang } from '@shared/lang';
+import { LANGUAGE_SETTING_KEY } from '@shared/lang';
+import { i18n } from '../i18n';
 
 export type View = 'problems' | 'review' | 'stats' | 'roadmap' | 'interview' | 'help' | 'settings';
 
@@ -8,6 +11,9 @@ export type StatusFilter = 'all' | 'Solved' | 'In Progress' | 'To Review';
 interface UiState {
   view: View;
   setView: (v: View) => void;
+
+  language: Lang;
+  setLanguage: (lang: Lang) => Promise<void>;
 
   search: string;
   setSearch: (s: string) => void;
@@ -33,11 +39,21 @@ interface UiState {
   goToProblemsWithPattern: (pattern: string) => void;
 }
 
+const initialLanguage: Lang = (window.lv?.app?.initialLocale ?? 'en') as Lang;
+
 export const useUi = create<UiState>((set) => ({
   view: 'problems',
   setView: (v) => {
     set({ view: v });
     void window.lv?.analytics?.viewOpened?.(v);
+  },
+
+  language: initialLanguage,
+  setLanguage: async (lang) => {
+    set({ language: lang });
+    await i18n.changeLanguage(lang);
+    await window.lv.settings.set(LANGUAGE_SETTING_KEY, lang);
+    await window.lv.app.localeChanged(lang);
   },
 
   search: '',

@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { join, resolve } from 'node:path';
 import { IpcChannels } from '@shared/ipc-channels';
+import { getMainLang, resolveLang, setMainLang } from '../i18n';
+import type { Lang } from '@shared/lang';
 
 function senderWindow(e: Electron.IpcMainInvokeEvent): BrowserWindow | null {
   return BrowserWindow.fromWebContents(e.sender);
@@ -22,6 +24,19 @@ export function registerWindowIpc(): void {
   ipcMain.handle(IpcChannels.App.ExtensionPath, () => extensionFolderPath());
   ipcMain.handle(IpcChannels.App.OpenExtensionFolder, async () => {
     await shell.openPath(extensionFolderPath());
+  });
+
+  // Sync read at preload time so the renderer can init i18next before first paint.
+  ipcMain.on(IpcChannels.App.GetInitialLocale, (e) => {
+    e.returnValue = getMainLang();
+  });
+
+  ipcMain.handle(IpcChannels.App.LocaleChanged, (_e, { lang }: { lang: Lang }) => {
+    if (lang === 'en' || lang === 'es') {
+      setMainLang(lang);
+    } else {
+      setMainLang(resolveLang());
+    }
   });
 
   ipcMain.handle(IpcChannels.Window.Minimize, (e) => senderWindow(e)?.minimize());

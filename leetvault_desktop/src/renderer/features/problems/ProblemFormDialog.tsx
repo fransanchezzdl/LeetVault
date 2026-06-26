@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import type { Difficulty, ProblemDraft, Status } from '@shared/types/problem';
 import { Dialog } from '../../components/ui/Dialog';
 import { Input, Textarea } from '../../components/ui/Input';
@@ -31,6 +32,7 @@ const EMPTY: FormData = {
 };
 
 export function ProblemFormDialog() {
+  const { t } = useTranslation(['problems', 'common']);
   const formOpenId = useUi((s) => s.formOpenId);
   const closeForm = useUi((s) => s.closeForm);
   const editingId = typeof formOpenId === 'number' ? formOpenId : null;
@@ -78,24 +80,24 @@ export function ProblemFormDialog() {
     <Dialog
       open={formOpenId != null}
       onOpenChange={(o) => !o && closeForm()}
-      title={editingId != null ? 'Editar problema' : 'Nuevo problema'}
+      title={editingId != null ? t('problems:form.editTitle') : t('problems:form.newTitle')}
       size="lg"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <div className="grid grid-cols-4 gap-3">
           <div>
-            <Label>Número</Label>
+            <Label>{t('problems:form.number')}</Label>
             <Input type="number" min={1} max={9999} {...register('number')} />
           </div>
           <div className="col-span-3">
-            <Label>Título *</Label>
+            <Label>{t('problems:form.title')}</Label>
             <Input {...register('title', { required: true, maxLength: 300 })} />
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <Label>Dificultad</Label>
+            <Label>{t('problems:form.difficulty')}</Label>
             <Controller
               control={control}
               name="difficulty"
@@ -109,46 +111,46 @@ export function ProblemFormDialog() {
             />
           </div>
           <div>
-            <Label>Estado</Label>
+            <Label>{t('problems:form.status')}</Label>
             <Controller
               control={control}
               name="status"
               render={({ field }) => (
                 <Select value={field.value} onValueChange={(v) => field.onChange(v as Status)}>
-                  <SelectOption value="Solved">Resuelto</SelectOption>
-                  <SelectOption value="In Progress">En progreso</SelectOption>
-                  <SelectOption value="To Review">Por revisar</SelectOption>
+                  <SelectOption value="Solved">{t('common:status.Solved')}</SelectOption>
+                  <SelectOption value="In Progress">{t('common:status.InProgress')}</SelectOption>
+                  <SelectOption value="To Review">{t('common:status.ToReview')}</SelectOption>
                 </Select>
               )}
             />
           </div>
           <div>
-            <Label>Resuelto</Label>
+            <Label>{t('problems:form.solvedOn')}</Label>
             <Input type="date" {...register('date_solved')} />
           </div>
         </div>
 
         <div>
-          <Label>Patrón</Label>
+          <Label>{t('problems:form.pattern')}</Label>
           <Input maxLength={100} {...register('pattern')} />
         </div>
 
         <div>
-          <Label>Solución</Label>
+          <Label>{t('problems:form.solution')}</Label>
           <Textarea rows={8} className="font-mono text-xs" {...register('solution')} />
         </div>
 
         <div>
-          <Label>Notas</Label>
+          <Label>{t('problems:form.notes')}</Label>
           <Textarea rows={3} {...register('notes')} />
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="outline" onClick={closeForm}>
-            Cancelar
+            {t('common:actions.cancel')}
           </Button>
           <Button type="submit" disabled={formState.isSubmitting}>
-            {editingId != null ? 'Guardar cambios' : 'Crear'}
+            {editingId != null ? t('problems:form.saveChanges') : t('common:actions.create')}
           </Button>
         </div>
       </form>

@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Pencil, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Problem } from '@shared/types/problem';
 import { DifficultyBadge, StatusBadge } from '../../components/badges/Badges';
 import { cn } from '../../lib/cn';
@@ -24,6 +25,7 @@ interface Props {
 const GRID_TEMPLATE = '70px minmax(0,1fr) 110px 160px 130px 110px 80px';
 
 export function ProblemsTable({ problems }: Props) {
+  const { t } = useTranslation('problems');
   const openEdit = useUi((s) => s.openEdit);
   const openDelete = useUi((s) => s.openDelete);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -35,25 +37,25 @@ export function ProblemsTable({ problems }: Props) {
         cell: (c) => <span className="text-fgMuted">{c.getValue() ?? '—'}</span>,
       }),
       col.accessor('title', {
-        header: 'Título',
+        header: t('table.title'),
         cell: (c) => <span className="text-fg truncate">{c.getValue()}</span>,
       }),
       col.accessor('difficulty', {
-        header: 'Dificultad',
+        header: t('table.difficulty'),
         cell: (c) => <DifficultyBadge value={c.getValue()} />,
       }),
       col.accessor('pattern', {
-        header: 'Patrón',
+        header: t('table.pattern'),
         cell: (c) => (
           <span className="text-fgMuted truncate">{c.getValue() || '—'}</span>
         ),
       }),
       col.accessor('status', {
-        header: 'Estado',
+        header: t('table.status'),
         cell: (c) => <StatusBadge value={c.getValue()} />,
       }),
       col.accessor('date_solved', {
-        header: 'Resuelto',
+        header: t('table.solved'),
         cell: (c) => (
           <span className="text-fgMuted">{c.getValue() || '—'}</span>
         ),
@@ -68,7 +70,7 @@ export function ProblemsTable({ problems }: Props) {
               <button
                 type="button"
                 onClick={() => openEdit(id)}
-                title="Editar"
+                title={t('table.actions.edit')}
                 className="rounded p-1 text-fgSoft/70 hover:bg-white/10 hover:text-fg"
               >
                 <Pencil className="h-3.5 w-3.5" />
@@ -76,7 +78,7 @@ export function ProblemsTable({ problems }: Props) {
               <button
                 type="button"
                 onClick={() => openDelete(id)}
-                title="Eliminar"
+                title={t('table.actions.delete')}
                 className="rounded p-1 text-fgSoft/70 hover:bg-diff-hard/30 hover:text-fg"
               >
                 <Trash2 className="h-3.5 w-3.5" />
@@ -86,7 +88,7 @@ export function ProblemsTable({ problems }: Props) {
         },
       }),
     ],
-    [openEdit, openDelete]
+    [openEdit, openDelete, t]
   );
 
   const table = useReactTable({
@@ -168,7 +170,7 @@ export function ProblemsTable({ problems }: Props) {
 
       {rows.length === 0 ? (
         <div className="absolute inset-x-0 top-12 flex justify-center text-sm text-fgMuted">
-          Sin resultados
+          {t('table.empty')}
         </div>
       ) : null}
     </div>

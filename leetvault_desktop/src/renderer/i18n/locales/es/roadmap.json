@@ -1,0 +1,10 @@
+{
+  "title": "Roadmap",
+  "progress": "{{done}} / {{total}} resueltos ({{pct}}%) · arrastra para mover · rueda para zoom",
+  "listLabel": "Lista",
+  "panel.solved": "{{done}} de {{total}} resueltos",
+  "panel.footer": "★ Premium · clic en problema para abrir en LeetCode",
+  "tree.zoomIn": "Acercar",
+  "tree.zoomOut": "Alejar",
+  "tree.reset": "Restablecer"
+}

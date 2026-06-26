@@ -26,6 +26,8 @@ export const IpcChannels = {
     OpenExtensionFolder: 'app:openExtensionFolder',
     CheckForUpdates: 'app:checkForUpdates',
     DismissUpdate: 'app:dismissUpdate',
+    GetInitialLocale: 'app:getInitialLocale',
+    LocaleChanged: 'app:localeChanged',
   },
   Settings: {
     Get: 'settings:get',

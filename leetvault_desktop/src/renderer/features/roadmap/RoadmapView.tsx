@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Select, SelectOption } from '../../components/ui/Select';
 import { useProblems } from '../problems/hooks';
 import { NEETCODE_150 } from './data/neetcode150';
@@ -12,6 +13,7 @@ import { CategoryPanel } from './CategoryPanel';
 const LISTS: RoadmapList[] = [NEETCODE_150, NEETCODE_250, BLIND_75, LC_75];
 
 export function RoadmapView() {
+  const { t } = useTranslation('roadmap');
   const { data: problems = [] } = useProblems();
   const [listId, setListId] = useState<string>(NEETCODE_150.id);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -45,13 +47,13 @@ export function RoadmapView() {
     <div className="flex h-full flex-col gap-3 p-6">
       <header className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold">Roadmap</h1>
+          <h1 className="text-xl font-semibold">{t('title')}</h1>
           <p className="text-xs text-fgMuted">
-            {totalSolved} / {list.total} resueltos ({pct}%) · arrastra para mover · rueda para zoom
+            {t('progress', { done: totalSolved, total: list.total, pct })}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-fgMuted">Lista</span>
+          <span className="text-xs text-fgMuted">{t('listLabel')}</span>
           <Select
             value={listId}
             onValueChange={(v) => {
@@ -59,7 +61,7 @@ export function RoadmapView() {
               setSelectedId(null);
             }}
             className="w-44"
-            aria-label="Lista"
+            aria-label={t('listLabel')}
           >
             {LISTS.map((l) => (
               <SelectOption key={l.id} value={l.id}>

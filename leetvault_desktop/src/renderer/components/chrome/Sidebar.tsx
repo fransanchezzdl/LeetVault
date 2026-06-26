@@ -7,27 +7,29 @@ import {
   PieChart,
   Settings,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/cn';
 import { useUi, type View } from '../../store/ui';
 import logoUrl from '../../assets/logo.png';
 
 interface NavItem {
   id: View;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
 }
 
 const NAV: NavItem[] = [
-  { id: 'problems', label: 'Problemas', icon: <ListChecks className="h-4 w-4" /> },
-  { id: 'review', label: 'Repaso', icon: <CalendarClock className="h-4 w-4" /> },
-  { id: 'stats', label: 'Estadísticas', icon: <PieChart className="h-4 w-4" /> },
-  { id: 'roadmap', label: 'Roadmap', icon: <Map className="h-4 w-4" /> },
-  { id: 'interview', label: 'Entrevista', icon: <MessagesSquare className="h-4 w-4" /> },
-  { id: 'help', label: 'Ayuda', icon: <HelpCircle className="h-4 w-4" /> },
-  { id: 'settings', label: 'Ajustes', icon: <Settings className="h-4 w-4" /> },
+  { id: 'problems', labelKey: 'nav.problems', icon: <ListChecks className="h-4 w-4" /> },
+  { id: 'review', labelKey: 'nav.review', icon: <CalendarClock className="h-4 w-4" /> },
+  { id: 'stats', labelKey: 'nav.stats', icon: <PieChart className="h-4 w-4" /> },
+  { id: 'roadmap', labelKey: 'nav.roadmap', icon: <Map className="h-4 w-4" /> },
+  { id: 'interview', labelKey: 'nav.interview', icon: <MessagesSquare className="h-4 w-4" /> },
+  { id: 'help', labelKey: 'nav.help', icon: <HelpCircle className="h-4 w-4" /> },
+  { id: 'settings', labelKey: 'nav.settings', icon: <Settings className="h-4 w-4" /> },
 ];
 
 export function Sidebar() {
+  const { t } = useTranslation('common');
   const view = useUi((s) => s.view);
   const setView = useUi((s) => s.setView);
 
@@ -52,7 +54,7 @@ export function Sidebar() {
             className={cn(view === n.id ? 'nav-btn-active' : 'nav-btn', 'w-full text-left')}
           >
             {n.icon}
-            <span className="text-sm">{n.label}</span>
+            <span className="text-sm">{t(n.labelKey)}</span>
           </button>
         ))}
       </nav>

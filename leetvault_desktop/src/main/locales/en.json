@@ -1,0 +1,9 @@
+{
+  "import.dialogTitle": "Import v1 database (leetcode.db)",
+  "import.confirmTitle": "Replace database",
+  "import.confirmMessage": "{{count}} problems will be imported from:\n{{src}}\n\nThe current database will be backed up and replaced. Continue?",
+  "import.confirmOk": "Overwrite and import",
+  "import.confirmCancel": "Cancel",
+  "import.validation.missingTable": "The \"problems\" table is missing",
+  "import.validation.missingColumns": "Missing columns: {{cols}}"
+}

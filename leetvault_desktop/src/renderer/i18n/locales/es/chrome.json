@@ -1,0 +1,14 @@
+{
+  "titlebar.minimize": "Minimizar",
+  "titlebar.maximize": "Maximizar",
+  "titlebar.close": "Cerrar",
+  "analyticsNotice.title": "Métricas anónimas activadas",
+  "analyticsNotice.body": "LeetVault envía eventos anónimos (uso de funciones, versión, sistema operativo) para priorizar mejoras. Nunca títulos, código ni notas.",
+  "analyticsNotice.openSettings": "Abrir ajustes",
+  "analyticsNotice.acknowledge": "Entendido",
+  "update.title": "Nueva versión disponible",
+  "update.description": "Tienes v{{current}}. La última versión es v{{latest}}.",
+  "update.notes": "Notas de la versión",
+  "update.later": "Más tarde",
+  "update.download": "Descargar"
+}

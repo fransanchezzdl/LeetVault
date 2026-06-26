@@ -1,0 +1,22 @@
+{
+  "title": "Repaso",
+  "loading": "Cargando repaso…",
+  "cardProgress": "Tarjeta {{current}} de {{total}}",
+  "empty.title": "¡Sin tarjetas pendientes!",
+  "empty.nextDate": "Próximo repaso: {{date}}",
+  "empty.noUpcoming": "Marca problemas como \"Por revisar\" o vuelve mañana.",
+  "toggleReveal.show": "Mostrar",
+  "toggleReveal.hide": "Ocultar",
+  "toggleReveal.suffix": "solución y notas",
+  "section.solution": "Solución",
+  "section.notes": "Notas",
+  "keepRevising": "Seguir repasando",
+  "hint.keepRevising": "Valora tu recuerdo para programar el próximo repaso.",
+  "hint.finish": "Se eliminará de la cola y volverá al estado \"Resuelto\".",
+  "finishButton": "Listo — no necesito repasarlo más",
+  "quality.blackout": "Blackout",
+  "quality.hard": "Difícil",
+  "quality.good": "Bien",
+  "quality.easy": "Fácil",
+  "quality.perfect": "Perfecto"
+}

@@ -1,0 +1,9 @@
+{
+  "import.dialogTitle": "Importar base de datos v1 (leetcode.db)",
+  "import.confirmTitle": "Reemplazar base de datos",
+  "import.confirmMessage": "Se importarán {{count}} problemas desde:\n{{src}}\n\nLa base de datos actual se respaldará y será reemplazada. ¿Continuar?",
+  "import.confirmOk": "Sobrescribir e importar",
+  "import.confirmCancel": "Cancelar",
+  "import.validation.missingTable": "No existe la tabla \"problems\"",
+  "import.validation.missingColumns": "Faltan columnas: {{cols}}"
+}
