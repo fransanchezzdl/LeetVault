@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Download } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { UpdateInfo } from '@shared/types/updater';
 import { Dialog } from './ui/Dialog';
 import { Button } from './ui/Button';
 
 export function UpdateModal() {
+  const { t } = useTranslation('chrome');
   const [info, setInfo] = useState<UpdateInfo | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -54,13 +56,13 @@ export function UpdateModal() {
       onOpenChange={(v) => {
         if (!v) void dismiss();
       }}
-      title="Nueva versión disponible"
-      description={`Tienes v${info.current}. La última versión es v${info.latest}.`}
+      title={t('update.title')}
+      description={t('update.description', { current: info.current, latest: info.latest })}
       size="sm"
     >
       {info.notes ? (
         <details className="mb-4 rounded-md border border-glass-stroke bg-black/20 p-3 text-xs text-fgMuted">
-          <summary className="cursor-pointer text-fgSoft">Notas de la versión</summary>
+          <summary className="cursor-pointer text-fgSoft">{t('update.notes')}</summary>
           <pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words text-[11px] leading-relaxed">
             {info.notes}
           </pre>
@@ -68,11 +70,11 @@ export function UpdateModal() {
       ) : null}
       <div className="flex justify-end gap-2">
         <Button variant="ghost" onClick={() => void dismiss()}>
-          Más tarde
+          {t('update.later')}
         </Button>
         <Button variant="primary" onClick={() => void download()}>
           <Download className="mr-2 h-4 w-4" />
-          Descargar
+          {t('update.download')}
         </Button>
       </div>
     </Dialog>

@@ -22,8 +22,12 @@ export const IpcChannels = {
     OpenExternal: 'app:openExternal',
     ImportDb: 'app:importDb',
     DbPath: 'app:dbPath',
+    ExtensionPath: 'app:extensionPath',
+    OpenExtensionFolder: 'app:openExtensionFolder',
     CheckForUpdates: 'app:checkForUpdates',
     DismissUpdate: 'app:dismissUpdate',
+    GetInitialLocale: 'app:getInitialLocale',
+    LocaleChanged: 'app:localeChanged',
   },
   Settings: {
     Get: 'settings:get',

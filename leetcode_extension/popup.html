@@ -2,11 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>LeetCode Tracker</title>
+  <title>LeetVault</title>
   <style>
     /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { background: transparent; margin: 0; padding: 0; }
 
     :root {
       --orange:     #FFA116;
@@ -27,26 +26,38 @@
       --radius-sm:  6px;
     }
 
+    html, body {
+      background: var(--brown-dark);
+      margin: 0;
+      padding: 0;
+    }
+
     html { font-size: 13px; }
     body {
       width: 360px;
       min-width: 360px;
       font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-      background: transparent;
       color: var(--text);
       line-height: 1.5;
-      margin: 0;
-      padding: 0;
       display: block;
     }
 
-    /* Chrome clips popup at body — wrap everything in a div with real radius */
+    /* Flat shell — Chrome popup is rectangular and doesn't support transparent
+       corners reliably on Linux, so we fill edge-to-edge instead of fighting it. */
     #app-shell {
       background: var(--brown-dark);
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid rgba(255,161,22,0.22);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,161,22,0.08);
+    }
+
+    /* ── Lucide-style icons ── */
+    .icon {
+      width: 1em;
+      height: 1em;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      flex-shrink: 0;
     }
 
     /* ── Scrollbar ── */
@@ -65,14 +76,14 @@
       position: sticky; top: 0; z-index: 10;
     }
     .logo-icon {
-      width: 28px; height: 28px;
-      background: var(--orange-bg);
-      border: 1px solid var(--border);
+      width: 32px; height: 32px;
       border-radius: 8px;
+      overflow: hidden;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
       flex-shrink: 0;
+      background: #FFFFFF;
     }
+    .logo-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .logo-text { font-size: 13px; font-weight: 700; color: var(--orange); letter-spacing: 0.3px; }
     .logo-sub  { font-size: 10px; color: var(--text-muted); }
 
@@ -102,19 +113,13 @@
       padding: 28px 16px;
       color: var(--text-muted);
     }
-    .empty-state .icon { font-size: 36px; margin-bottom: 12px; display: block; }
-    .empty-state p { font-size: 12px; line-height: 1.7; }
-    .empty-state code {
-      display: inline-block;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 2px 7px;
-      font-family: 'Fira Code', monospace;
-      font-size: 11px;
-      color: var(--orange);
-      margin-top: 8px;
+    .empty-state .icon-lg {
+      width: 36px; height: 36px;
+      margin: 0 auto 12px;
+      display: block;
+      color: var(--text-muted);
     }
+    .empty-state p { font-size: 12px; line-height: 1.7; }
 
     /* ── Problem header card ── */
     .problem-card {
@@ -166,7 +171,14 @@
     }
     .prob-title-input:hover { border-bottom-color: var(--border); }
     .prob-title-input:focus { border-bottom-color: var(--orange); }
-    .edit-hint { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+    .edit-hint {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
 
     /* ── Already saved banner ── */
     .saved-banner {
@@ -241,8 +253,16 @@
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      min-height: 0;
+    }
+    .tags-wrap:empty,
+    .tags-wrap.is-empty {
+      border-top: none;
+      padding-top: 0;
       margin-top: 4px;
-      min-height: 22px;
     }
     .tag-chip {
       font-size: 10px;
@@ -255,20 +275,7 @@
     }
     .tags-empty { font-size: 10px; color: var(--text-muted); }
 
-    /* ── Divider ── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 12px 0;
-    }
-
     /* ── Buttons ── */
-    .btn-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 14px;
-    }
     button {
       padding: 9px 12px;
       border: none;
@@ -281,18 +288,15 @@
       display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .btn-primary {
+      width: 100%;
+      margin-top: 14px;
       background: var(--orange);
       color: var(--brown-dark);
     }
     .btn-primary:hover { background: #FFB347; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,161,22,0.3); }
     .btn-primary:active { transform: translateY(0); }
-
-    .btn-secondary {
-      background: var(--surface2);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover { background: var(--surface); border-color: var(--orange); color: var(--orange); }
+    .btn-primary[disabled] { opacity: 0.7; cursor: default; transform: none; box-shadow: none; }
+    .btn-primary .icon { font-size: 14px; }
 
     /* ── Status message ── */
     #status-msg {
@@ -303,9 +307,13 @@
       text-align: center;
       min-height: 0;
       display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
-    #status-msg.ok  { display: block; background: rgba(0,184,163,0.10); color: var(--easy);  border: 1px solid rgba(0,184,163,0.25); }
-    #status-msg.err { display: block; background: rgba(239,71,67,0.10); color: var(--hard);  border: 1px solid rgba(239,71,67,0.25); }
+    #status-msg.ok  { display: flex; background: rgba(0,184,163,0.10); color: var(--easy);  border: 1px solid rgba(0,184,163,0.25); }
+    #status-msg.err { display: flex; background: rgba(239,71,67,0.10); color: var(--hard);  border: 1px solid rgba(239,71,67,0.25); }
+    #status-msg .icon { font-size: 13px; }
 
     /* ── Loading skeleton ── */
     #loading {
@@ -323,6 +331,7 @@
     .skel.full { width: 100%; }
     .skel.tall { height: 60px; }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
     /* ── Hint box ── */
     .hint-btn {
       width: 100%;
@@ -344,8 +353,10 @@
       transform: none;
       box-shadow: none;
     }
-    .hint-btn .star { font-size: 14px; }
+    .hint-btn .icon { font-size: 14px; }
     .hint-btn.loading { opacity: 0.6; cursor: default; }
+    .hint-btn .spinner { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .hint-box {
       display: none;
@@ -369,6 +380,7 @@
       margin-bottom: 6px;
       display: flex; align-items: center; gap: 5px;
     }
+    .hint-label .icon { font-size: 12px; }
     .hint-api-row {
       display: none;
       margin-top: 8px;
@@ -397,12 +409,55 @@
 <body>
 <div id="app-shell">
 
+<!-- Reusable inline SVG sprite (Lucide-style icons) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-pencil" viewBox="0 0 24 24">
+      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+      <path d="m15 5 4 4"/>
+    </symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24">
+      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+      <path d="M20 3v4"/><path d="M22 5h-4"/>
+      <path d="M4 17v2"/><path d="M5 18H3"/>
+    </symbol>
+    <symbol id="i-loader" viewBox="0 0 24 24">
+      <path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/>
+      <path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/>
+      <path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/>
+      <path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M20 6 9 17l-5-5"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/>
+      <path d="M12 9v4"/><path d="M12 17h.01"/>
+    </symbol>
+    <symbol id="i-save" viewBox="0 0 24 24">
+      <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+      <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/>
+      <path d="M7 3v4a1 1 0 0 0 1 1h7"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.3-4.3"/>
+    </symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24">
+      <path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/>
+      <path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>
+    </symbol>
+  </defs>
+</svg>
+
 <!-- ── Header ── -->
 <header>
-  <div class="logo-icon"><img src="data:image/png;base64,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" width="20" height="20" style="display:block;object-fit:contain;"/></div>
+  <div class="logo-icon"><img src="logo.png" alt="LeetVault" /></div>
   <div>
     <div class="logo-text">LeetVault</div>
-    <div class="logo-sub">Tu baúl de código</div>
   </div>
   <div class="server-status">
     <div class="dot" id="server-dot"></div>
@@ -423,7 +478,7 @@
   <!-- No estás en un problema -->
   <div class="panel" id="panel-nopage">
     <div class="empty-state">
-      <span class="icon">🔍</span>
+      <svg class="icon icon-lg"><use href="#i-search"/></svg>
       <p>Abre un problema de LeetCode<br/>para poder guardarlo aquí.</p>
     </div>
   </div>
@@ -431,7 +486,7 @@
   <!-- App no está corriendo -->
   <div class="panel" id="panel-noserver">
     <div class="empty-state">
-      <span class="icon">🔌</span>
+      <svg class="icon icon-lg"><use href="#i-plug"/></svg>
       <p>La app LeetVault no está abierta.<br/><br/>
          Ábrela desde el acceso directo<br/>del escritorio o el menú inicio.
       </p>
@@ -456,16 +511,28 @@
         autocomplete="off"
         spellcheck="false"
       />
-      <div class="edit-hint">✏️ Puedes editar el título</div>
+      <div class="edit-hint">
+        <svg class="icon"><use href="#i-pencil"/></svg>
+        <span>Puedes editar el título</span>
+      </div>
+
+      <!-- Tags detectados (inline en la tarjeta) -->
+      <div class="tags-wrap" id="tags-wrap">
+        <span class="tags-empty">Cargando tags...</span>
+      </div>
 
       <!-- Botón pista IA -->
       <button class="hint-btn" id="btn-hint">
-        <span class="star">⭐</span> Pista IA
+        <svg class="icon"><use href="#i-sparkles"/></svg>
+        <span>Pista IA</span>
       </button>
 
       <!-- Panel pista -->
       <div class="hint-box" id="hint-box">
-        <div class="hint-label">⭐ Pista</div>
+        <div class="hint-label">
+          <svg class="icon"><use href="#i-sparkles"/></svg>
+          <span>Pista</span>
+        </div>
         <div id="hint-text"></div>
 
         <!-- Campo API key si no está guardada -->
@@ -481,25 +548,18 @@
 
     <!-- Ya guardado -->
     <div class="saved-banner" id="already-saved">
-      ✅ Ya guardado — actualizando datos
+      <svg class="icon"><use href="#i-check"/></svg>
+      <span>Ya guardado — actualizando datos</span>
     </div>
 
-    <!-- Tags detectados -->
-    <div class="field">
-      <label>Tags detectados</label>
-      <div class="tags-wrap" id="tags-wrap">
-        <span class="tags-empty">Cargando...</span>
-      </div>
-    </div>
-
-    <!-- Estado + Patrón -->
+    <!-- Estado + Fecha -->
     <div class="field-row">
       <div class="field">
         <label>Estado</label>
         <select id="status">
-          <option value="Solved">✅ Resuelto</option>
-          <option value="In Progress">🔄 En progreso</option>
-          <option value="To Review">⭐ Por revisar</option>
+          <option value="Solved">Resuelto</option>
+          <option value="In Progress">En progreso</option>
+          <option value="To Review">Por revisar</option>
         </select>
       </div>
       <div class="field">
@@ -552,11 +612,11 @@
       <textarea id="solution" class="code-area" placeholder="Tu código aparecerá aquí automáticamente..."></textarea>
     </div>
 
-    <!-- Buttons -->
-    <div class="btn-row">
-      <button class="btn-secondary" id="btn-inprogress">🔄 En progreso</button>
-      <button class="btn-primary" id="btn-save">💾 Guardar</button>
-    </div>
+    <!-- Único botón: Guardar -->
+    <button class="btn-primary" id="btn-save">
+      <svg class="icon"><use href="#i-save"/></svg>
+      <span>Guardar</span>
+    </button>
 
     <div id="status-msg"></div>
   </div>

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { BarChart3, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useUi } from '../store/ui';
 
 export function AnalyticsNotice() {
+  const { t } = useTranslation(['chrome', 'common']);
   const [show, setShow] = useState(false);
   const setView = useUi((s) => s.setView);
 
@@ -53,10 +55,9 @@ export function AnalyticsNotice() {
         <div className="flex items-start gap-3">
           <BarChart3 className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-400" />
           <div className="flex-1 text-sm">
-            <p className="font-medium text-fg">Métricas anónimas activadas</p>
+            <p className="font-medium text-fg">{t('chrome:analyticsNotice.title')}</p>
             <p className="mt-1 text-xs text-fgMuted">
-              LeetVault envía eventos anónimos (uso de funciones, versión, sistema operativo) para
-              priorizar mejoras. Nunca títulos, código ni notas.
+              {t('chrome:analyticsNotice.body')}
             </p>
             <div className="mt-3 flex items-center gap-2">
               <button
@@ -64,7 +65,7 @@ export function AnalyticsNotice() {
                 onClick={openSettings}
                 className="text-xs font-medium text-brand-300 hover:text-brand-200"
               >
-                Abrir ajustes
+                {t('chrome:analyticsNotice.openSettings')}
               </button>
               <span className="text-xs text-fgMuted">·</span>
               <button
@@ -72,7 +73,7 @@ export function AnalyticsNotice() {
                 onClick={dismiss}
                 className="text-xs text-fgMuted hover:text-fg"
               >
-                Entendido
+                {t('chrome:analyticsNotice.acknowledge')}
               </button>
             </div>
           </div>
@@ -80,7 +81,7 @@ export function AnalyticsNotice() {
             type="button"
             onClick={dismiss}
             className="rounded p-1 text-fgMuted hover:bg-white/10 hover:text-fg"
-            aria-label="Cerrar"
+            aria-label={t('common:actions.close')}
           >
             <X className="h-3.5 w-3.5" />
           </button>

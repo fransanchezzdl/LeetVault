@@ -7,6 +7,7 @@ import { registerIpc } from './ipc/register';
 import { startServer, stopServer, SERVER_PORT } from './server/fastify';
 import { capture, initAnalytics, shutdownAnalytics } from './analytics/posthog';
 import { isFirstLaunch, markFirstLaunchSeen } from './analytics/identity';
+import { initMainI18n } from './i18n';
 
 // Must be set BEFORE any call to app.getPath('userData') so all OSes resolve to a
 // directory named "LeetVault" (matches the v1 Inno Setup path on Windows exactly).
@@ -78,6 +79,8 @@ app.whenReady().then(async () => {
   const dbPath = resolveDbPath();
   const db = openDb(dbPath);
   setDb(db);
+
+  initMainI18n();
 
   registerIpc();
 

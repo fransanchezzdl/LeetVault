@@ -13,13 +13,14 @@ import {
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { Sparkles } from 'lucide-react';
-// import { useElasticScroll } from '../../lib/useElasticScroll'; // Unused for now
+import { useTranslation } from 'react-i18next';
 import { useInterviewStats, useStatsBundle } from './hooks';
 import type { DateCount, DifficultyCount, PatternCount } from '@shared/types/stats';
 import type {
   InterviewStatsBundle,
   InterviewVerdict,
 } from '@shared/types/interview';
+import { formatDateLong } from '../../i18n/format';
 
 const DIFF_COLORS: Record<string, string> = {
   Easy: '#00A896',
@@ -28,31 +29,36 @@ const DIFF_COLORS: Record<string, string> = {
 };
 
 const HEATMAP_PALETTE = [
-  '#EDE0D0', // 1
-  '#F5C48A', // 2
-  '#F0A030', // 3
-  '#D97B10', // 4
-  '#B85C00', // 5+
+  '#EDE0D0',
+  '#F5C48A',
+  '#F0A030',
+  '#D97B10',
+  '#B85C00',
 ];
 
 export function StatsView() {
+  const { t } = useTranslation('stats');
   const { data, isLoading } = useStatsBundle();
   const { data: interview } = useInterviewStats();
-  // const { ref, onWheel, style } = useElasticScroll<HTMLDivElement>(); // Unused for now
 
   if (isLoading || !data) {
-    return <div className="p-6 text-sm text-fgMuted">Cargando estadísticas…</div>;
+    return <div className="p-6 text-sm text-fgMuted">{t('loading')}</div>;
   }
 
+  const summary = data.next_review
+    ? t('summaryNext', {
+        count: data.total,
+        due: data.due_reviews,
+        date: data.next_review,
+      })
+    : t('summary', { count: data.total, due: data.due_reviews });
+
   return (
-    <div /* ref={ref} onWheel={onWheel} */ className="h-full min-h-0 overflow-auto scroll-hide">
-      <div /* style={style} */ className="flex flex-col gap-4 p-6">
+    <div className="h-full min-h-0 overflow-auto scroll-hide">
+      <div className="flex flex-col gap-4 p-6">
         <header>
-          <h1 className="text-xl font-semibold">Estadísticas</h1>
-          <p className="text-xs text-fgMuted">
-            {data.total} problemas guardados · {data.due_reviews} pendientes
-            {data.next_review ? ` · próximo: ${data.next_review}` : ''}
-          </p>
+          <h1 className="text-xl font-semibold">{t('title')}</h1>
+          <p className="text-xs text-fgMuted">{summary}</p>
         </header>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -77,10 +83,14 @@ const DifficultyChart = memo(function DifficultyChart({
 }: {
   data: DifficultyCount[];
 }) {
-  const rows = data.map((d) => ({ difficulty: d.difficulty ?? 'Sin clasificar', cnt: d.cnt }));
+  const { t } = useTranslation('stats');
+  const rows = data.map((d) => ({
+    difficulty: d.difficulty ?? t('unclassified'),
+    cnt: d.cnt,
+  }));
   return (
     <section className="glass-card-dim p-4">
-      <h2 className="mb-3 text-sm font-semibold">Dificultad</h2>
+      <h2 className="mb-3 text-sm font-semibold">{t('difficulty')}</h2>
       <div className="h-56">
         <ResponsiveContainer>
           <PieChart>
@@ -100,7 +110,10 @@ const DifficultyChart = memo(function DifficultyChart({
               }}
               itemStyle={{ color: '#F7EEE4' }}
               labelStyle={{ color: '#F7EEE4' }}
-              formatter={(value: number, name: string) => [`${value} problemas`, name]}
+              formatter={(value: number, name: string) => [
+                t('totalProblems', { count: value }),
+                name,
+              ]}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -125,9 +138,10 @@ const PatternChart = memo(function PatternChart({
 }: {
   data: PatternCount[];
 }) {
+  const { t } = useTranslation('stats');
   return (
     <section className="glass-card-dim p-4">
-      <h2 className="mb-3 text-sm font-semibold">Patrones más resueltos</h2>
+      <h2 className="mb-3 text-sm font-semibold">{t('topPatterns')}</h2>
       <div className="h-56">
         <ResponsiveContainer>
           <BarChart data={data} layout="vertical" margin={{ left: 16, right: 16 }}>
@@ -150,7 +164,10 @@ const PatternChart = memo(function PatternChart({
               itemStyle={{ color: '#F7EEE4' }}
               labelStyle={{ color: '#F7EEE4' }}
               cursor={{ fill: 'rgba(255,255,255,0.04)' }}
-              formatter={(value: number) => [`${value} problemas`, 'Total']}
+              formatter={(value: number) => [
+                t('totalProblems', { count: value }),
+                t('tooltipTotal'),
+              ]}
             />
             <Bar dataKey="cnt" fill="#FFA116" radius={[0, 4, 4, 0]} />
           </BarChart>
@@ -165,19 +182,15 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
 }: {
   data: DateCount[];
 }) {
+  const { t } = useTranslation('stats');
   const countsByDate = new Map(data.map((d) => [d.date_solved, d.cnt]));
   const today = new Date();
   const start = new Date(today);
   start.setMonth(start.getMonth() - 6);
 
-  const MONTHS_ES = [
-    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
-  ];
-
   return (
     <section className="glass-card-dim p-4">
-      <h2 className="mb-3 text-sm font-semibold">Actividad — últimos 6 meses</h2>
+      <h2 className="mb-3 text-sm font-semibold">{t('activityTitle')}</h2>
       <div className="leetvault-heatmap mx-auto max-w-[640px] px-4">
         <CalendarHeatmap
           startDate={start}
@@ -191,31 +204,28 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
           titleForValue={(v) => {
             if (!v || !v.date) return '';
             const cnt = countsByDate.get(v.date) ?? 0;
-            const d = new Date(v.date);
-            const day = d.getDate();
-            const month = MONTHS_ES[d.getMonth()];
-            const label = cnt === 1 ? '1 problema' : `${cnt} problemas`;
-            return `${day} ${month} — ${label}`;
+            const label = t('heatmap.problems', { count: cnt });
+            return `${formatDateLong(new Date(v.date))} — ${label}`;
           }}
           showWeekdayLabels
         />
       </div>
       <div className="mt-4 flex items-center justify-center gap-2.5 px-4 text-xs text-fgMuted">
-        <span>Menos</span>
+        <span>{t('legend.less')}</span>
         <span
           className="h-4 w-4 rounded-[4px] border border-glass-stroke"
           style={{ background: 'rgba(255,255,255,0.05)' }}
-          aria-label="Sin actividad"
+          aria-label={t('legend.empty')}
         />
         {HEATMAP_PALETTE.map((c, i) => (
           <span
             key={c}
             className="h-4 w-4 rounded-[4px]"
             style={{ background: c }}
-            aria-label={`Nivel ${i + 1}`}
+            aria-label={t('legend.level', { n: i + 1 })}
           />
         ))}
-        <span>Más</span>
+        <span>{t('legend.more')}</span>
       </div>
     </section>
   );
@@ -228,43 +238,48 @@ const VERDICT_COLORS: Record<InterviewVerdict, string> = {
   'No Hire': '#D94F3D',
 };
 
-const SCORE_LABELS: Record<keyof NonNullable<InterviewStatsBundle['avgScores']>, string> = {
-  communication: 'Comunicación',
-  problem_solving: 'Resolución',
-  code_quality: 'Calidad de código',
-  complexity_analysis: 'Análisis de complejidad',
+type ScoreKey = keyof NonNullable<InterviewStatsBundle['avgScores']>;
+const SCORE_LABEL_KEYS: Record<ScoreKey, string> = {
+  communication: 'criteria.communication',
+  problem_solving: 'criteria.problemSolving',
+  code_quality: 'criteria.codeQuality',
+  complexity_analysis: 'criteria.complexity',
 };
 
-function formatDuration(sec: number): string {
-  if (sec <= 0) return '0 min';
-  const h = Math.floor(sec / 3600);
-  const m = Math.round((sec % 3600) / 60);
-  if (h > 0) return `${h}h ${m}min`;
-  return `${m} min`;
+function useFormatDuration() {
+  const { t } = useTranslation('stats');
+  return (sec: number): string => {
+    if (sec <= 0) return t('duration.zero');
+    const h = Math.floor(sec / 3600);
+    const m = Math.round((sec % 3600) / 60);
+    if (h > 0) return t('duration.hoursMinutes', { h, m });
+    return t('duration.minutes', { count: m });
+  };
 }
 
-function formatRelativeDate(iso: string): string {
-  const d = new Date(iso);
-  const diff = Date.now() - d.getTime();
-  const day = 86400000;
-  if (diff < day) return 'hoy';
-  if (diff < day * 2) return 'ayer';
-  const days = Math.floor(diff / day);
-  if (days < 14) return `hace ${days} días`;
-  return d.toISOString().slice(0, 10);
+function useFormatRelativeDate() {
+  const { t } = useTranslation('stats');
+  return (iso: string): string => {
+    const d = new Date(iso);
+    const diff = Date.now() - d.getTime();
+    const day = 86400000;
+    if (diff < day) return t('relative.today');
+    if (diff < day * 2) return t('relative.yesterday');
+    const days = Math.floor(diff / day);
+    if (days < 14) return t('relative.daysAgo', { count: days });
+    return d.toISOString().slice(0, 10);
+  };
 }
 
 function InterviewStatsEmpty(): JSX.Element {
+  const { t } = useTranslation('stats');
   return (
     <section className="glass-card-dim p-5">
       <div className="mb-2 flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-brand-400" />
-        <h2 className="text-sm font-semibold">Entrevistas simuladas</h2>
+        <h2 className="text-sm font-semibold">{t('interview.title')}</h2>
       </div>
-      <p className="text-xs text-fgMuted">
-        Aún no has terminado ninguna entrevista. Cuando completes alguna, aquí verás tu
-        desempeño promedio, el reparto de veredictos y tu actividad reciente.
-      </p>
+      <p className="text-xs text-fgMuted">{t('interview.empty')}</p>
     </section>
   );
 }
@@ -274,28 +289,36 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
 }: {
   data: InterviewStatsBundle;
 }): JSX.Element {
+  const { t } = useTranslation('stats');
+  const formatDuration = useFormatDuration();
+  const formatRelativeDate = useFormatRelativeDate();
   return (
     <section className="glass-card-dim p-5">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-brand-400" />
-          <h2 className="text-sm font-semibold">Entrevistas simuladas</h2>
+          <h2 className="text-sm font-semibold">{t('interview.title')}</h2>
         </div>
         <p className="text-[11px] text-fgMuted">
-          {data.total} sesión{data.total === 1 ? '' : 'es'} · tiempo total{' '}
-          {formatDuration(data.totalSeconds)}
+          {t('interview.header', {
+            count: data.total,
+            time: formatDuration(data.totalSeconds),
+          })}
         </p>
       </div>
 
       <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <StatTile label="Sesiones" value={data.total.toString()} />
-        <StatTile label="Duración media" value={formatDuration(data.avgDurationSec)} />
+        <StatTile label={t('interview.tile.sessions')} value={data.total.toString()} />
         <StatTile
-          label="Evaluadas"
+          label={t('interview.tile.avgDuration')}
+          value={formatDuration(data.avgDurationSec)}
+        />
+        <StatTile
+          label={t('interview.tile.scored')}
           value={`${data.scoredCount}/${data.total}`}
         />
         <StatTile
-          label="Veredicto top"
+          label={t('interview.tile.topVerdict')}
           value={topVerdict(data.byVerdict) ?? '—'}
           valueClassName="text-brand-300"
         />
@@ -304,15 +327,15 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
       {data.avgScores ? (
         <div className="mb-4">
           <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
-            Promedio por criterio (1-5)
+            {t('interview.criteriaTitle')}
           </h3>
           <ul className="space-y-1.5">
-            {(Object.keys(SCORE_LABELS) as Array<keyof typeof SCORE_LABELS>).map((k) => {
+            {(Object.keys(SCORE_LABEL_KEYS) as ScoreKey[]).map((k) => {
               const v = data.avgScores![k];
               const pct = Math.max(0, Math.min(100, (v / 5) * 100));
               return (
                 <li key={k} className="flex items-center gap-3">
-                  <span className="w-44 text-xs text-fgSoft">{SCORE_LABELS[k]}</span>
+                  <span className="w-44 text-xs text-fgSoft">{t(SCORE_LABEL_KEYS[k])}</span>
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-bg-300/70">
                     <div
                       className="h-full rounded-full bg-brand-500"
@@ -337,7 +360,7 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
       {data.recent.length > 0 ? (
         <div className="mt-5">
           <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
-            Recientes
+            {t('interview.recent')}
           </h3>
           <ul className="divide-y divide-glass-stroke/40 overflow-hidden rounded-md border border-glass-stroke/40">
             {data.recent.map((r) => (
@@ -363,7 +386,7 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
                     {r.overall}
                   </span>
                 ) : (
-                  <span className="text-[10px] text-fgMuted">sin nota</span>
+                  <span className="text-[10px] text-fgMuted">{t('interview.noScore')}</span>
                 )}
               </li>
             ))}
@@ -399,16 +422,17 @@ function topVerdict(rows: InterviewStatsBundle['byVerdict']): InterviewVerdict |
 }
 
 function VerdictBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element {
+  const { t } = useTranslation('stats');
   const order: InterviewVerdict[] = ['Strong Hire', 'Hire', 'Lean Hire', 'No Hire'];
   const map = new Map(data.byVerdict.map((v) => [v.verdict, v.cnt]));
   const total = data.byVerdict.reduce((sum, v) => sum + v.cnt, 0);
   return (
     <div>
       <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
-        Veredictos
+        {t('interview.verdicts')}
       </h3>
       {total === 0 ? (
-        <p className="text-xs text-fgMuted">Sin evaluaciones todavía.</p>
+        <p className="text-xs text-fgMuted">{t('interview.verdictsEmpty')}</p>
       ) : (
         <ul className="space-y-1.5">
           {order.map((v) => {
@@ -434,11 +458,12 @@ function VerdictBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element
 }
 
 function SplitsBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element {
+  const { t } = useTranslation('stats');
   return (
     <div className="space-y-3">
       <div>
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
-          Por dificultad
+          {t('interview.byDifficulty')}
         </h3>
         <ul className="flex flex-wrap gap-1.5">
           {data.byDifficulty.length === 0 ? (
@@ -458,7 +483,7 @@ function SplitsBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element 
       </div>
       <div>
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
-          Por lenguaje
+          {t('interview.byLanguage')}
         </h3>
         <ul className="flex flex-wrap gap-1.5">
           {data.byLanguage.length === 0 ? (

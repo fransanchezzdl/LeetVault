@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Settings as SettingsIcon, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   ApiKeyDialog,
   INTERVIEW_KEY_NAME,
@@ -14,6 +15,7 @@ import { setPreferredVoiceId } from './voice';
 const VOICE_PREF_KEY = 'interview_tts_enabled';
 
 export function InterviewView() {
+  const { t } = useTranslation('common');
   const [hasKey, setHasKey] = useState<boolean | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentKey, setCurrentKey] = useState<string | undefined>(undefined);
@@ -55,7 +57,7 @@ export function InterviewView() {
   }, [hasKey]);
 
   if (hasKey === null) {
-    return <div className="p-6 text-sm text-fgMuted">Cargando…</div>;
+    return <div className="p-6 text-sm text-fgMuted">{t('common.loading')}</div>;
   }
 
   return (

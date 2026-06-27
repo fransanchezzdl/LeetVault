@@ -1,0 +1,14 @@
+{
+  "title": "Ajustes",
+  "language.title": "Idioma",
+  "language.description": "Elige el idioma de la interfaz. El cambio se aplica al instante.",
+  "language.en": "English",
+  "language.es": "Español",
+  "analytics.title": "Analítica anónima",
+  "analytics.description": "Para entender qué funciones se usan y priorizar mejoras, LeetVault envía métricas anónimas (eventos como abrir la app, crear un problema, completar una sesión de repaso). Nunca se envían títulos, código, notas ni datos personales.",
+  "analytics.toggleLabel": "Compartir métricas anónimas",
+  "analytics.toggleHint": "Puedes desactivarlo en cualquier momento. El cambio surte efecto al instante.",
+  "analytics.notConfigured": "Esta build no tiene clave de PostHog configurada — no se envía ningún evento aunque el interruptor esté activo.",
+  "analytics.anonymousId": "ID anónimo",
+  "analytics.anonymousIdHint": "Generado al instalar LeetVault. Único por instalación, sin relación con ninguna cuenta."
+}

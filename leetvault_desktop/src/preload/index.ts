@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { IpcChannels, type IpcEventPayload } from '@shared/ipc-channels';
+import type { Lang } from '@shared/lang';
 import type { Problem, ProblemDraft } from '@shared/types/problem';
 import type { Quality } from '@shared/types/review';
 import type { StatsBundle } from '@shared/types/stats';
@@ -18,6 +19,11 @@ import type { UpdateInfo } from '@shared/types/updater';
 
 const invoke = <T = unknown>(channel: string, payload?: unknown): Promise<T> =>
   ipcRenderer.invoke(channel, payload);
+
+// One synchronous read at preload time so the renderer can initialise i18next
+// before first paint — see src/renderer/i18n/index.ts.
+const initialLocale: Lang =
+  (ipcRenderer.sendSync(IpcChannels.App.GetInitialLocale) as Lang) ?? 'en';
 
 type EventChannel = (typeof IpcChannels.Events)[keyof typeof IpcChannels.Events];
 
@@ -64,6 +70,8 @@ const api = {
       | { ok: false; reason: 'cancelled' | 'invalid' | 'error'; message?: string }
     > => invoke(IpcChannels.App.ImportDb),
     dbPath: (): Promise<string> => invoke(IpcChannels.App.DbPath),
+    extensionPath: (): Promise<string> => invoke(IpcChannels.App.ExtensionPath),
+    openExtensionFolder: (): Promise<void> => invoke(IpcChannels.App.OpenExtensionFolder),
     checkForUpdates: (): Promise<UpdateInfo | null> =>
       invoke(IpcChannels.App.CheckForUpdates),
     dismissUpdate: (
@@ -72,6 +80,9 @@ const api = {
       url?: string
     ): Promise<void> =>
       invoke(IpcChannels.App.DismissUpdate, { version, action, url }),
+    initialLocale,
+    localeChanged: (lang: Lang): Promise<void> =>
+      invoke(IpcChannels.App.LocaleChanged, { lang }),
   },
   window: {
     minimize: (): Promise<void> => invoke(IpcChannels.Window.Minimize),

@@ -1,4 +1,5 @@
 import { Check, ExternalLink, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { RoadmapCategory } from './data/types';
 import { cn } from '../../lib/cn';
 
@@ -15,6 +16,7 @@ const DIFF_TONE: Record<string, string> = {
 };
 
 export function CategoryPanel({ category, solved, onClose }: Props) {
+  const { t } = useTranslation(['roadmap', 'common']);
   if (!category) return null;
   const done = category.problems.filter((p) => solved.has(p.n)).length;
 
@@ -24,14 +26,14 @@ export function CategoryPanel({ category, solved, onClose }: Props) {
         <div>
           <h2 className="text-sm font-semibold text-fg">{category.name}</h2>
           <p className="text-xs text-fgMuted">
-            {done} de {category.problems.length} resueltos
+            {t('roadmap:panel.solved', { done, total: category.problems.length })}
           </p>
         </div>
         <button
           type="button"
           onClick={onClose}
           className="rounded p-1 text-fgMuted hover:bg-white/10 hover:text-fg"
-          title="Cerrar"
+          title={t('common:actions.close')}
         >
           <X className="h-4 w-4" />
         </button>
@@ -79,7 +81,7 @@ export function CategoryPanel({ category, solved, onClose }: Props) {
       </ul>
 
       <footer className="border-t border-glass-stroke px-4 py-2 text-[10px] text-fgMuted">
-        ★ Premium · clic en problema para abrir en LeetCode
+        {t('roadmap:panel.footer')}
       </footer>
     </aside>
   );

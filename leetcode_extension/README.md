@@ -1,56 +1,61 @@
-# ⚡ LeetCode Tracker — Extensión de Chrome
+# LeetVault — Chrome Extension
 
-Extensión que detecta automáticamente el problema de LeetCode que estás viendo
-y te permite guardarlo en tu app de escritorio local con un clic.
+Companion Chrome extension for the LeetVault desktop app. Detects the LeetCode
+problem you are viewing and saves it to your local desktop app in one click.
 
-## Instalación
+## Installation
 
-### 1. Cargar la extensión en Chrome
+### 1. Load the extension in Chrome
 
-1. Abre Chrome y ve a `chrome://extensions/`
-2. Activa el **Modo desarrollador** (esquina superior derecha)
-3. Haz clic en **"Cargar descomprimida"**
-4. Selecciona la carpeta `leetcode_extension/`
+1. Open Chrome and go to `chrome://extensions/`.
+2. Enable **Developer mode** (top-right toggle).
+3. Click **"Load unpacked"**.
+4. Select the `leetcode_extension/` folder.
 
-La extensión aparecerá en tu barra de herramientas (puede que tengas que fijarla
-haciendo clic en el icono de puzzle 🧩).
+   - If you installed LeetVault from an installer, the folder ships inside the
+     app resources. Open the desktop app's Help view and use the
+     "Open extension folder" button to locate it.
+   - If you cloned the repo, point Chrome at `leetcode_extension/` in the repo
+     root.
 
-### 2. Asegúrate de que la app de escritorio esté corriendo
+The extension shows up in your toolbar. Pin it from the puzzle-piece menu if
+you want it always visible.
 
-```bash
-cd leetcode_tracker/
-python main.py
-```
+### 2. Make sure the desktop app is running
 
-Verás en la consola: `[LC Tracker] Servidor local activo en http://localhost:7842`
+The extension talks to the desktop app over `http://localhost:7842`. Launch
+LeetVault from your desktop shortcut or start menu before using the popup.
 
-## Uso
+## Usage
 
-1. Navega a cualquier problema en `leetcode.com/problems/...`
-2. Haz clic en el icono ⚡ de la extensión
-3. El popup detecta automáticamente:
-   - Número y título del problema
-   - Dificultad (Easy / Medium / Hard)
-   - Tu código del editor (si ya has escrito algo)
-4. Rellena el patrón, notas, y ajusta el estado
-5. Pulsa **💾 Guardar** (Solved) o **🔄 En progreso**
+1. Navigate to any problem at `leetcode.com/problems/...`.
+2. Click the LeetVault icon in the Chrome toolbar.
+3. The popup auto-detects:
+   - Problem number and title
+   - Difficulty (Easy / Medium / Hard)
+   - Your current editor code (if any)
+   - Tags (preselected as the pattern when one matches)
+4. Pick the state (Solved / In Progress / To Review), add notes, and adjust
+   the pattern if needed.
+5. Click **Save**.
 
-## Indicador de conexión
+## Connection indicator
 
-El punto de color en la cabecera indica el estado:
-- 🟢 Verde — App de escritorio conectada
-- 🔴 Rojo — App no está corriendo
+The dot in the header reflects the desktop app status:
 
-## Flujo recomendado
+- Green — connected to the desktop app.
+- Red — desktop app is not running.
 
-| Momento | Acción |
-|---------|--------|
-| Empiezas un problema | Clic en extensión → **🔄 En progreso** |
-| Lo resuelves | Clic en extensión → añade notas → **💾 Guardar** |
-| Quieres revisarlo después | Desde la app cambia estado a **⭐ To Review** |
+## AI hint (optional)
 
-## Notas técnicas
+Click **AI Hint** for a short approach hint powered by Groq's
+`llama-3.1-8b-instant`. The first time you use it the popup asks for a Groq
+API key (free tier — get one at <https://console.groq.com/keys>). The key is
+stored only in `chrome.storage.local`; the desktop app never sees it.
 
-- La extensión se comunica con `http://localhost:7842`
-- Solo tiene permisos para `leetcode.com` y `localhost:7842`
-- No envía datos a ningún servidor externo — todo es local
+## Technical notes
+
+- Communicates with `http://localhost:7842` only.
+- Permissions are limited to `leetcode.com`, `localhost:7842`, and
+  `api.groq.com` (only used if you opt in to AI hints).
+- No data is sent to any third-party server beyond the optional Groq call.

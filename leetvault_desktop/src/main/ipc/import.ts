@@ -6,6 +6,7 @@ import { IpcChannels } from '@shared/ipc-channels';
 import { closeDb, openDb, setDb } from '../db/connection';
 import { resolveDbPath } from '../db/path';
 import { broadcast } from '../events/bus';
+import { t } from '../i18n';
 
 const REQUIRED_COLUMNS = [
   'id',
@@ -33,11 +34,11 @@ function validateLegacyDb(path: string): { ok: boolean; rows: number; message?: 
   try {
     probe = new Database(path, { readonly: true, fileMustExist: true });
     const cols = probe.pragma('table_info(problems)') as Array<{ name: string }>;
-    if (cols.length === 0) return { ok: false, rows: 0, message: 'No existe la tabla "problems"' };
+    if (cols.length === 0) return { ok: false, rows: 0, message: t('import.validation.missingTable') };
     const present = new Set(cols.map((c) => c.name));
     const missing = REQUIRED_COLUMNS.filter((c) => !present.has(c));
     if (missing.length) {
-      return { ok: false, rows: 0, message: `Faltan columnas: ${missing.join(', ')}` };
+      return { ok: false, rows: 0, message: t('import.validation.missingColumns', { cols: missing.join(', ') }) };
     }
     const { c } = probe.prepare('SELECT COUNT(*) AS c FROM problems').get() as { c: number };
     return { ok: true, rows: c };
@@ -54,7 +55,7 @@ export function registerImportIpc(): void {
   ipcMain.handle(IpcChannels.App.ImportDb, async (e): Promise<ImportResult> => {
     const win = BrowserWindow.fromWebContents(e.sender) ?? undefined;
     const picked = await dialog.showOpenDialog(win!, {
-      title: 'Importar base de datos v1 (leetcode.db)',
+      title: t('import.dialogTitle'),
       filters: [{ name: 'SQLite', extensions: ['db', 'sqlite', 'sqlite3'] }],
       properties: ['openFile'],
     });
@@ -70,11 +71,11 @@ export function registerImportIpc(): void {
 
     const confirm = await dialog.showMessageBox(win!, {
       type: 'warning',
-      buttons: ['Cancelar', 'Sobrescribir e importar'],
+      buttons: [t('import.confirmCancel'), t('import.confirmOk')],
       defaultId: 1,
       cancelId: 0,
-      title: 'Reemplazar base de datos',
-      message: `Se importarán ${validation.rows} problemas desde:\n${src}\n\nLa base de datos actual se respaldará y será reemplazada. ¿Continuar?`,
+      title: t('import.confirmTitle'),
+      message: t('import.confirmMessage', { count: validation.rows, src }),
     });
     if (confirm.response !== 1) return { ok: false, reason: 'cancelled' };
 

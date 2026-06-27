@@ -1,8 +1,10 @@
 import { Minus, Square, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const isMac = navigator.userAgent.toLowerCase().includes('mac');
 
 export function TitleBar() {
+  const { t } = useTranslation('chrome');
   if (isMac) {
     return (
       <div
@@ -21,13 +23,13 @@ export function TitleBar() {
         className="flex h-full"
         style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
       >
-        <ChromeBtn onClick={() => window.lv.window.minimize()} label="Minimize">
+        <ChromeBtn onClick={() => window.lv.window.minimize()} label={t('titlebar.minimize')}>
           <Minus className="h-3.5 w-3.5" />
         </ChromeBtn>
-        <ChromeBtn onClick={() => window.lv.window.toggleMaximize()} label="Maximize">
+        <ChromeBtn onClick={() => window.lv.window.toggleMaximize()} label={t('titlebar.maximize')}>
           <Square className="h-3 w-3" />
         </ChromeBtn>
-        <ChromeBtn onClick={() => window.lv.window.close()} label="Close" danger>
+        <ChromeBtn onClick={() => window.lv.window.close()} label={t('titlebar.close')} danger>
           <X className="h-3.5 w-3.5" />
         </ChromeBtn>
       </div>

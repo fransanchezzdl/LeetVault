@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState, type PointerEvent, type WheelEvent } from 'react';
 import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { RoadmapCategory, RoadmapList } from './data/types';
 
 interface Props {
@@ -49,6 +50,7 @@ function nodeColor(pct: number): { fill: string; stroke: string; text: string } 
 }
 
 export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
+  const { t } = useTranslation('roadmap');
   const layout = useMemo(() => layoutTree(list), [list]);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -140,7 +142,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
           type="button"
           onClick={() => zoom(1.2)}
           className="rounded-lg border border-glass-stroke bg-bg-200/80 p-1.5 text-fgSoft hover:bg-white/10"
-          title="Acercar"
+          title={t('tree.zoomIn')}
         >
           <ZoomIn className="h-4 w-4" />
         </button>
@@ -148,7 +150,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
           type="button"
           onClick={() => zoom(0.85)}
           className="rounded-lg border border-glass-stroke bg-bg-200/80 p-1.5 text-fgSoft hover:bg-white/10"
-          title="Alejar"
+          title={t('tree.zoomOut')}
         >
           <ZoomOut className="h-4 w-4" />
         </button>
@@ -156,7 +158,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
           type="button"
           onClick={resetView}
           className="rounded-lg border border-glass-stroke bg-bg-200/80 p-1.5 text-fgSoft hover:bg-white/10"
-          title="Restablecer"
+          title={t('tree.reset')}
         >
           <Maximize2 className="h-4 w-4" />
         </button>

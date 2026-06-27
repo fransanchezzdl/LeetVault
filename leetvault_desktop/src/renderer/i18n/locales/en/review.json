@@ -1,0 +1,22 @@
+{
+  "title": "Review",
+  "loading": "Loading review…",
+  "cardProgress": "Card {{current}} of {{total}}",
+  "empty.title": "No pending cards!",
+  "empty.nextDate": "Next review: {{date}}",
+  "empty.noUpcoming": "Mark problems as \"To Review\" or come back tomorrow.",
+  "toggleReveal.show": "Show",
+  "toggleReveal.hide": "Hide",
+  "toggleReveal.suffix": "solution and notes",
+  "section.solution": "Solution",
+  "section.notes": "Notes",
+  "keepRevising": "Keep revising",
+  "hint.keepRevising": "Rate your recall to schedule the next review.",
+  "hint.finish": "It will be removed from the queue and return to \"Solved\".",
+  "finishButton": "Done — I don't need to revise this anymore",
+  "quality.blackout": "Blackout",
+  "quality.hard": "Hard",
+  "quality.good": "Good",
+  "quality.easy": "Easy",
+  "quality.perfect": "Perfect"
+}

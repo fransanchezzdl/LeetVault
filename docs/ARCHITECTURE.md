@@ -79,6 +79,8 @@ The renderer never touches Node APIs directly. Everything is `window.lv.*`, defi
 | `app`       | `openExternal(url)`        | `app:openExternal`            | `void`                           |
 |             | `importDb()`               | `app:importDb`                | `{ok,imported,backupPath}` / err |
 |             | `dbPath()`                 | `app:dbPath`                  | `string`                         |
+|             | `extensionPath()`          | `app:extensionPath`           | `string` — bundled extension dir |
+|             | `openExtensionFolder()`    | `app:openExtensionFolder`     | `void` — opens it in OS file manager |
 | `window`    | `minimize()` etc.          | `window:minimize` etc.        | `void`                           |
 
 ### Broadcasts (main → renderer)
@@ -224,7 +226,7 @@ Important pattern: sticky headers must live **outside** the transformed bounce w
 
 ## Chrome extension (companion)
 
-`leetcode_extension/` is a separate Manifest V3 bundle. It is not built by the desktop app and is not packaged into the installers. Users load it unpacked from `chrome://extensions`.
+`leetcode_extension/` is a separate Manifest V3 bundle. As of v2.2.2 it is bundled with the installers via electron-builder `extraResources` (see `leetvault_desktop/electron-builder.yml`), landing at `<resources>/leetcode_extension/` inside the installed app — on Windows typically `<InstallDir>\resources\leetcode_extension`, on macOS `LeetVault.app/Contents/Resources/leetcode_extension`, on Linux `/opt/LeetVault/resources/leetcode_extension` (deb) or the equivalent AppImage mount path. Users still load it unpacked from `chrome://extensions`; the Help view exposes the absolute path and an "Abrir carpeta de la extensión" button (IPC `app:extensionPath` / `app:openExtensionFolder`).
 
 - `content.js` — scrapes number, title, difficulty, tags, and Monaco editor code from `leetcode.com/problems/*`.
 - `popup.js` — two actions: "Pista IA" (Groq `llama-3.1-8b-instant`, single approach-mentor prompt) and "Guardar" (`POST http://localhost:7842/save`).

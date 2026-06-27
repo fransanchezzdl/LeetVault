@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, Eye, EyeOff } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Problem } from '@shared/types/problem';
 import type { Quality } from '@shared/types/review';
 import { Button } from '../../components/ui/Button';
@@ -12,15 +13,16 @@ import {
   useRateReview,
 } from './hooks';
 
-const QUALITIES: { q: Quality; label: string; tone: string }[] = [
-  { q: 0, label: 'Blackout', tone: 'bg-diff-hard/20 text-diff-hard hover:bg-diff-hard/30' },
-  { q: 2, label: 'Difícil', tone: 'bg-status-inprogress/20 text-status-inprogress hover:bg-status-inprogress/30' },
-  { q: 3, label: 'Bien', tone: 'bg-diff-medium/20 text-diff-medium hover:bg-diff-medium/30' },
-  { q: 4, label: 'Fácil', tone: 'bg-diff-easy/20 text-diff-easy hover:bg-diff-easy/30' },
-  { q: 5, label: 'Perfecto', tone: 'bg-status-solved/20 text-status-solved hover:bg-status-solved/30' },
+const QUALITIES: { q: Quality; labelKey: string; tone: string }[] = [
+  { q: 0, labelKey: 'quality.blackout', tone: 'bg-diff-hard/20 text-diff-hard hover:bg-diff-hard/30' },
+  { q: 2, labelKey: 'quality.hard', tone: 'bg-status-inprogress/20 text-status-inprogress hover:bg-status-inprogress/30' },
+  { q: 3, labelKey: 'quality.good', tone: 'bg-diff-medium/20 text-diff-medium hover:bg-diff-medium/30' },
+  { q: 4, labelKey: 'quality.easy', tone: 'bg-diff-easy/20 text-diff-easy hover:bg-diff-easy/30' },
+  { q: 5, labelKey: 'quality.perfect', tone: 'bg-status-solved/20 text-status-solved hover:bg-status-solved/30' },
 ];
 
 export function ReviewView() {
+  const { t } = useTranslation('review');
   const { data: due = [], isLoading } = useDueReviews();
   const { data: nextDate } = useNextReviewDate();
   const { mutate: rate, isPending: rating } = useRateReview();
@@ -67,18 +69,18 @@ export function ReviewView() {
   };
 
   if (isLoading) {
-    return <Centered>Cargando repaso…</Centered>;
+    return <Centered>{t('loading')}</Centered>;
   }
 
   if (due.length === 0 || index >= due.length) {
     return (
       <Centered>
         <div className="glass-card max-w-md p-8 text-center">
-          <h2 className="text-lg font-semibold">¡Sin tarjetas pendientes!</h2>
+          <h2 className="text-lg font-semibold">{t('empty.title')}</h2>
           <p className="mt-2 text-sm text-fgMuted">
             {nextDate
-              ? `Próximo repaso: ${nextDate}`
-              : 'Marca problemas como "Por repasar" o vuelve mañana.'}
+              ? t('empty.nextDate', { date: nextDate })
+              : t('empty.noUpcoming')}
           </p>
         </div>
       </Centered>
@@ -89,9 +91,9 @@ export function ReviewView() {
     <div className="flex h-full min-h-0 flex-col p-6">
       <header className="mb-4 flex items-baseline justify-between">
         <div>
-          <h1 className="text-xl font-semibold">Repaso</h1>
+          <h1 className="text-xl font-semibold">{t('title')}</h1>
           <p className="text-xs text-fgMuted">
-            Tarjeta {index + 1} de {due.length}
+            {t('cardProgress', { current: index + 1, total: due.length })}
           </p>
         </div>
       </header>
@@ -101,15 +103,13 @@ export function ReviewView() {
       <div className="mt-4 flex items-center justify-between gap-3">
         <KeepRevisingToggle checked={keepRevising} onChange={setKeepRevising} />
         <p className="text-[11px] text-fgMuted">
-          {keepRevising
-            ? 'Valora tu recuerdo para programar el próximo repaso.'
-            : 'Se eliminará de la cola y volverá al estado "Resuelto".'}
+          {keepRevising ? t('hint.keepRevising') : t('hint.finish')}
         </p>
       </div>
 
       {keepRevising ? (
         <div className="mt-3 grid grid-cols-5 gap-2">
-          {QUALITIES.map(({ q, label, tone }) => (
+          {QUALITIES.map(({ q, labelKey, tone }) => (
             <button
               key={q}
               disabled={isPending}
@@ -119,7 +119,7 @@ export function ReviewView() {
               }
             >
               <div className="text-xs text-fgMuted">{q}</div>
-              <div>{label}</div>
+              <div>{t(labelKey)}</div>
             </button>
           ))}
         </div>
@@ -132,7 +132,7 @@ export function ReviewView() {
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-status-solved/20 px-3 py-3 text-sm font-medium text-status-solved transition hover:bg-status-solved/30 disabled:opacity-50"
           >
             <Check className="h-4 w-4" />
-            Listo — no necesito repasarlo más
+            {t('finishButton')}
           </button>
         </div>
       )}
@@ -147,6 +147,7 @@ function KeepRevisingToggle({
   checked: boolean;
   onChange: (v: boolean) => void;
 }) {
+  const { t } = useTranslation('review');
   return (
     <label className="flex cursor-pointer select-none items-center gap-2 text-xs text-fgSoft">
       <span
@@ -160,7 +161,7 @@ function KeepRevisingToggle({
       >
         {checked ? <Check className="h-3 w-3" /> : null}
       </span>
-      <span onClick={() => onChange(!checked)}>Seguir repasando</span>
+      <span onClick={() => onChange(!checked)}>{t('keepRevising')}</span>
     </label>
   );
 }
@@ -174,6 +175,7 @@ function ReviewCard({
   revealed: boolean;
   onToggleReveal: () => void;
 }) {
+  const { t } = useTranslation('review');
   return (
     <div className="glass-card flex-1 min-h-0 overflow-auto scroll-thin p-6">
       <div className="flex items-center justify-between gap-4">
@@ -194,7 +196,7 @@ function ReviewCard({
       <div className="mt-4">
         <Button variant="outline" onClick={onToggleReveal}>
           {revealed ? <EyeOff className="mr-1 h-4 w-4" /> : <Eye className="mr-1 h-4 w-4" />}
-          {revealed ? 'Ocultar' : 'Mostrar'} solución y notas
+          {revealed ? t('toggleReveal.hide') : t('toggleReveal.show')} {t('toggleReveal.suffix')}
         </Button>
       </div>
 
@@ -202,7 +204,7 @@ function ReviewCard({
         <div className="mt-4 space-y-4">
           {problem.solution ? (
             <section>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fgMuted">Solución</h3>
+              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fgMuted">{t('section.solution')}</h3>
               <pre className="overflow-x-auto rounded-md border border-glass-stroke bg-bg-300/80 p-3 text-xs text-fgSoft scroll-thin">
                 <code>{problem.solution}</code>
               </pre>
@@ -210,7 +212,7 @@ function ReviewCard({
           ) : null}
           {problem.notes ? (
             <section>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fgMuted">Notas</h3>
+              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fgMuted">{t('section.notes')}</h3>
               <p className="whitespace-pre-wrap text-sm text-fgSoft">{problem.notes}</p>
             </section>
           ) : null}

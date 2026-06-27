@@ -1,0 +1,14 @@
+{
+  "title": "Settings",
+  "language.title": "Language",
+  "language.description": "Choose the interface language. The change is applied immediately.",
+  "language.en": "English",
+  "language.es": "Español",
+  "analytics.title": "Anonymous analytics",
+  "analytics.description": "To understand which features are used and prioritise improvements, LeetVault sends anonymous metrics (events such as opening the app, creating a problem, completing a review session). Titles, code, notes and personal data are never sent.",
+  "analytics.toggleLabel": "Share anonymous metrics",
+  "analytics.toggleHint": "You can disable this at any time. The change takes effect immediately.",
+  "analytics.notConfigured": "This build has no PostHog key configured — no event is sent even if the toggle is on.",
+  "analytics.anonymousId": "Anonymous ID",
+  "analytics.anonymousIdHint": "Generated when LeetVault was installed. Unique per installation, not linked to any account."
+}
