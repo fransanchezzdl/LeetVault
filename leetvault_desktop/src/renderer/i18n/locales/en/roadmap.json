@@ -3,7 +3,6 @@
   "progress": "{{done}} / {{total}} solved ({{pct}}%) · drag to move · scroll to zoom",
   "listLabel": "List",
   "panel.solved": "{{done}} of {{total}} solved",
-  "panel.footer": "★ Premium · click a problem to open it on LeetCode",
   "tree.zoomIn": "Zoom in",
   "tree.zoomOut": "Zoom out",
   "tree.reset": "Reset view"

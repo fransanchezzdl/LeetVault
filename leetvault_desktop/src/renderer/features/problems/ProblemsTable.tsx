@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import {
   createColumnHelper,
   flexRender,
@@ -6,6 +6,7 @@ import {
   getSortedRowModel,
   useReactTable,
   type SortingState,
+  type VisibilityState,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Pencil, Trash2 } from 'lucide-react';
@@ -22,13 +23,41 @@ interface Props {
   problems: Problem[];
 }
 
-const GRID_TEMPLATE = '70px minmax(0,1fr) 110px 160px 130px 110px 80px';
+const COL_WIDTHS = {
+  number: '70px',
+  title: 'minmax(0,1fr)',
+  difficulty: '110px',
+  pattern: '160px',
+  status: '130px',
+  date_solved: '110px',
+  actions: '80px',
+} as const;
+
+function getVisibility(width: number): VisibilityState {
+  return {
+    number: width >= 560,
+    title: true,
+    difficulty: true,
+    pattern: width >= 720,
+    status: true,
+    date_solved: width >= 900,
+    actions: true,
+  };
+}
+
+function buildGridTemplate(visibility: VisibilityState): string {
+  return (Object.keys(COL_WIDTHS) as (keyof typeof COL_WIDTHS)[])
+    .filter((key) => visibility[key] !== false)
+    .map((key) => COL_WIDTHS[key])
+    .join(' ');
+}
 
 export function ProblemsTable({ problems }: Props) {
   const { t } = useTranslation('problems');
   const openEdit = useUi((s) => s.openEdit);
   const openDelete = useUi((s) => s.openDelete);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const columns = useMemo(
     () => [
@@ -94,13 +123,28 @@ export function ProblemsTable({ problems }: Props) {
   const table = useReactTable({
     data: problems,
     columns,
-    state: { sorting },
+    state: { sorting, columnVisibility },
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
  const rows = table.getRowModel().rows;
   const parentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = parentRef.current;
+    if (!el) return;
+    const apply = (width: number) => setColumnVisibility(getVisibility(width));
+    apply(el.clientWidth);
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) apply(entry.contentRect.width);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const gridTemplate = useMemo(() => buildGridTemplate(columnVisibility), [columnVisibility]);
 
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
@@ -116,7 +160,7 @@ export function ProblemsTable({ problems }: Props) {
     >
       <div
         className="sticky top-0 z-20 grid items-center rounded-t-2xl bg-bg-200/95 backdrop-blur border-b border-glass-stroke/30"
-        style={{ gridTemplateColumns: GRID_TEMPLATE }}
+        style={{ gridTemplateColumns: gridTemplate }}
       >
         {table.getHeaderGroups().map((hg) =>
           hg.headers.map((h) => (
@@ -152,7 +196,7 @@ export function ProblemsTable({ problems }: Props) {
                 top: 0,
                 transform: `translateY(${vRow.start}px)`,
                 height: `${vRow.size}px`,
-                gridTemplateColumns: GRID_TEMPLATE,
+                gridTemplateColumns: gridTemplate,
               }}
             >
               {row.getVisibleCells().map((cell) => (

@@ -79,10 +79,6 @@ export function CategoryPanel({ category, solved, onClose }: Props) {
           );
         })}
       </ul>
-
-      <footer className="border-t border-glass-stroke px-4 py-2 text-[10px] text-fgMuted">
-        {t('roadmap:panel.footer')}
-      </footer>
     </aside>
   );
 }
