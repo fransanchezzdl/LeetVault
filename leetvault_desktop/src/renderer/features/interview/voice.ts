@@ -139,7 +139,7 @@ export function setPreferredVoiceId(id: string | null): void {
  * as words. Strip the most common markdown noise before handing to the synth. */
 function stripMarkdownForSpeech(text: string): string {
   return text
-    .replace(/```[\s\S]*?```/g, ' code block omitted. ') // fenced code
+    .replace(/```[\s\S]*?```/g, ' ') // fenced code
     .replace(/`([^`]+)`/g, '$1') // inline code
     .replace(/\*\*([^*]+)\*\*/g, '$1') // bold
     .replace(/\*([^*]+)\*/g, '$1') // italic
