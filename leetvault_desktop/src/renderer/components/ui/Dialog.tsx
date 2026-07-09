@@ -30,7 +30,7 @@ export function Dialog({ open, onOpenChange, title, description, children, size 
         >
           <RDialog.Title className="text-lg font-semibold text-fg">{title}</RDialog.Title>
           {description ? (
-            <RDialog.Description className="mt-1 text-xs text-fgMuted">{description}</RDialog.Description>
+            <RDialog.Description className="mt-1 text-xs text-fg/[0.68]">{description}</RDialog.Description>
           ) : null}
           <div className="mt-4">{children}</div>
         </RDialog.Content>

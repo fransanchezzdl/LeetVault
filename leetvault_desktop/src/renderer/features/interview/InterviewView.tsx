@@ -57,7 +57,7 @@ export function InterviewView() {
   }, [hasKey]);
 
   if (hasKey === null) {
-    return <div className="p-6 text-sm text-fgMuted">{t('common.loading')}</div>;
+    return <div className="p-6 text-sm text-fg/[0.68]">{t('common.loading')}</div>;
   }
 
   return (
@@ -68,14 +68,14 @@ export function InterviewView() {
             <Sparkles className="h-5 w-5 text-brand-400" />
             Live Coding Interview
           </h1>
-          <p className="mt-0.5 text-xs text-fgMuted">
+          <p className="mt-0.5 text-xs text-fg/[0.68]">
             Practice with an AI interviewer in English — chat, code, get scored.
           </p>
         </div>
         <button
           type="button"
           onClick={() => setDialogOpen(true)}
-          className="btn text-fgMuted hover:bg-white/5"
+          className="btn text-fg/[0.68] hover:bg-fg/5"
           title="Manage Groq API key"
         >
           <SettingsIcon className="h-4 w-4" />

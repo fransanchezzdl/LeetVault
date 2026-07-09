@@ -77,7 +77,7 @@ export function ReviewView() {
       <Centered>
         <div className="glass-card max-w-md p-8 text-center">
           <h2 className="text-lg font-semibold">{t('empty.title')}</h2>
-          <p className="mt-2 text-sm text-fgMuted">
+          <p className="mt-2 text-sm text-fg/[0.68]">
             {nextDate
               ? t('empty.nextDate', { date: nextDate })
               : t('empty.noUpcoming')}
@@ -92,7 +92,7 @@ export function ReviewView() {
       <header className="mb-4 flex items-baseline justify-between">
         <div>
           <h1 className="text-xl font-semibold">{t('title')}</h1>
-          <p className="text-xs text-fgMuted">
+          <p className="text-xs text-fg/[0.68]">
             {t('cardProgress', { current: index + 1, total: due.length })}
           </p>
         </div>
@@ -102,7 +102,7 @@ export function ReviewView() {
 
       <div className="mt-4 flex items-center justify-between gap-3">
         <KeepRevisingToggle checked={keepRevising} onChange={setKeepRevising} />
-        <p className="text-[11px] text-fgMuted">
+        <p className="text-[11px] text-fg/[0.68]">
           {keepRevising ? t('hint.keepRevising') : t('hint.finish')}
         </p>
       </div>
@@ -118,7 +118,7 @@ export function ReviewView() {
                 'rounded-lg px-3 py-3 text-sm font-medium transition disabled:opacity-50 ' + tone
               }
             >
-              <div className="text-xs text-fgMuted">{q}</div>
+              <div className="text-xs text-fg/[0.68]">{q}</div>
               <div>{t(labelKey)}</div>
             </button>
           ))}
@@ -156,7 +156,7 @@ function KeepRevisingToggle({
           'flex h-4 w-4 items-center justify-center rounded border transition',
           checked
             ? 'border-brand-400 bg-brand-400/30 text-brand-200'
-            : 'border-glass-stroke bg-transparent'
+            : 'border-glass-stroke/10 bg-transparent'
         )}
       >
         {checked ? <Check className="h-3 w-3" /> : null}
@@ -180,13 +180,13 @@ function ReviewCard({
     <div className="glass-card flex-1 min-h-0 overflow-auto scroll-thin p-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <div className="text-xs text-fgMuted">#{problem.number ?? '—'}</div>
+          <div className="text-xs text-fg/[0.68]">#{problem.number ?? '—'}</div>
           <h2 className="text-lg font-semibold">{problem.title}</h2>
         </div>
         <div className="flex items-center gap-2">
           <DifficultyBadge value={problem.difficulty} />
           {problem.pattern ? (
-            <span className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-fgMuted">
+            <span className="rounded-full bg-fg/5 px-2 py-0.5 text-xs text-fg/[0.68]">
               {problem.pattern}
             </span>
           ) : null}
@@ -204,15 +204,15 @@ function ReviewCard({
         <div className="mt-4 space-y-4">
           {problem.solution ? (
             <section>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fgMuted">{t('section.solution')}</h3>
-              <pre className="overflow-x-auto rounded-md border border-glass-stroke bg-bg-300/80 p-3 text-xs text-fgSoft scroll-thin">
+              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">{t('section.solution')}</h3>
+              <pre className="overflow-x-auto rounded-md border border-glass-stroke/10 bg-bg-300/80 p-3 text-xs text-fgSoft scroll-thin">
                 <code>{problem.solution}</code>
               </pre>
             </section>
           ) : null}
           {problem.notes ? (
             <section>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fgMuted">{t('section.notes')}</h3>
+              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">{t('section.notes')}</h3>
               <p className="whitespace-pre-wrap text-sm text-fgSoft">{problem.notes}</p>
             </section>
           ) : null}

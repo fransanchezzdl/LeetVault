@@ -116,7 +116,15 @@ const api = {
   },
   analytics: {
     viewOpened: (
-      view: 'problems' | 'review' | 'stats' | 'roadmap' | 'help' | 'interview' | 'settings'
+      view:
+        | 'problems'
+        | 'review'
+        | 'stats'
+        | 'roadmap'
+        | 'help'
+        | 'interview'
+        | 'settings'
+        | 'donate'
     ): Promise<void> => invoke(IpcChannels.Analytics.ViewOpened, { view }),
     reviewSessionFinished: (count: number): Promise<void> =>
       invoke(IpcChannels.Analytics.ReviewSessionFinished, { count }),

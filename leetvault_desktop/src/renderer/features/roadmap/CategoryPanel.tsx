@@ -21,18 +21,18 @@ export function CategoryPanel({ category, solved, onClose }: Props) {
   const done = category.problems.filter((p) => solved.has(p.n)).length;
 
   return (
-    <aside className="flex h-full w-80 flex-shrink-0 flex-col rounded-2xl border border-glass-stroke bg-bg-200/80 backdrop-blur-md">
-      <header className="flex items-start justify-between border-b border-glass-stroke px-4 py-3">
+    <aside className="flex h-full w-80 flex-shrink-0 flex-col rounded-2xl border border-glass-stroke/10 bg-bg-200/80 backdrop-blur-md">
+      <header className="flex items-start justify-between border-b border-glass-stroke/10 px-4 py-3">
         <div>
           <h2 className="text-sm font-semibold text-fg">{category.name}</h2>
-          <p className="text-xs text-fgMuted">
+          <p className="text-xs text-fg/[0.68]">
             {t('roadmap:panel.solved', { done, total: category.problems.length })}
           </p>
         </div>
         <button
           type="button"
           onClick={onClose}
-          className="rounded p-1 text-fgMuted hover:bg-white/10 hover:text-fg"
+          className="rounded p-1 text-fg/[0.68] hover:bg-fg/10 hover:text-fg"
           title={t('common:actions.close')}
         >
           <X className="h-4 w-4" />
@@ -51,7 +51,7 @@ export function CategoryPanel({ category, solved, onClose }: Props) {
                   window.lv.app.openExternal(`https://leetcode.com/problems/${p.slug}/`);
                 }}
                 className={cn(
-                  'group flex items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-white/5',
+                  'group flex items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-fg/5',
                   isSolved ? 'text-fg' : 'text-fgSoft'
                 )}
               >
@@ -60,12 +60,12 @@ export function CategoryPanel({ category, solved, onClose }: Props) {
                     'flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border text-[10px]',
                     isSolved
                       ? 'border-status-solved bg-status-solved/20 text-status-solved'
-                      : 'border-glass-stroke text-transparent'
+                      : 'border-glass-stroke/10 bg-fg/[0.06] text-transparent'
                   )}
                 >
                   {isSolved ? <Check className="h-3 w-3" /> : null}
                 </span>
-                <span className="w-8 flex-shrink-0 text-xs text-fgMuted">{p.n}</span>
+                <span className="w-8 flex-shrink-0 text-xs text-fg/[0.68]">{p.n}</span>
                 <span className="flex-1 truncate">
                   {p.title}
                   {p.premium ? <span className="ml-1 text-[10px] text-brand-400">★</span> : null}
@@ -73,7 +73,7 @@ export function CategoryPanel({ category, solved, onClose }: Props) {
                 <span className={cn('text-[10px] font-medium', DIFF_TONE[p.diff])}>
                   {p.diff[0]}
                 </span>
-                <ExternalLink className="h-3 w-3 flex-shrink-0 text-fgMuted opacity-0 group-hover:opacity-100" />
+                <ExternalLink className="h-3 w-3 flex-shrink-0 text-fg/[0.68] opacity-0 group-hover:opacity-100" />
               </a>
             </li>
           );

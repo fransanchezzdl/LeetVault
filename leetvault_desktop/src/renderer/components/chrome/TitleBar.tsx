@@ -55,7 +55,7 @@ function ChromeBtn({
       onClick={onClick}
       className={
         'flex h-full w-11 items-center justify-center text-fgSoft/80 transition ' +
-        (danger ? 'hover:bg-diff-hard hover:text-fg' : 'hover:bg-white/10')
+        (danger ? 'hover:bg-diff-hard hover:text-fg' : 'hover:bg-fg/10')
       }
     >
       {children}

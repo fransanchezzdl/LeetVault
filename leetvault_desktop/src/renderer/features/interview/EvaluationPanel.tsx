@@ -31,7 +31,7 @@ export function EvaluationPanel(): JSX.Element {
 
   if (!problemFull) {
     return (
-      <div className="p-6 text-sm text-fgMuted">No session loaded.</div>
+      <div className="p-6 text-sm text-fg/[0.68]">No session loaded.</div>
     );
   }
 
@@ -77,8 +77,8 @@ function Header({
 }): JSX.Element {
   return (
     <div className="glass-card-dim p-5">
-      <div className="flex flex-wrap items-center gap-2 text-xs text-fgMuted">
-        <span className="rounded-full border border-glass-stroke bg-bg-200/40 px-2 py-0.5">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-fg/[0.68]">
+        <span className="rounded-full border border-glass-stroke/10 bg-bg-200/40 px-2 py-0.5">
           {difficulty}
         </span>
         {topics.map((t) => (
@@ -102,7 +102,7 @@ function ScoreCard({
   return (
     <div className="glass-card-dim space-y-5 p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-fgMuted">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-fg/[0.68]">
           Evaluation
         </h3>
         <span
@@ -148,7 +148,7 @@ function ScoreCard({
       ) : null}
 
       <div>
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-fgMuted">
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
           Summary
         </h4>
         <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-fgSoft">
@@ -173,7 +173,7 @@ function ScoreBar({ label, value }: { label: string; value: number }): JSX.Eleme
     <div>
       <div className="flex items-center justify-between text-xs">
         <span className="text-fgSoft">{label}</span>
-        <span className="tabular-nums text-fgMuted">{value}/5</span>
+        <span className="tabular-nums text-fg/[0.68]">{value}/5</span>
       </div>
       <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-bg-200/60">
         <div className={`h-full ${tone}`} style={{ width: `${pct}%` }} />
@@ -191,19 +191,19 @@ function ComplexityTable({
 }): JSX.Element {
   return (
     <div>
-      <h4 className="text-xs font-semibold uppercase tracking-wide text-fgMuted">
+      <h4 className="text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
         Complexity comparison
       </h4>
       <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
         <div />
-        <div className="text-fgMuted">Your analysis</div>
-        <div className="text-fgMuted">Expected</div>
+        <div className="text-fg/[0.68]">Your analysis</div>
+        <div className="text-fg/[0.68]">Expected</div>
 
-        <div className="text-fgMuted">Time</div>
+        <div className="text-fg/[0.68]">Time</div>
         <div className="font-mono text-fgSoft">{user.time || '—'}</div>
         <div className="font-mono text-fgSoft">{expected.time}</div>
 
-        <div className="text-fgMuted">Space</div>
+        <div className="text-fg/[0.68]">Space</div>
         <div className="font-mono text-fgSoft">{user.space || '—'}</div>
         <div className="font-mono text-fgSoft">{expected.space}</div>
       </div>
@@ -230,11 +230,11 @@ function Column({
   const bullet = tone === 'good' ? 'text-status-solved' : 'text-diff-hard';
   return (
     <div>
-      <h4 className="text-xs font-semibold uppercase tracking-wide text-fgMuted">
+      <h4 className="text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
         {title}
       </h4>
       {items.length === 0 ? (
-        <p className="mt-1.5 text-xs text-fgMuted">(none)</p>
+        <p className="mt-1.5 text-xs text-fg/[0.68]">(none)</p>
       ) : (
         <ul className="mt-1.5 space-y-1 text-sm text-fgSoft">
           {items.map((s, i) => (
@@ -260,15 +260,15 @@ function ReferenceSolution({ problem }: { problem: InterviewProblem }): JSX.Elem
       >
         <span className="text-sm font-semibold">Reference solution</span>
         {open ? (
-          <ChevronUp className="h-4 w-4 text-fgMuted" />
+          <ChevronUp className="h-4 w-4 text-fg/[0.68]" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-fgMuted" />
+          <ChevronDown className="h-4 w-4 text-fg/[0.68]" />
         )}
       </button>
       {open ? (
         <div className="space-y-3 border-t border-glass-stroke/60 px-5 py-4 text-sm">
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-fgMuted">
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
               Expected complexity
             </h4>
             <p className="mt-1 font-mono text-xs text-fgSoft">
@@ -277,7 +277,7 @@ function ReferenceSolution({ problem }: { problem: InterviewProblem }): JSX.Elem
             </p>
           </div>
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-fgMuted">
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
               Approach
             </h4>
             <pre className="mt-1 whitespace-pre-wrap font-sans text-sm leading-relaxed text-fgSoft">
@@ -286,7 +286,7 @@ function ReferenceSolution({ problem }: { problem: InterviewProblem }): JSX.Elem
           </div>
           {problem.examples.length > 0 ? (
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-fgMuted">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
                 Examples
               </h4>
               <ul className="mt-1 space-y-2 text-xs">
@@ -294,7 +294,7 @@ function ReferenceSolution({ problem }: { problem: InterviewProblem }): JSX.Elem
                   <li key={i} className="rounded-md bg-bg-200/40 p-2 font-mono">
                     <div>input: {ex.input}</div>
                     <div>output: {ex.output}</div>
-                    {ex.note ? <div className="text-fgMuted">note: {ex.note}</div> : null}
+                    {ex.note ? <div className="text-fg/[0.68]">note: {ex.note}</div> : null}
                   </li>
                 ))}
               </ul>
@@ -312,7 +312,7 @@ function RawFallback({ raw }: { raw: string }): JSX.Element {
       <h3 className="text-sm font-semibold text-diff-hard">
         Could not parse evaluation JSON
       </h3>
-      <p className="mt-1 text-xs text-fgMuted">
+      <p className="mt-1 text-xs text-fg/[0.68]">
         The model response is shown below. Please try finishing again — this usually
         recovers on the next attempt.
       </p>

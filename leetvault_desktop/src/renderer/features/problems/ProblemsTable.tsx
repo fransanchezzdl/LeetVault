@@ -63,7 +63,7 @@ export function ProblemsTable({ problems }: Props) {
     () => [
       col.accessor('number', {
         header: '#',
-        cell: (c) => <span className="text-fgMuted">{c.getValue() ?? '—'}</span>,
+        cell: (c) => <span className="text-fg/[0.68]">{c.getValue() ?? '—'}</span>,
       }),
       col.accessor('title', {
         header: t('table.title'),
@@ -76,7 +76,7 @@ export function ProblemsTable({ problems }: Props) {
       col.accessor('pattern', {
         header: t('table.pattern'),
         cell: (c) => (
-          <span className="text-fgMuted truncate">{c.getValue() || '—'}</span>
+          <span className="text-fg/[0.68] truncate">{c.getValue() || '—'}</span>
         ),
       }),
       col.accessor('status', {
@@ -86,7 +86,7 @@ export function ProblemsTable({ problems }: Props) {
       col.accessor('date_solved', {
         header: t('table.solved'),
         cell: (c) => (
-          <span className="text-fgMuted">{c.getValue() || '—'}</span>
+          <span className="text-fg/[0.68]">{c.getValue() || '—'}</span>
         ),
       }),
       col.display({
@@ -100,7 +100,7 @@ export function ProblemsTable({ problems }: Props) {
                 type="button"
                 onClick={() => openEdit(id)}
                 title={t('table.actions.edit')}
-                className="rounded p-1 text-fgSoft/70 hover:bg-white/10 hover:text-fg"
+                className="rounded p-1 text-fgSoft/70 hover:bg-fg/10 hover:text-fg"
               >
                 <Pencil className="h-3.5 w-3.5" />
               </button>
@@ -156,7 +156,7 @@ export function ProblemsTable({ problems }: Props) {
   return (
     <div
       ref={parentRef}
-      className="relative h-full overflow-auto scroll-thin rounded-2xl border border-glass-stroke bg-glass-fill"
+      className="relative h-full overflow-auto scroll-thin rounded-2xl border border-glass-stroke/10 bg-glass-fill/[0.08]"
     >
       <div
         className="sticky top-0 z-20 grid items-center rounded-t-2xl bg-bg-200/95 backdrop-blur border-b border-glass-stroke/30"
@@ -167,7 +167,7 @@ export function ProblemsTable({ problems }: Props) {
             <div
               key={h.id}
               onClick={h.column.getToggleSortingHandler()}
-              className="select-none px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-fgMuted cursor-pointer hover:text-fg"
+              className="select-none px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-fg/[0.68] cursor-pointer hover:text-fg"
             >
               {flexRender(h.column.columnDef.header, h.getContext())}
               {{ asc: ' ↑', desc: ' ↓' }[h.column.getIsSorted() as string] ?? null}
@@ -189,7 +189,7 @@ export function ProblemsTable({ problems }: Props) {
             <div
               key={row.id}
               className={cn(
-                'absolute inset-x-0 grid items-center hover:bg-white/5',
+                'absolute inset-x-0 grid items-center hover:bg-fg/5',
                 isLast ? 'rounded-b-2xl' : 'border-b border-glass-stroke/20'
               )}
               style={{
@@ -213,7 +213,7 @@ export function ProblemsTable({ problems }: Props) {
       </div>
 
       {rows.length === 0 ? (
-        <div className="absolute inset-x-0 top-12 flex justify-center text-sm text-fgMuted">
+        <div className="absolute inset-x-0 top-12 flex justify-center text-sm text-fg/[0.68]">
           {t('table.empty')}
         </div>
       ) : null}

@@ -81,7 +81,15 @@ export interface LvApi {
   };
   analytics: {
     viewOpened: (
-      view: 'problems' | 'review' | 'stats' | 'roadmap' | 'help' | 'interview' | 'settings'
+      view:
+        | 'problems'
+        | 'review'
+        | 'stats'
+        | 'roadmap'
+        | 'help'
+        | 'interview'
+        | 'settings'
+        | 'donate'
     ) => Promise<void>;
     reviewSessionFinished: (count: number) => Promise<void>;
     getEnabled: () => Promise<boolean>;

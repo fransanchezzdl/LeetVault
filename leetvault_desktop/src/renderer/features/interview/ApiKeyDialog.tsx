@@ -101,7 +101,7 @@ export function ApiKeyDialog({ open, initialValue, onClose, onSaved }: Props) {
           <h2 className="text-sm font-semibold">Interview settings</h2>
         </div>
 
-        <p className="mb-3 text-xs leading-relaxed text-fgMuted">
+        <p className="mb-3 text-xs leading-relaxed text-fg/[0.68]">
           The interview practice uses Groq (Llama 3.3 70B) for the live interviewer and
           evaluator. The free tier is plenty for personal use. Your key is stored encrypted in
           this device only.
@@ -142,12 +142,12 @@ export function ApiKeyDialog({ open, initialValue, onClose, onSaved }: Props) {
               <Volume2 className="h-4 w-4 text-brand-400" />
               <h3 className="text-sm font-semibold">Interviewer voice</h3>
             </div>
-            <p className="mb-2 text-[11px] leading-relaxed text-fgMuted">
+            <p className="mb-2 text-[11px] leading-relaxed text-fg/[0.68]">
               Voices come from your operating system. Quality varies — try a few to find one
               that sounds natural. Local voices work offline; cloud voices need internet.
             </p>
             {voicesLoading ? (
-              <p className="text-[11px] text-fgMuted">Loading voices\u2026</p>
+              <p className="text-[11px] text-fg/[0.68]">Loading voices\u2026</p>
             ) : voices.length === 0 ? (
               <p className="text-[11px] text-status-inprogress">
                 No English voices found on this system. Install additional voices via your OS
@@ -173,7 +173,7 @@ export function ApiKeyDialog({ open, initialValue, onClose, onSaved }: Props) {
                 <button
                   type="button"
                   onClick={preview}
-                  className="btn h-9 px-3 text-xs text-fgMuted hover:bg-white/5"
+                  className="btn h-9 px-3 text-xs text-fg/[0.68] hover:bg-fg/5"
                   title="Preview voice"
                 >
                   Preview
@@ -188,7 +188,7 @@ export function ApiKeyDialog({ open, initialValue, onClose, onSaved }: Props) {
             <button
               type="button"
               onClick={remove}
-              className="text-xs text-fgMuted hover:text-diff-hard"
+              className="text-xs text-fg/[0.68] hover:text-diff-hard"
             >
               Remove key
             </button>
@@ -199,7 +199,7 @@ export function ApiKeyDialog({ open, initialValue, onClose, onSaved }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="btn text-fgMuted hover:bg-white/5"
+              className="btn text-fg/[0.68] hover:bg-fg/5"
             >
               Cancel
             </button>

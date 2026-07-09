@@ -159,5 +159,5 @@ export function ProblemFormDialog() {
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <label className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-fgMuted">{children}</label>;
+  return <label className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-fg/[0.68]">{children}</label>;
 }

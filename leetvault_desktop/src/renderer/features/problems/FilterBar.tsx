@@ -12,7 +12,7 @@ export function FilterBar() {
   return (
     <div className="flex flex-wrap items-center gap-3">
       <div className="relative flex-1 min-w-[220px]">
-        <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fgMuted" />
+        <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fg/[0.68]" />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -49,7 +49,7 @@ export function FilterBar() {
         <button
           type="button"
           onClick={() => setPattern('')}
-          className="inline-flex items-center gap-1 rounded-full border border-glass-stroke bg-white/5 px-3 py-1 text-xs text-fgSoft hover:bg-white/10"
+          className="inline-flex items-center gap-1 rounded-full border border-glass-stroke/10 bg-fg/5 px-3 py-1 text-xs text-fgSoft hover:bg-fg/10"
         >
           {t('problems:filters.patternLabel')} <span className="font-medium">{pattern}</span>
           <X className="h-3 w-3" />

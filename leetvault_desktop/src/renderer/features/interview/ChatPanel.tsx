@@ -111,7 +111,7 @@ export function ChatPanel(): JSX.Element {
         className="scroll-thin flex-1 space-y-3 overflow-y-auto p-4"
       >
         {messages.length === 0 ? (
-          <div className="text-xs text-fgMuted">
+          <div className="text-xs text-fg/[0.68]">
             The interviewer will introduce the problem in a moment…
           </div>
         ) : null}
@@ -136,7 +136,7 @@ export function ChatPanel(): JSX.Element {
                   'btn h-8 px-2 ' +
                   (listening
                     ? 'bg-diff-hard/20 text-diff-hard hover:bg-diff-hard/30'
-                    : 'text-fgMuted hover:bg-white/5')
+                    : 'text-fg/[0.68] hover:bg-fg/5')
                 }
                 title={listening ? 'Stop listening' : 'Speak (English)'}
               >
@@ -155,7 +155,7 @@ export function ChatPanel(): JSX.Element {
                   'btn h-8 px-2 ' +
                   (ttsEnabled
                     ? 'bg-brand-500/15 text-brand-400 hover:bg-brand-500/25'
-                    : 'text-fgMuted hover:bg-white/5')
+                    : 'text-fg/[0.68] hover:bg-fg/5')
                 }
                 title={
                   ttsEnabled ? 'Stop reading replies aloud' : 'Read replies aloud'
@@ -199,7 +199,7 @@ export function ChatPanel(): JSX.Element {
             <Send className="h-4 w-4" />
           </button>
         </div>
-        <div className="mt-1 flex flex-wrap items-center justify-between gap-1 text-[10px] text-fgMuted">
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-1 text-[10px] text-fg/[0.68]">
           <span>Enter to send · Shift+Enter for newline · English only</span>
           {voiceError ? <span className="text-diff-hard">{voiceError}</span> : null}
         </div>
@@ -282,7 +282,7 @@ function AssistantMarkdown({
             );
           },
           pre: ({ children }) => (
-            <pre className="my-2 overflow-x-auto rounded-md border border-glass-stroke bg-bg-300/70 p-2.5 text-fgSoft">
+            <pre className="my-2 overflow-x-auto rounded-md border border-glass-stroke/10 bg-bg-300/70 p-2.5 text-fgSoft">
               {children}
             </pre>
           ),

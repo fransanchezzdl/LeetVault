@@ -48,12 +48,12 @@ export function RoadmapView() {
       <header className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-semibold">{t('title')}</h1>
-          <p className="text-xs text-fgMuted">
+          <p className="text-xs text-fg/[0.68]">
             {t('progress', { done: totalSolved, total: list.total, pct })}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-fgMuted">{t('listLabel')}</span>
+          <span className="text-xs text-fg/[0.68]">{t('listLabel')}</span>
           <Select
             value={listId}
             onValueChange={(v) => {
@@ -72,7 +72,7 @@ export function RoadmapView() {
         </div>
       </header>
 
-      <div className="mb-1 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+      <div className="mb-1 h-1.5 w-full overflow-hidden rounded-full bg-fg/5">
         <div className="h-full rounded-full bg-primary-grad" style={{ width: `${pct}%` }} />
       </div>
 

@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState, type PointerEvent, type Whe
 import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { RoadmapCategory, RoadmapList } from './data/types';
+import { useResolvedTheme, type ResolvedTheme } from '../../hooks/useResolvedTheme';
 
 interface Props {
   list: RoadmapList;
@@ -43,14 +44,63 @@ function categoryProgress(cat: RoadmapCategory, solved: Set<number>) {
   return { done, total, pct: total === 0 ? 0 : done / total };
 }
 
-function nodeColor(pct: number): { fill: string; stroke: string; text: string } {
-  if (pct === 0) return { fill: 'rgba(255,255,255,0.04)', stroke: 'rgba(255,232,194,0.18)', text: '#F7EEE4' };
-  if (pct === 1) return { fill: 'rgba(46,139,106,0.22)', stroke: '#2E8B6A', text: '#F7EEE4' };
-  return { fill: 'rgba(255,177,51,0.16)', stroke: '#FFB133', text: '#F7EEE4' };
+interface TreePalette {
+  text: string;
+  subText: string;
+  edge: string;
+  arrow: string;
+  progressTrack: string;
+  emptyFill: string;
+  emptyStroke: string;
+  partialFill: string;
+  partialStroke: string;
+  doneFill: string;
+  doneStroke: string;
+  selectStroke: string;
+}
+
+function treePalette(resolved: ResolvedTheme): TreePalette {
+  if (resolved === 'light') {
+    return {
+      text: '#1A1612',
+      subText: 'rgba(26,22,18,0.60)',
+      edge: 'rgba(60,55,50,0.30)',
+      arrow: 'rgba(60,55,50,0.45)',
+      progressTrack: 'rgba(26,22,18,0.10)',
+      emptyFill: 'rgba(26,22,18,0.04)',
+      emptyStroke: 'rgba(60,55,50,0.30)',
+      partialFill: 'rgba(255,161,22,0.16)',
+      partialStroke: '#D97B10',
+      doneFill: 'rgba(46,139,106,0.18)',
+      doneStroke: '#237055',
+      selectStroke: '#D97B10',
+    };
+  }
+  return {
+    text: '#F7EEE4',
+    subText: 'rgba(247,238,228,0.60)',
+    edge: 'rgba(255,232,194,0.22)',
+    arrow: 'rgba(255,232,194,0.35)',
+    progressTrack: 'rgba(255,255,255,0.08)',
+    emptyFill: 'rgba(255,255,255,0.04)',
+    emptyStroke: 'rgba(255,232,194,0.18)',
+    partialFill: 'rgba(255,177,51,0.16)',
+    partialStroke: '#FFB133',
+    doneFill: 'rgba(46,139,106,0.22)',
+    doneStroke: '#2E8B6A',
+    selectStroke: '#FFB133',
+  };
+}
+
+function nodeColor(pct: number, p: TreePalette): { fill: string; stroke: string } {
+  if (pct === 0) return { fill: p.emptyFill, stroke: p.emptyStroke };
+  if (pct === 1) return { fill: p.doneFill, stroke: p.doneStroke };
+  return { fill: p.partialFill, stroke: p.partialStroke };
 }
 
 export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
   const { t } = useTranslation('roadmap');
+  const palette = treePalette(useResolvedTheme());
   const layout = useMemo(() => layoutTree(list), [list]);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -136,12 +186,12 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl border border-glass-stroke bg-bg-300/50">
+    <div className="relative h-full w-full overflow-hidden rounded-2xl border border-glass-stroke/10 bg-bg-300/50">
       <div className="absolute right-3 top-3 z-10 flex flex-col gap-1">
         <button
           type="button"
           onClick={() => zoom(1.2)}
-          className="rounded-lg border border-glass-stroke bg-bg-200/80 p-1.5 text-fgSoft hover:bg-white/10"
+          className="rounded-lg border border-glass-stroke/10 bg-bg-200/80 p-1.5 text-fgSoft hover:bg-fg/10"
           title={t('tree.zoomIn')}
         >
           <ZoomIn className="h-4 w-4" />
@@ -149,7 +199,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
         <button
           type="button"
           onClick={() => zoom(0.85)}
-          className="rounded-lg border border-glass-stroke bg-bg-200/80 p-1.5 text-fgSoft hover:bg-white/10"
+          className="rounded-lg border border-glass-stroke/10 bg-bg-200/80 p-1.5 text-fgSoft hover:bg-fg/10"
           title={t('tree.zoomOut')}
         >
           <ZoomOut className="h-4 w-4" />
@@ -157,7 +207,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
         <button
           type="button"
           onClick={resetView}
-          className="rounded-lg border border-glass-stroke bg-bg-200/80 p-1.5 text-fgSoft hover:bg-white/10"
+          className="rounded-lg border border-glass-stroke/10 bg-bg-200/80 p-1.5 text-fgSoft hover:bg-fg/10"
           title={t('tree.reset')}
         >
           <Maximize2 className="h-4 w-4" />
@@ -193,7 +243,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
               markerHeight="6"
               orient="auto-start-reverse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,232,194,0.35)" />
+              <path d="M 0 0 L 10 5 L 0 10 z" fill={palette.arrow} />
             </marker>
           </defs>
 
@@ -217,7 +267,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
                   key={`${pid}-${c.id}`}
                   d={d}
                   fill="none"
-                  stroke="rgba(255,232,194,0.22)"
+                  stroke={palette.edge}
                   strokeWidth={1.5}
                   markerEnd="url(#rm-arrow)"
                 />
@@ -229,7 +279,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
           {list.categories.map((c) => {
             const center = layout.centers.get(c.id)!;
             const { done, total, pct } = categoryProgress(c, solved);
-            const colors = nodeColor(pct);
+            const colors = nodeColor(pct, palette);
             const selected = selectedId === c.id;
             const x = center.cx - NODE_W / 2;
             const y = center.cy - NODE_H / 2;
@@ -248,14 +298,14 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
                   rx={14}
                   ry={14}
                   fill={colors.fill}
-                  stroke={selected ? '#FFB133' : colors.stroke}
+                  stroke={selected ? palette.selectStroke : colors.stroke}
                   strokeWidth={selected ? 2.5 : 1.5}
                 />
                 <text
                   x={center.cx}
                   y={center.cy - 6}
                   textAnchor="middle"
-                  fill={colors.text}
+                  fill={palette.text}
                   fontSize={14}
                   fontWeight={600}
                   fontFamily="Poppins, system-ui, sans-serif"
@@ -266,7 +316,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
                   x={center.cx}
                   y={center.cy + 14}
                   textAnchor="middle"
-                  fill="rgba(247,238,228,0.6)"
+                  fill={palette.subText}
                   fontSize={11}
                   fontFamily="Poppins, system-ui, sans-serif"
                 >
@@ -279,7 +329,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
                   width={NODE_W - 28}
                   height={3}
                   rx={1.5}
-                  fill="rgba(255,255,255,0.08)"
+                  fill={palette.progressTrack}
                 />
                 <rect
                   x={x + 14}
@@ -287,7 +337,7 @@ export function RoadmapTree({ list, solved, selectedId, onSelect }: Props) {
                   width={(NODE_W - 28) * pct}
                   height={3}
                   rx={1.5}
-                  fill={pct === 1 ? '#2E8B6A' : '#FFB133'}
+                  fill={pct === 1 ? palette.doneStroke : palette.partialStroke}
                 />
               </g>
             );

@@ -61,7 +61,7 @@ export function UpdateModal() {
       size="sm"
     >
       {info.notes ? (
-        <details className="mb-4 rounded-md border border-glass-stroke bg-black/20 p-3 text-xs text-fgMuted">
+        <details className="mb-4 rounded-md border border-glass-stroke/10 bg-black/20 p-3 text-xs text-fg/[0.68]">
           <summary className="cursor-pointer text-fgSoft">{t('update.notes')}</summary>
           <pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words text-[11px] leading-relaxed">
             {info.notes}

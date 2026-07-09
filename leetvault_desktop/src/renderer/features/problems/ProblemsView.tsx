@@ -37,7 +37,7 @@ export function ProblemsView() {
       <header className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">{t('problems:title')}</h1>
-          <p className="text-xs text-fgMuted">
+          <p className="text-xs text-fg/[0.68]">
             {isLoading
               ? t('common:common.loading')
               : t('problems:count', { count: problems.length, filtered: filtered.length, total: problems.length })}

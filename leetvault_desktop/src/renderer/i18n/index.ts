@@ -17,6 +17,8 @@ import enChrome from './locales/en/chrome.json';
 import esChrome from './locales/es/chrome.json';
 import enHelp from './locales/en/help.json';
 import esHelp from './locales/es/help.json';
+import enDonate from './locales/en/donate.json';
+import esDonate from './locales/es/donate.json';
 
 export const NAMESPACES = [
   'common',
@@ -27,6 +29,7 @@ export const NAMESPACES = [
   'roadmap',
   'chrome',
   'help',
+  'donate',
 ] as const;
 
 const resources = {
@@ -39,6 +42,7 @@ const resources = {
     roadmap: enRoadmap,
     chrome: enChrome,
     help: enHelp,
+    donate: enDonate,
   },
   es: {
     common: esCommon,
@@ -49,6 +53,7 @@ const resources = {
     roadmap: esRoadmap,
     chrome: esChrome,
     help: esHelp,
+    donate: esDonate,
   },
 };
 

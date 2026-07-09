@@ -3,10 +3,13 @@ import type { Lang } from '@shared/lang';
 import { LANGUAGE_SETTING_KEY } from '@shared/lang';
 import { i18n } from '../i18n';
 
-export type View = 'problems' | 'review' | 'stats' | 'roadmap' | 'interview' | 'help' | 'settings';
+export type View = 'problems' | 'review' | 'stats' | 'roadmap' | 'interview' | 'help' | 'settings' | 'donate';
 
 export type DifficultyFilter = 'all' | 'Easy' | 'Medium' | 'Hard';
 export type StatusFilter = 'all' | 'Solved' | 'In Progress' | 'To Review';
+export type Theme = 'system' | 'dark' | 'light';
+
+const THEME_STORAGE_KEY = 'lv.theme';
 
 interface UiState {
   view: View;
@@ -14,6 +17,9 @@ interface UiState {
 
   language: Lang;
   setLanguage: (lang: Lang) => Promise<void>;
+
+  theme: Theme;
+  setTheme: (t: Theme) => void;
 
   search: string;
   setSearch: (s: string) => void;
@@ -41,6 +47,16 @@ interface UiState {
 
 const initialLanguage: Lang = (window.lv?.app?.initialLocale ?? 'en') as Lang;
 
+const initialTheme: Theme = (() => {
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === 'dark' || stored === 'light' || stored === 'system') return stored;
+  } catch {
+    // localStorage may throw in unusual sandboxed contexts
+  }
+  return 'system';
+})();
+
 export const useUi = create<UiState>((set) => ({
   view: 'problems',
   setView: (v) => {
@@ -54,6 +70,16 @@ export const useUi = create<UiState>((set) => ({
     await i18n.changeLanguage(lang);
     await window.lv.settings.set(LANGUAGE_SETTING_KEY, lang);
     await window.lv.app.localeChanged(lang);
+  },
+
+  theme: initialTheme,
+  setTheme: (t) => {
+    set({ theme: t });
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, t);
+    } catch {
+      // ignore persistence failure
+    }
   },
 
   search: '',

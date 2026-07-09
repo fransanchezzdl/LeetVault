@@ -51,12 +51,12 @@ export function AnalyticsNotice() {
 
   return (
     <div className="pointer-events-none fixed bottom-4 right-4 z-50 max-w-sm">
-      <div className="pointer-events-auto rounded-xl border border-glass-stroke bg-bg-200/95 p-4 shadow-2xl backdrop-blur-xl">
+      <div className="pointer-events-auto rounded-xl border border-glass-stroke/10 bg-bg-200/95 p-4 shadow-2xl backdrop-blur-xl">
         <div className="flex items-start gap-3">
           <BarChart3 className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-400" />
           <div className="flex-1 text-sm">
             <p className="font-medium text-fg">{t('chrome:analyticsNotice.title')}</p>
-            <p className="mt-1 text-xs text-fgMuted">
+            <p className="mt-1 text-xs text-fg/[0.68]">
               {t('chrome:analyticsNotice.body')}
             </p>
             <div className="mt-3 flex items-center gap-2">
@@ -67,11 +67,11 @@ export function AnalyticsNotice() {
               >
                 {t('chrome:analyticsNotice.openSettings')}
               </button>
-              <span className="text-xs text-fgMuted">·</span>
+              <span className="text-xs text-fg/[0.68]">·</span>
               <button
                 type="button"
                 onClick={dismiss}
-                className="text-xs text-fgMuted hover:text-fg"
+                className="text-xs text-fg/[0.68] hover:text-fg"
               >
                 {t('chrome:analyticsNotice.acknowledge')}
               </button>
@@ -80,7 +80,7 @@ export function AnalyticsNotice() {
           <button
             type="button"
             onClick={dismiss}
-            className="rounded p-1 text-fgMuted hover:bg-white/10 hover:text-fg"
+            className="rounded p-1 text-fg/[0.68] hover:bg-fg/10 hover:text-fg"
             aria-label={t('common:actions.close')}
           >
             <X className="h-3.5 w-3.5" />
