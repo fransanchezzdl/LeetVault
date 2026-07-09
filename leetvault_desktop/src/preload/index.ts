@@ -11,9 +11,13 @@ import type {
   InterviewProblemPublic,
   InterviewSendArgs,
   InterviewSessionSummary,
+  InterviewSpeakArgs,
+  InterviewSpeakResult,
   InterviewStartArgs,
   InterviewStartResult,
   InterviewStatsBundle,
+  InterviewTranscribeArgs,
+  InterviewTranscribeResult,
 } from '@shared/types/interview';
 import type { UpdateInfo } from '@shared/types/updater';
 
@@ -113,6 +117,10 @@ const api = {
       invoke(IpcChannels.Interview.List, { limit }),
     stats: (): Promise<InterviewStatsBundle> =>
       invoke(IpcChannels.Interview.Stats),
+    transcribe: (args: InterviewTranscribeArgs): Promise<InterviewTranscribeResult> =>
+      invoke(IpcChannels.Interview.Transcribe, args),
+    speak: (args: InterviewSpeakArgs): Promise<InterviewSpeakResult> =>
+      invoke(IpcChannels.Interview.Speak, args),
   },
   analytics: {
     viewOpened: (

@@ -25,7 +25,11 @@ export function useInterviewStreamSubscription(): void {
     });
     const offMsg = window.lv.on(IpcChannels.Events.InterviewMessage, (p) => {
       finalizeAssistant(p.text);
-      if (useInterview.getState().ttsEnabled) void speak(p.text);
+      const state = useInterview.getState();
+      if (state.ttsEnabled) {
+        state.setTtsError(null);
+        void speak(p.text, (msg) => useInterview.getState().setTtsError(msg));
+      }
     });
     return () => {
       offStream();

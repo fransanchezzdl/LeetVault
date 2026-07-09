@@ -3,6 +3,8 @@ import { SettingsRepo } from '../db/settings.repo';
 import {
   GROQ_BASE_URL,
   GROQ_MODEL,
+  GROQ_STT_MODEL,
+  GROQ_TTS_MODEL,
   type GroqError,
   type GroqMessage,
 } from './types';
@@ -154,4 +156,95 @@ export async function chat(
   const res = await streamChat({ ...opts, messages, onDelta: (c) => buf.push(c) });
   if (!res.ok) return res;
   return { ok: true, text: res.full };
+}
+
+/** Transcribes recorded audio to English text via Groq Whisper. */
+export async function transcribeAudio(
+  audio: Uint8Array<ArrayBuffer>,
+  mimeType: string
+): Promise<{ ok: true; text: string } | { ok: false; error: GroqError }> {
+  const key = SettingsRepo.get(GROQ_KEY);
+  if (!key) return { ok: false, error: { kind: 'missing_key' } };
+
+  const form = new FormData();
+  const ext = mimeType.includes('ogg') ? 'ogg' : 'webm';
+  form.append('file', new Blob([audio], { type: mimeType }), `speech.${ext}`);
+  form.append('model', GROQ_STT_MODEL);
+  form.append('language', 'en');
+  form.append('response_format', 'json');
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), OVERALL_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${GROQ_BASE_URL}/audio/transcriptions`, {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: { authorization: `Bearer ${key}` },
+      body: form,
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      if (res.status === 401 || res.status === 403) {
+        return { ok: false, error: { kind: 'auth', message: text || `${res.status}` } };
+      }
+      if (res.status === 429) {
+        return { ok: false, error: { kind: 'rate_limit', message: text || `${res.status}` } };
+      }
+      return { ok: false, error: { kind: 'server', message: text || `${res.status}` } };
+    }
+    const json = (await res.json()) as { text?: string };
+    return { ok: true, text: (json.text ?? '').trim() };
+  } catch (err) {
+    if (ctrl.signal.aborted) return { ok: false, error: { kind: 'aborted' } };
+    const msg = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: { kind: 'network', message: msg } };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Synthesizes speech (WAV) for a short text chunk via Groq Orpheus TTS. */
+export async function synthesizeSpeech(
+  text: string,
+  voice: string
+): Promise<{ ok: true; audio: ArrayBuffer } | { ok: false; error: GroqError }> {
+  const key = SettingsRepo.get(GROQ_KEY);
+  if (!key) return { ok: false, error: { kind: 'missing_key' } };
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), OVERALL_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${GROQ_BASE_URL}/audio/speech`, {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_TTS_MODEL,
+        input: text,
+        voice,
+        response_format: 'wav',
+      }),
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      if (res.status === 401 || res.status === 403) {
+        return { ok: false, error: { kind: 'auth', message: body || `${res.status}` } };
+      }
+      if (res.status === 429) {
+        return { ok: false, error: { kind: 'rate_limit', message: body || `${res.status}` } };
+      }
+      return { ok: false, error: { kind: 'server', message: body || `${res.status}` } };
+    }
+    const audio = await res.arrayBuffer();
+    return { ok: true, audio };
+  } catch (err) {
+    if (ctrl.signal.aborted) return { ok: false, error: { kind: 'aborted' } };
+    const msg = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: { kind: 'network', message: msg } };
+  } finally {
+    clearTimeout(timer);
+  }
 }
