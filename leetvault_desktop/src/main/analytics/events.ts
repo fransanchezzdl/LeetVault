@@ -18,7 +18,15 @@ export type EventName =
 export type EventProps = {
   app_opened: { is_first_launch: boolean };
   view_opened: {
-    view: 'problems' | 'review' | 'stats' | 'roadmap' | 'help' | 'interview' | 'settings';
+    view:
+      | 'problems'
+      | 'review'
+      | 'stats'
+      | 'roadmap'
+      | 'help'
+      | 'interview'
+      | 'settings'
+      | 'donate';
   };
   problem_created: {
     difficulty: 'Easy' | 'Medium' | 'Hard';
