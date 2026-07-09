@@ -126,9 +126,6 @@
   .nav-btn {
     @apply flex items-center gap-3 rounded-lg px-3 py-2 text-fgSoft/80 transition hover:bg-fg/5;
   }
-  .nav-btn-active {
-    @apply nav-btn bg-nav-active-grad text-fg;
-  }
   .input {
     @apply h-9 w-full rounded-md border border-glass-stroke/10 bg-bg-200/70 px-3 text-sm text-fg outline-none placeholder:text-fg/[0.68] focus:border-brand-500;
   }

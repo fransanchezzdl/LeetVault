@@ -15,6 +15,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../components/ui/Button';
 import { cn } from '../../lib/cn';
+import { SlidingIndicator, useSlidingIndicator } from '../../components/ui/SlidingIndicator';
 import { ExtensionPathBlock } from './ExtensionPathBlock';
 
 type Extra = 'extension' | 'groq' | undefined;
@@ -91,6 +92,9 @@ export function HelpView() {
   const [activeId, setActiveId] = useState<string>(SECTIONS[0].id);
   const normalized = query.trim().toLowerCase();
   const searching = normalized.length > 0;
+  const { containerRef, setItemRef, rect } = useSlidingIndicator<string, HTMLElement>(
+    searching ? null : activeId
+  );
 
   const resolvedSections = useMemo(
     () =>
@@ -171,7 +175,8 @@ export function HelpView() {
           ) : null}
         </div>
 
-        <nav className="flex flex-col gap-1 overflow-auto scroll-thin">
+        <nav ref={containerRef} className="relative flex flex-col gap-1 overflow-auto scroll-thin">
+          <SlidingIndicator rect={rect} />
           {resolvedSections.map((sec) => {
             const active = !searching && sec.id === activeId;
             const hits = matchesById?.get(sec.id) ?? 0;
@@ -180,13 +185,14 @@ export function HelpView() {
               <button
                 key={sec.id}
                 type="button"
+                ref={setItemRef(sec.id)}
                 onClick={() => {
                   setActiveId(sec.id);
                   if (searching) setQuery('');
                 }}
                 className={cn(
-                  active ? 'nav-btn-active' : 'nav-btn',
-                  'w-full text-left',
+                  'nav-btn relative w-full text-left transition-colors duration-300',
+                  active && 'text-fg hover:bg-transparent',
                   dim && 'opacity-50'
                 )}
                 aria-current={active ? 'page' : undefined}
