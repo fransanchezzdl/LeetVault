@@ -169,3 +169,26 @@
 .light .leetvault-heatmap .react-calendar-heatmap text {
   fill: rgba(26,22,18,0.55);
 }
+
+.light [role="dialog"] input,
+.light [role="dialog"] textarea,
+.light [role="dialog"] select,
+.light [role="dialog"] [role="combobox"] {
+  background-color: rgb(0 0 0 / 0.06);
+  border-color: rgb(var(--color-glass-stroke) / 0.35);
+}
+
+.light [role="dialog"] input:hover,
+.light [role="dialog"] textarea:hover,
+.light [role="dialog"] select:hover,
+.light [role="dialog"] [role="combobox"]:hover {
+  background-color: rgb(0 0 0 / 0.08);
+}
+
+.light [role="dialog"] input:focus,
+.light [role="dialog"] textarea:focus,
+.light [role="dialog"] select:focus,
+.light [role="dialog"] [role="combobox"]:focus,
+.light [role="dialog"] [role="combobox"][data-state="open"] {
+  border-color: rgb(var(--color-brand-500));
+}

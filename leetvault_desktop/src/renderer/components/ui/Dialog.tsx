@@ -25,6 +25,7 @@ export function Dialog({ open, onOpenChange, title, description, children, size 
         <RDialog.Content
           className={cn(
             'fixed left-1/2 top-1/2 z-50 w-[92vw] -translate-x-1/2 -translate-y-1/2 glass-card p-6 outline-none',
+            '[.light_&]:bg-bg-100 [.light_&]:border-glass-stroke/30',
             sizes[size]
           )}
         >
