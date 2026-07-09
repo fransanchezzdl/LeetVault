@@ -1,6 +1,6 @@
 {
   "title": "Help & FAQ",
-  "search.placeholder": "Search the help (questions, answers)…",
+  "search.placeholder": "Search key words",
   "search.clear": "Clear search",
   "search.empty": "No results.",
   "search.results_one": "{{count}} result in {{sections}} section.",

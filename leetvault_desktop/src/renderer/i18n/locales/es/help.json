@@ -1,6 +1,6 @@
 {
   "title": "Ayuda y preguntas frecuentes",
-  "search.placeholder": "Buscar en la ayuda (preguntas, respuestas)…",
+  "search.placeholder": "Buscar palabras clave",
   "search.clear": "Limpiar búsqueda",
   "search.empty": "Sin resultados.",
   "search.results_one": "{{count}} resultado en {{sections}} sección.",
