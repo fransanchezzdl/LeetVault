@@ -44,15 +44,19 @@ leetvault_desktop/src/
 └── renderer/
     ├── main.tsx, App.tsx
     ├── lib/   ipc.ts, queryClient.ts, useElasticScroll.ts, cn.ts
-    ├── store/ ui.ts              Zustand: nav, filters, modal state
+    ├── hooks/ useApplyTheme.ts, useResolvedTheme.ts
+    ├── store/ ui.ts              Zustand: nav, filters, modal state, theme
     ├── styles/ globals.css, fonts.css
-    ├── components/  chrome/{TitleBar,Sidebar,NavButton}, ui/, badges/
+    ├── components/  chrome/{TitleBar,Sidebar (grouped nav)}, ui/, badges/
     └── features/
         ├── problems/  ProblemsView, ProblemsTable, ProblemFormDialog, FilterBar, hooks.ts
         ├── review/    ReviewView, ReviewCard, hooks.ts
-        ├── stats/     StatsView (charts + heatmap), hooks.ts
-        ├── roadmap/   RoadmapView, data.ts
-        └── help/      HelpView
+        ├── stats/     StatsView (theme-aware charts + heatmap), hooks.ts
+        ├── roadmap/   RoadmapView, RoadmapTree (theme-aware SVG), CategoryPanel, data.ts
+        ├── interview/ InterviewView (setup/live/evaluation), voice.ts, store.ts
+        ├── settings/  SettingsView (Language, Appearance, Privacy & Data)
+        ├── help/      HelpView
+        └── donate/    DonateView (placeholder)
 ```
 
 ## IPC contract
@@ -315,9 +319,15 @@ Renderer (features/interview/):
 | Renderer entry | `src/renderer/main.tsx` |
 | Problems list (virtualized + elastic scroll) | `src/renderer/features/problems/` |
 | Review queue + Keep-revising toggle | `src/renderer/features/review/` |
-| Stats + heatmap + legend | `src/renderer/features/stats/` |
-| Roadmap (LeetCode 75) | `src/renderer/features/roadmap/` |
-| Help + DB import button | `src/renderer/features/help/` |
+| Stats + heatmap + legend (theme-aware) | `src/renderer/features/stats/` |
+| Roadmap (NeetCode 150/250, Blind 75, LC 75) | `src/renderer/features/roadmap/` |
+| Help view (usage guide, extension path) | `src/renderer/features/help/` |
+| Settings (Language, Appearance, Privacy & Data — incl. DB import) | `src/renderer/features/settings/` |
+| Donate view (placeholder — to be developed) | `src/renderer/features/donate/` |
+| Live Coding Interview feature | `src/renderer/features/interview/` |
+| Sidebar nav (primary + secondary groups) | `src/renderer/components/chrome/Sidebar.tsx` |
+| Theme resolution (`useResolvedTheme`) + application | `src/renderer/hooks/` |
+| Design tokens + CSS variables (`--shadow-*`, `--panel-bg`, `--sidebar-bg`, per-theme palette) | `src/renderer/styles/globals.css` |
 | Reusable elastic-scroll hook | `src/renderer/lib/useElasticScroll.ts` |
 
 ## Further reading

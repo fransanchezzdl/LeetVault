@@ -1,28 +1,26 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ChevronRight,
-  Database,
   ExternalLink,
   Folder,
   HelpCircle,
   List,
   Lock,
-  Map as MapIcon,
-  PieChart,
   RefreshCw,
   Search,
   Sparkles,
-  Upload,
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../components/ui/Button';
 import { cn } from '../../lib/cn';
+import { SlidingIndicator, useSlidingIndicator } from '../../components/ui/SlidingIndicator';
+import { ExtensionPathBlock } from './ExtensionPathBlock';
 
 type Extra = 'extension' | 'groq' | undefined;
 interface Item {
+  src: string;
   id: string;
   extra?: Extra;
 }
@@ -35,235 +33,222 @@ interface Section {
 
 const SECTIONS: Section[] = [
   {
-    id: 'intro',
+    id: 'gettingStarted',
     icon: Sparkles,
-    items: [{ id: 'what' }, { id: 'manual' }, { id: 'fromLeetcode' }],
+    items: [
+      { src: 'intro', id: 'what' },
+      { src: 'intro', id: 'manual' },
+      { src: 'intro', id: 'fromLeetcode' },
+      { src: 'stats', id: 'what' },
+      { src: 'roadmap', id: 'what' },
+      { src: 'roadmap', id: 'filter' },
+    ],
   },
   {
     id: 'problems',
     icon: List,
-    items: [{ id: 'filter' }, { id: 'statuses' }, { id: 'editDelete' }],
+    items: [
+      { src: 'problems', id: 'filter' },
+      { src: 'problems', id: 'statuses' },
+      { src: 'problems', id: 'editDelete' },
+    ],
   },
   {
     id: 'review',
     icon: RefreshCw,
-    items: [{ id: 'what' }, { id: 'howSession' }, { id: 'whenAdded' }],
-  },
-  {
-    id: 'stats',
-    icon: PieChart,
-    items: [{ id: 'what' }],
-  },
-  {
-    id: 'roadmap',
-    icon: MapIcon,
-    items: [{ id: 'what' }, { id: 'filter' }],
+    items: [
+      { src: 'review', id: 'what' },
+      { src: 'review', id: 'howSession' },
+      { src: 'review', id: 'whenAdded' },
+    ],
   },
   {
     id: 'extension',
     icon: Folder,
     items: [
-      { id: 'install', extra: 'extension' },
-      { id: 'requires' },
-      { id: 'data' },
-    ],
-  },
-  {
-    id: 'ai',
-    icon: Sparkles,
-    items: [
-      { id: 'what' },
-      { id: 'setup', extra: 'groq' },
-      { id: 'cost' },
-      { id: 'error401' },
+      { src: 'extension', id: 'install', extra: 'extension' },
+      { src: 'extension', id: 'requires' },
+      { src: 'extension', id: 'data' },
+      { src: 'ai', id: 'what' },
+      { src: 'ai', id: 'setup', extra: 'groq' },
+      { src: 'ai', id: 'cost' },
+      { src: 'ai', id: 'error401' },
     ],
   },
   {
     id: 'privacy',
     icon: Lock,
-    items: [{ id: 'location' }, { id: 'network' }, { id: 'backup' }],
+    items: [
+      { src: 'privacy', id: 'location' },
+      { src: 'privacy', id: 'network' },
+      { src: 'privacy', id: 'backup' },
+    ],
   },
 ];
 
 export function HelpView() {
   const { t } = useTranslation('help');
   const [query, setQuery] = useState('');
+  const [activeId, setActiveId] = useState<string>(SECTIONS[0].id);
   const normalized = query.trim().toLowerCase();
+  const searching = normalized.length > 0;
+  const { containerRef, setItemRef, rect } = useSlidingIndicator<string, HTMLElement>(
+    searching ? null : activeId
+  );
 
-  const filteredSections = useMemo(() => {
-    if (!normalized) {
-      return SECTIONS.map((sec) => ({
+  const resolvedSections = useMemo(
+    () =>
+      SECTIONS.map((sec) => ({
         ...sec,
-        title: t(`sections.${sec.id}.title`),
+        title: t(`nav.${sec.id}`),
+        navLabel: t(`nav.${sec.id}`),
         items: sec.items.map((item) => ({
           ...item,
-          q: t(`sections.${sec.id}.${item.id}.q`),
-          a: t(`sections.${sec.id}.${item.id}.a`),
+          q: t(`sections.${item.src}.${item.id}.q`),
+          a: t(`sections.${item.src}.${item.id}.a`),
         })),
-      }));
+      })),
+    [t]
+  );
+
+  const matchesById = useMemo(() => {
+    if (!searching) return null;
+    const map = new Map<string, number>();
+    for (const sec of resolvedSections) {
+      const hits = sec.items.filter(
+        (it) =>
+          it.q.toLowerCase().includes(normalized) ||
+          it.a.toLowerCase().includes(normalized)
+      ).length;
+      if (hits > 0) map.set(sec.id, hits);
     }
-    return SECTIONS.map((sec) => {
-      const items = sec.items
-        .map((item) => ({
-          ...item,
-          q: t(`sections.${sec.id}.${item.id}.q`),
-          a: t(`sections.${sec.id}.${item.id}.a`),
-        }))
-        .filter(
+    return map;
+  }, [normalized, resolvedSections, searching]);
+
+  const visibleSections = useMemo(() => {
+    if (!searching) {
+      const active = resolvedSections.find((s) => s.id === activeId);
+      return active ? [active] : [];
+    }
+    return resolvedSections
+      .map((sec) => ({
+        ...sec,
+        items: sec.items.filter(
           (it) =>
             it.q.toLowerCase().includes(normalized) ||
             it.a.toLowerCase().includes(normalized)
-        );
-      return { ...sec, title: t(`sections.${sec.id}.title`), items };
-    }).filter((sec) => sec.items.length > 0);
-  }, [normalized, t]);
+        ),
+      }))
+      .filter((sec) => sec.items.length > 0);
+  }, [activeId, normalized, resolvedSections, searching]);
 
-  const totalHits = filteredSections.reduce((n, s) => n + s.items.length, 0);
+  const totalHits = matchesById
+    ? Array.from(matchesById.values()).reduce((n, v) => n + v, 0)
+    : 0;
 
   return (
-    <div className="h-full overflow-auto scroll-thin">
-      <div className="px-8 py-7">
-      <header className="mb-6 flex items-center gap-2">
-        <HelpCircle className="h-5 w-5 text-brand-400" />
-        <h1 className="text-2xl font-bold text-fg">{t('title')}</h1>
-      </header>
+    <div className="flex h-full min-h-0">
+      <aside className="flex w-60 flex-shrink-0 flex-col border-r border-glass-stroke/10 bg-bg-200/40 px-3 py-5 backdrop-blur-sm">
+        <header className="mb-3 flex items-center gap-2 px-2">
+          <HelpCircle className="h-4 w-4 text-brand-400" />
+          <h1 className="text-sm font-semibold tracking-tight text-fg">{t('title')}</h1>
+        </header>
 
-      <div className="mb-7 max-w-5xl">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fgMuted" />
+        <div className="relative mb-3">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg/[0.68]" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('search.placeholder')}
-            className="h-11 w-full rounded-xl border border-glass-stroke bg-bg-200/60 pl-10 pr-10 text-sm text-fg placeholder:text-fgMuted outline-none backdrop-blur-sm focus:border-brand-500"
+            className="h-9 w-full rounded-md border border-glass-stroke/10 bg-bg-200/60 pl-8 pr-8 text-xs text-fg placeholder:text-fg/[0.68] outline-none focus:border-brand-500"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1.5 text-fgMuted hover:bg-white/10 hover:text-fg"
+              className="absolute right-1 top-1/2 -translate-y-1/2 rounded p-1 text-fg/[0.68] hover:bg-fg/10 hover:text-fg"
               aria-label={t('search.clear')}
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </button>
           ) : null}
         </div>
-        {normalized ? (
-          <p className="mt-2 px-1 text-xs text-fgMuted">
-            {totalHits === 0
-              ? t('search.empty')
-              : t('search.results', {
-                  count: totalHits,
-                  sections: filteredSections.length,
-                })}
-          </p>
-        ) : null}
-      </div>
 
-      <div className="max-w-5xl space-y-7">
-        {!normalized ? <DataSection /> : null}
-        {filteredSections.map((sec) => (
-          <section key={sec.id}>
-            <div className="mb-2 flex items-center gap-2">
-              <sec.icon className="h-4 w-4 text-brand-400" />
-              <h2 className="text-base font-bold text-brand-200">{sec.title}</h2>
-            </div>
-            <div className="mb-3 border-b border-glass-stroke" />
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
-              {sec.items.map((it) => (
-                <FaqItem
-                  key={it.id}
-                  question={it.q}
-                  answer={it.a}
-                  extra={it.extra}
-                  defaultOpen={!!normalized}
-                  highlight={normalized}
-                />
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+        <nav ref={containerRef} className="relative flex flex-col gap-1 overflow-auto scroll-thin">
+          <SlidingIndicator rect={rect} />
+          {resolvedSections.map((sec) => {
+            const active = !searching && sec.id === activeId;
+            const hits = matchesById?.get(sec.id) ?? 0;
+            const dim = searching && hits === 0;
+            return (
+              <button
+                key={sec.id}
+                type="button"
+                ref={setItemRef(sec.id)}
+                onClick={() => {
+                  setActiveId(sec.id);
+                  if (searching) setQuery('');
+                }}
+                className={cn(
+                  'nav-btn relative w-full text-left transition-colors duration-300',
+                  active && 'text-fg hover:bg-transparent',
+                  dim && 'opacity-50'
+                )}
+                aria-current={active ? 'page' : undefined}
+              >
+                <sec.icon className="h-4 w-4 flex-shrink-0" />
+                <span className="flex-1 truncate text-sm">{sec.navLabel}</span>
+                {searching && hits > 0 ? (
+                  <span className="rounded bg-brand-500/20 px-1.5 py-0.5 text-[10px] font-medium text-brand-200">
+                    {hits}
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </nav>
+      </aside>
+
+      <div className="min-w-0 flex-1 overflow-auto scroll-thin">
+        <div className="max-w-5xl px-8 py-7">
+          {searching ? (
+            <p className="mb-5 text-xs text-fg/[0.68]">
+              {totalHits === 0
+                ? t('search.empty')
+                : t('search.results', {
+                    count: totalHits,
+                    sections: visibleSections.length,
+                  })}
+            </p>
+          ) : null}
+
+          <div className="space-y-7">
+            {visibleSections.map((sec) => (
+              <section key={sec.id}>
+                <div className="mb-2 flex items-center gap-2">
+                  <sec.icon className="h-4 w-4 text-brand-400" />
+                  <h2 className="text-base font-bold text-brand-200">{sec.title}</h2>
+                </div>
+                <div className="mb-3 border-b border-glass-stroke/10" />
+                <div className="space-y-2">
+                  {sec.items.map((it) => (
+                    <FaqItem
+                      key={`${it.src}.${it.id}`}
+                      question={it.q}
+                      answer={it.a}
+                      extra={it.extra}
+                      defaultOpen={searching}
+                      highlight={normalized}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
-  );
-}
-
-function DataSection() {
-  const { t } = useTranslation('help');
-  const qc = useQueryClient();
-  const [dbPath, setDbPath] = useState<string>('');
-  const [status, setStatus] = useState<{
-    kind: 'idle' | 'ok' | 'err';
-    msg?: string;
-  }>({ kind: 'idle' });
-  const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    window.lv.app.dbPath().then(setDbPath).catch(() => setDbPath(''));
-  }, []);
-
-  const onImport = async () => {
-    setBusy(true);
-    setStatus({ kind: 'idle' });
-    try {
-      const res = await window.lv.app.importDb();
-      if (res.ok) {
-        await qc.invalidateQueries();
-        setStatus({
-          kind: 'ok',
-          msg: t('data.importedSuccess', {
-            count: res.imported,
-            backup: res.backupPath || t('data.noPreviousBackup'),
-          }),
-        });
-      } else if (res.reason === 'cancelled') {
-        setStatus({ kind: 'idle' });
-      } else {
-        setStatus({ kind: 'err', msg: res.message || t('data.importErrorFallback') });
-      }
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <section>
-      <div className="mb-2 flex items-center gap-2">
-        <Database className="h-4 w-4 text-brand-400" />
-        <h2 className="text-base font-bold text-brand-200">{t('data.title')}</h2>
-      </div>
-      <div className="mb-3 border-b border-glass-stroke" />
-
-      <div className="rounded-2xl border border-glass-stroke bg-white/[0.04] p-4">
-        <p className="text-sm text-fg">{t('data.importTitle')}</p>
-        <p className="mt-1 text-xs text-fgMuted">{t('data.importDescription')}</p>
-        {dbPath ? (
-          <p className="mt-2 text-[11px] text-fgMuted/80">
-            {t('data.currentPath')} <code className="text-fgSoft">{dbPath}</code>
-          </p>
-        ) : null}
-
-        <div className="mt-3">
-          <Button variant="outline" className="gap-2" onClick={onImport} disabled={busy}>
-            <Upload className="h-4 w-4" />
-            {busy ? t('data.importing') : t('data.importButton')}
-          </Button>
-        </div>
-
-        {status.kind === 'ok' ? (
-          <p className="mt-3 rounded-md border border-status-solved/40 bg-status-solved/10 px-3 py-2 text-xs text-fgSoft">
-            {status.msg}
-          </p>
-        ) : null}
-        {status.kind === 'err' ? (
-          <p className="mt-3 rounded-md border border-diff-hard/40 bg-diff-hard/10 px-3 py-2 text-xs text-fgSoft">
-            {status.msg}
-          </p>
-        ) : null}
-      </div>
-    </section>
   );
 }
 
@@ -289,10 +274,10 @@ function FaqItem({
   return (
     <div
       className={cn(
-        'rounded-2xl border border-glass-stroke bg-white/[0.04] transition',
+        'rounded-2xl border border-glass-stroke/10 bg-fg/[0.04] transition',
         open
-          ? 'border-brand-400/40 bg-white/[0.07]'
-          : 'hover:border-brand-400/30 hover:bg-white/[0.06]'
+          ? 'border-brand-400/40 bg-fg/[0.07]'
+          : 'hover:border-brand-400/30 hover:bg-fg/[0.06]'
       )}
     >
       <button
@@ -313,7 +298,7 @@ function FaqItem({
       </button>
       {open ? (
         <div className="px-4 pb-4 pl-11">
-          <p className="whitespace-pre-line text-sm leading-relaxed text-fgMuted">
+          <p className="whitespace-pre-line text-sm leading-relaxed text-fg/[0.68]">
             {renderHighlighted(answer, highlight)}
           </p>
           {extra === 'extension' ? <ExtensionPathBlock /> : null}
@@ -328,46 +313,6 @@ function FaqItem({
           ) : null}
         </div>
       ) : null}
-    </div>
-  );
-}
-
-function ExtensionPathBlock() {
-  const { t } = useTranslation('help');
-  const [path, setPath] = useState<string>('');
-
-  useEffect(() => {
-    window.lv.app.extensionPath().then(setPath).catch(() => setPath(''));
-  }, []);
-
-  return (
-    <div className="mt-3 space-y-2">
-      {path ? (
-        <p className="text-[11px] text-fgMuted/80">
-          {t('faq.extension.path')} <code className="text-fgSoft">{path}</code>
-        </p>
-      ) : null}
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant="outline"
-          className="gap-2"
-          onClick={() => window.lv.app.openExtensionFolder()}
-          disabled={!path}
-        >
-          <Folder className="h-4 w-4" /> {t('faq.extension.openFolder')}
-        </Button>
-        <Button
-          variant="outline"
-          className="gap-2"
-          onClick={() =>
-            window.lv.app.openExternal(
-              'https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world'
-            )
-          }
-        >
-          <ExternalLink className="h-4 w-4" /> {t('faq.extension.installGuide')}
-        </Button>
-      </div>
     </div>
   );
 }

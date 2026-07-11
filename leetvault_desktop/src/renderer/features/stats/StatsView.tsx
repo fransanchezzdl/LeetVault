@@ -21,6 +21,7 @@ import type {
   InterviewVerdict,
 } from '@shared/types/interview';
 import { formatDateLong } from '../../i18n/format';
+import { useResolvedTheme, type ResolvedTheme } from '../../hooks/useResolvedTheme';
 
 const DIFF_COLORS: Record<string, string> = {
   Easy: '#00A896',
@@ -36,13 +37,51 @@ const HEATMAP_PALETTE = [
   '#B85C00',
 ];
 
+const LIGHT_HEATMAP_PALETTE = [
+  '#FCE5C2',
+  '#F8C078',
+  '#E88A1A',
+  '#B85C00',
+  '#7A3D00',
+];
+
+interface ChartTheme {
+  tick: string;
+  tooltipBg: string;
+  tooltipBorder: string;
+  tooltipText: string;
+  cursor: string;
+  emptyCell: string;
+}
+
+function chartTheme(resolved: ResolvedTheme): ChartTheme {
+  if (resolved === 'light') {
+    return {
+      tick: '#2A1B0F',
+      tooltipBg: '#FFFFFF',
+      tooltipBorder: 'rgba(0,0,0,0.10)',
+      tooltipText: '#1A1612',
+      cursor: 'rgba(0,0,0,0.04)',
+      emptyCell: 'rgba(0,0,0,0.06)',
+    };
+  }
+  return {
+    tick: '#F7EEE4',
+    tooltipBg: '#1A120D',
+    tooltipBorder: 'rgba(255,232,194,0.10)',
+    tooltipText: '#F7EEE4',
+    cursor: 'rgba(255,255,255,0.04)',
+    emptyCell: 'rgba(255,255,255,0.05)',
+  };
+}
+
 export function StatsView() {
   const { t } = useTranslation('stats');
   const { data, isLoading } = useStatsBundle();
   const { data: interview } = useInterviewStats();
 
   if (isLoading || !data) {
-    return <div className="p-6 text-sm text-fgMuted">{t('loading')}</div>;
+    return <div className="p-6 text-sm text-fg/[0.68]">{t('loading')}</div>;
   }
 
   const summary = data.next_review
@@ -58,7 +97,7 @@ export function StatsView() {
       <div className="flex flex-col gap-4 p-6">
         <header>
           <h1 className="text-xl font-semibold">{t('title')}</h1>
-          <p className="text-xs text-fgMuted">{summary}</p>
+          <p className="text-xs text-fg/[0.68]">{summary}</p>
         </header>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -84,6 +123,7 @@ const DifficultyChart = memo(function DifficultyChart({
   data: DifficultyCount[];
 }) {
   const { t } = useTranslation('stats');
+  const ct = chartTheme(useResolvedTheme());
   const rows = data.map((d) => ({
     difficulty: d.difficulty ?? t('unclassified'),
     cnt: d.cnt,
@@ -101,15 +141,15 @@ const DifficultyChart = memo(function DifficultyChart({
             </Pie>
             <Tooltip
               contentStyle={{
-                background: '#1A120D',
-                border: '1px solid rgba(255,232,194,0.10)',
-                color: '#F7EEE4',
+                background: ct.tooltipBg,
+                border: `1px solid ${ct.tooltipBorder}`,
+                color: ct.tooltipText,
                 fontSize: 12,
                 borderRadius: 8,
                 padding: '6px 10px',
               }}
-              itemStyle={{ color: '#F7EEE4' }}
-              labelStyle={{ color: '#F7EEE4' }}
+              itemStyle={{ color: ct.tooltipText }}
+              labelStyle={{ color: ct.tooltipText }}
               formatter={(value: number, name: string) => [
                 t('totalProblems', { count: value }),
                 name,
@@ -118,7 +158,7 @@ const DifficultyChart = memo(function DifficultyChart({
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <ul className="mt-2 flex justify-center gap-4 text-xs text-fgMuted">
+      <ul className="mt-2 flex justify-center gap-4 text-xs text-fg/[0.68]">
         {rows.map((d) => (
           <li key={d.difficulty} className="flex items-center gap-1.5">
             <span
@@ -139,31 +179,32 @@ const PatternChart = memo(function PatternChart({
   data: PatternCount[];
 }) {
   const { t } = useTranslation('stats');
+  const ct = chartTheme(useResolvedTheme());
   return (
     <section className="glass-card-dim p-4">
       <h2 className="mb-3 text-sm font-semibold">{t('topPatterns')}</h2>
       <div className="h-56">
         <ResponsiveContainer>
           <BarChart data={data} layout="vertical" margin={{ left: 16, right: 16 }}>
-            <XAxis type="number" tick={{ fill: '#F7EEE4', fontSize: 11 }} />
+            <XAxis type="number" tick={{ fill: ct.tick, fontSize: 11 }} />
             <YAxis
               type="category"
               dataKey="pattern"
-              tick={{ fill: '#F7EEE4', fontSize: 11 }}
+              tick={{ fill: ct.tick, fontSize: 11 }}
               width={120}
             />
             <Tooltip
               contentStyle={{
-                background: '#1A120D',
-                border: '1px solid rgba(255,232,194,0.10)',
-                color: '#F7EEE4',
+                background: ct.tooltipBg,
+                border: `1px solid ${ct.tooltipBorder}`,
+                color: ct.tooltipText,
                 fontSize: 12,
                 borderRadius: 8,
                 padding: '6px 10px',
               }}
-              itemStyle={{ color: '#F7EEE4' }}
-              labelStyle={{ color: '#F7EEE4' }}
-              cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+              itemStyle={{ color: ct.tooltipText }}
+              labelStyle={{ color: ct.tooltipText }}
+              cursor={{ fill: ct.cursor }}
               formatter={(value: number) => [
                 t('totalProblems', { count: value }),
                 t('tooltipTotal'),
@@ -183,6 +224,9 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
   data: DateCount[];
 }) {
   const { t } = useTranslation('stats');
+  const resolved = useResolvedTheme();
+  const ct = chartTheme(resolved);
+  const palette = resolved === 'light' ? LIGHT_HEATMAP_PALETTE : HEATMAP_PALETTE;
   const countsByDate = new Map(data.map((d) => [d.date_solved, d.cnt]));
   const today = new Date();
   const start = new Date(today);
@@ -198,7 +242,7 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
           values={data.map((d) => ({ date: d.date_solved, count: d.cnt }))}
           classForValue={(v) => {
             if (!v || !v.count) return 'lv-cell-empty';
-            const idx = Math.min(v.count - 1, HEATMAP_PALETTE.length - 1);
+            const idx = Math.min(v.count - 1, palette.length - 1);
             return `lv-cell-${idx}`;
           }}
           titleForValue={(v) => {
@@ -210,14 +254,14 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
           showWeekdayLabels
         />
       </div>
-      <div className="mt-4 flex items-center justify-center gap-2.5 px-4 text-xs text-fgMuted">
+      <div className="mt-4 flex items-center justify-center gap-2.5 px-4 text-xs text-fg/[0.68]">
         <span>{t('legend.less')}</span>
         <span
-          className="h-4 w-4 rounded-[4px] border border-glass-stroke"
-          style={{ background: 'rgba(255,255,255,0.05)' }}
+          className="h-4 w-4 rounded-[4px] border border-glass-stroke/10"
+          style={{ background: ct.emptyCell }}
           aria-label={t('legend.empty')}
         />
-        {HEATMAP_PALETTE.map((c, i) => (
+        {palette.map((c, i) => (
           <span
             key={c}
             className="h-4 w-4 rounded-[4px]"
@@ -279,7 +323,7 @@ function InterviewStatsEmpty(): JSX.Element {
         <Sparkles className="h-4 w-4 text-brand-400" />
         <h2 className="text-sm font-semibold">{t('interview.title')}</h2>
       </div>
-      <p className="text-xs text-fgMuted">{t('interview.empty')}</p>
+      <p className="text-xs text-fg/[0.68]">{t('interview.empty')}</p>
     </section>
   );
 }
@@ -299,7 +343,7 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
           <Sparkles className="h-4 w-4 text-brand-400" />
           <h2 className="text-sm font-semibold">{t('interview.title')}</h2>
         </div>
-        <p className="text-[11px] text-fgMuted">
+        <p className="text-[11px] text-fg/[0.68]">
           {t('interview.header', {
             count: data.total,
             time: formatDuration(data.totalSeconds),
@@ -326,7 +370,7 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
 
       {data.avgScores ? (
         <div className="mb-4">
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
             {t('interview.criteriaTitle')}
           </h3>
           <ul className="space-y-1.5">
@@ -359,7 +403,7 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
 
       {data.recent.length > 0 ? (
         <div className="mt-5">
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
             {t('interview.recent')}
           </h3>
           <ul className="divide-y divide-glass-stroke/40 overflow-hidden rounded-md border border-glass-stroke/40">
@@ -370,7 +414,7 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
               >
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-medium text-fgSoft">{r.problemId}</div>
-                  <div className="text-[10px] text-fgMuted">
+                  <div className="text-[10px] text-fg/[0.68]">
                     {r.difficulty} · {r.language} · {formatDuration(r.durationSec)} ·{' '}
                     {formatRelativeDate(r.startedAt)}
                   </div>
@@ -386,7 +430,7 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
                     {r.overall}
                   </span>
                 ) : (
-                  <span className="text-[10px] text-fgMuted">{t('interview.noScore')}</span>
+                  <span className="text-[10px] text-fg/[0.68]">{t('interview.noScore')}</span>
                 )}
               </li>
             ))}
@@ -408,7 +452,7 @@ function StatTile({
 }): JSX.Element {
   return (
     <div className="rounded-md border border-glass-stroke/40 bg-bg-300/40 px-3 py-2">
-      <div className="text-[10px] uppercase tracking-wide text-fgMuted">{label}</div>
+      <div className="text-[10px] uppercase tracking-wide text-fg/[0.68]">{label}</div>
       <div className={`mt-0.5 text-sm font-semibold text-fg ${valueClassName ?? ''}`}>
         {value}
       </div>
@@ -428,11 +472,11 @@ function VerdictBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element
   const total = data.byVerdict.reduce((sum, v) => sum + v.cnt, 0);
   return (
     <div>
-      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
+      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
         {t('interview.verdicts')}
       </h3>
       {total === 0 ? (
-        <p className="text-xs text-fgMuted">{t('interview.verdictsEmpty')}</p>
+        <p className="text-xs text-fg/[0.68]">{t('interview.verdictsEmpty')}</p>
       ) : (
         <ul className="space-y-1.5">
           {order.map((v) => {
@@ -462,12 +506,12 @@ function SplitsBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element 
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
           {t('interview.byDifficulty')}
         </h3>
         <ul className="flex flex-wrap gap-1.5">
           {data.byDifficulty.length === 0 ? (
-            <li className="text-xs text-fgMuted">—</li>
+            <li className="text-xs text-fg/[0.68]">—</li>
           ) : (
             data.byDifficulty.map((d) => (
               <li
@@ -482,12 +526,12 @@ function SplitsBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element 
         </ul>
       </div>
       <div>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fgMuted">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
           {t('interview.byLanguage')}
         </h3>
         <ul className="flex flex-wrap gap-1.5">
           {data.byLanguage.length === 0 ? (
-            <li className="text-xs text-fgMuted">—</li>
+            <li className="text-xs text-fg/[0.68]">—</li>
           ) : (
             data.byLanguage.map((l) => (
               <li

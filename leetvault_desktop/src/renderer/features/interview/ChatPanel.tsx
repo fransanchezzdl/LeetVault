@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mic, MicOff, Send, Volume2, VolumeX } from 'lucide-react';
+import { Loader2, Mic, MicOff, Send, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useInterview } from './store';
 import {
   canRecord,
   canSpeak,
-  startRecognizing,
+  startRecording,
   stopSpeaking,
-  type RecognizerHandle,
+  type RecorderHandle,
 } from './voice';
 
 const VOICE_PREF_KEY = 'interview_tts_enabled';
@@ -23,12 +23,15 @@ export function ChatPanel(): JSX.Element {
   const streamError = useInterview((s) => s.streamError);
   const ttsEnabled = useInterview((s) => s.ttsEnabled);
   const setTtsEnabled = useInterview((s) => s.setTtsEnabled);
+  const ttsError = useInterview((s) => s.ttsError);
+  const setTtsError = useInterview((s) => s.setTtsError);
 
   const [input, setInput] = useState('');
-  const [listening, setListening] = useState(false);
+  const [micState, setMicState] = useState<'idle' | 'recording' | 'transcribing'>('idle');
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const recRef = useRef<RecognizerHandle | null>(null);
+  const recRef = useRef<RecorderHandle | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const recordSupported = canRecord();
   const speakSupported = canSpeak();
@@ -38,6 +41,14 @@ export function ChatPanel(): JSX.Element {
     const el = scrollerRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages]);
+
+  // Auto-grow the input up to max-h (then the textarea scrolls internally)
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, [input]);
 
   const handleSend = async (): Promise<void> => {
     const text = input.trim();
@@ -60,38 +71,36 @@ export function ChatPanel(): JSX.Element {
     }
   };
 
-  const toggleListen = (): void => {
+  const toggleListen = async (): Promise<void> => {
     setVoiceError(null);
-    if (listening) {
+    if (micState === 'recording') {
       recRef.current?.stop();
       recRef.current = null;
-      setListening(false);
       return;
     }
-    const handle = startRecognizing({
-      onInterim: (t) => setInput(t),
+    if (micState === 'transcribing') return;
+    const handle = await startRecording({
+      onTranscribing: () => setMicState('transcribing'),
       onFinal: (t) => {
-        setInput(t);
+        setInput((prev) => (prev ? `${prev.trimEnd()} ${t}` : t));
         recRef.current = null;
-        setListening(false);
+        setMicState('idle');
       },
-      onError: (code) => {
-        setVoiceError(`Mic: ${code}`);
+      onError: (message) => {
+        setVoiceError(`Mic: ${message}`);
         recRef.current = null;
-        setListening(false);
+        setMicState('idle');
       },
     });
-    if (!handle) {
-      setVoiceError('Speech recognition is unavailable on this system.');
-      return;
-    }
+    if (!handle) return;
     recRef.current = handle;
-    setListening(true);
+    setMicState('recording');
   };
 
   const toggleTts = (): void => {
     const next = !ttsEnabled;
     setTtsEnabled(next);
+    setTtsError(null);
     void window.lv.settings.set(VOICE_PREF_KEY, next ? '1' : '0');
     if (!next) stopSpeaking();
   };
@@ -99,7 +108,7 @@ export function ChatPanel(): JSX.Element {
   // Clean up active mic on unmount
   useEffect(() => {
     return () => {
-      recRef.current?.stop();
+      recRef.current?.cancel();
       recRef.current = null;
     };
   }, []);
@@ -111,7 +120,7 @@ export function ChatPanel(): JSX.Element {
         className="scroll-thin flex-1 space-y-3 overflow-y-auto p-4"
       >
         {messages.length === 0 ? (
-          <div className="text-xs text-fgMuted">
+          <div className="text-xs text-fg/[0.68]">
             The interviewer will introduce the problem in a moment…
           </div>
         ) : null}
@@ -130,18 +139,26 @@ export function ChatPanel(): JSX.Element {
             {recordSupported ? (
               <button
                 type="button"
-                onClick={toggleListen}
-                disabled={sending}
+                onClick={() => void toggleListen()}
+                disabled={sending || micState === 'transcribing'}
                 className={
                   'btn h-8 px-2 ' +
-                  (listening
+                  (micState === 'recording'
                     ? 'bg-diff-hard/20 text-diff-hard hover:bg-diff-hard/30'
-                    : 'text-fgMuted hover:bg-white/5')
+                    : 'text-fg/[0.68] hover:bg-fg/5')
                 }
-                title={listening ? 'Stop listening' : 'Speak (English)'}
+                title={
+                  micState === 'recording'
+                    ? 'Stop and transcribe'
+                    : micState === 'transcribing'
+                      ? 'Transcribing…'
+                      : 'Speak (English)'
+                }
               >
-                {listening ? (
+                {micState === 'recording' ? (
                   <MicOff className="h-4 w-4" />
+                ) : micState === 'transcribing' ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Mic className="h-4 w-4" />
                 )}
@@ -155,7 +172,7 @@ export function ChatPanel(): JSX.Element {
                   'btn h-8 px-2 ' +
                   (ttsEnabled
                     ? 'bg-brand-500/15 text-brand-400 hover:bg-brand-500/25'
-                    : 'text-fgMuted hover:bg-white/5')
+                    : 'text-fg/[0.68] hover:bg-fg/5')
                 }
                 title={
                   ttsEnabled ? 'Stop reading replies aloud' : 'Read replies aloud'
@@ -172,6 +189,7 @@ export function ChatPanel(): JSX.Element {
         ) : null}
         <div className="flex items-end gap-2">
           <textarea
+            ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
@@ -181,12 +199,14 @@ export function ChatPanel(): JSX.Element {
               }
             }}
             placeholder={
-              listening
-                ? 'Listening… speak in English'
-                : 'Ask a clarifying question, walk through your approach…'
+              micState === 'recording'
+                ? 'Recording… speak in English, press the mic to finish'
+                : micState === 'transcribing'
+                  ? 'Transcribing…'
+                  : 'Ask a clarifying question, walk through your approach…'
             }
-            rows={2}
-            className="input min-h-[2.5rem] min-w-0 flex-1 resize-none py-2"
+            rows={1}
+            className="input scroll-thin max-h-40 min-h-[2.5rem] min-w-0 flex-1 resize-none overflow-y-auto py-2"
             disabled={sending}
           />
           <button
@@ -199,9 +219,10 @@ export function ChatPanel(): JSX.Element {
             <Send className="h-4 w-4" />
           </button>
         </div>
-        <div className="mt-1 flex flex-wrap items-center justify-between gap-1 text-[10px] text-fgMuted">
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-1 text-[10px] text-fg/[0.68]">
           <span>Enter to send · Shift+Enter for newline · English only</span>
           {voiceError ? <span className="text-diff-hard">{voiceError}</span> : null}
+          {ttsError ? <span className="text-diff-hard">Voice: {ttsError}</span> : null}
         </div>
       </div>
     </div>
@@ -282,7 +303,7 @@ function AssistantMarkdown({
             );
           },
           pre: ({ children }) => (
-            <pre className="my-2 overflow-x-auto rounded-md border border-glass-stroke bg-bg-300/70 p-2.5 text-fgSoft">
+            <pre className="my-2 overflow-x-auto rounded-md border border-glass-stroke/10 bg-bg-300/70 p-2.5 text-fgSoft">
               {children}
             </pre>
           ),

@@ -43,7 +43,7 @@ Cache invalidation is **event-driven**: every write (UI or extension) emits an I
   - **macOS** — `~/Library/Application Support/LeetVault/leetcode.db` (matches v1)
   - **Linux** — `~/.config/LeetVault/leetcode.db` (v1 lived at `~/.local/share/LeetVault/`; first launch performs a one-shot copy)
 - Schema matches v1 byte-for-byte. v2 adds two indexes (`idx_problems_number`, `idx_problems_next_review`) and a `schema_meta` table. Schema v3 adds two more tables, `settings` (encrypted Groq key + UI prefs) and `interview_sessions` (every finished mock interview). All DDL is `CREATE … IF NOT EXISTS`, so older DBs auto-upgrade on first launch with zero data loss.
-- The Help view exposes an **Import v1 DB** button that backs up the current DB and copies in a v1 file from anywhere on disk.
+- The **Settings → Privacy & Data** section exposes an **Import v1 DB** button that backs up the current DB and copies in a v1 file from anywhere on disk.
 
 ## Live Coding Interview (new in v2.1)
 
@@ -75,9 +75,13 @@ Cache invalidation is **event-driven**: every write (UI or extension) emits an I
 | Problems list (virtualized + elastic scroll) | `leetvault_desktop/src/renderer/features/problems/` |
 | Review queue + Keep-revising toggle | `leetvault_desktop/src/renderer/features/review/` |
 | Stats + heatmap + legend | `leetvault_desktop/src/renderer/features/stats/` |
-| Roadmap (LeetCode 75) | `leetvault_desktop/src/renderer/features/roadmap/` |
-| Help + DB import button | `leetvault_desktop/src/renderer/features/help/` |
+| Roadmap (NeetCode 150/250, Blind 75, LC 75) | `leetvault_desktop/src/renderer/features/roadmap/` |
+| Help view (usage guide, extension path) | `leetvault_desktop/src/renderer/features/help/` |
+| Settings (Language, Appearance, Privacy & Data — incl. DB import) | `leetvault_desktop/src/renderer/features/settings/` |
+| Donate view (placeholder — to be developed) | `leetvault_desktop/src/renderer/features/donate/` |
 | Live Coding Interview feature | `leetvault_desktop/src/renderer/features/interview/` |
+| Sidebar nav (grouped: primary + secondary) | `leetvault_desktop/src/renderer/components/chrome/Sidebar.tsx` |
+| Theme resolution + application | `leetvault_desktop/src/renderer/hooks/{useResolvedTheme,useApplyTheme}.ts` |
 | Groq client + interviewer/evaluator prompts | `leetvault_desktop/src/main/ai/` |
 | Interview session lifecycle + curated problems | `leetvault_desktop/src/main/interview/` |
 | Settings + interview persistence | `leetvault_desktop/src/main/db/{settings,interview}.repo.ts` |

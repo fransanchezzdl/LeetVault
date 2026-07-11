@@ -10,9 +10,13 @@ import type {
   InterviewProblemPublic,
   InterviewSendArgs,
   InterviewSessionSummary,
+  InterviewSpeakArgs,
+  InterviewSpeakResult,
   InterviewStartArgs,
   InterviewStartResult,
   InterviewStatsBundle,
+  InterviewTranscribeArgs,
+  InterviewTranscribeResult,
 } from '@shared/types/interview';
 import type { UpdateInfo } from '@shared/types/updater';
 
@@ -78,10 +82,20 @@ export interface LvApi {
     abort: (sessionId: string) => Promise<void>;
     list: (limit?: number) => Promise<InterviewSessionSummary[]>;
     stats: () => Promise<InterviewStatsBundle>;
+    transcribe: (args: InterviewTranscribeArgs) => Promise<InterviewTranscribeResult>;
+    speak: (args: InterviewSpeakArgs) => Promise<InterviewSpeakResult>;
   };
   analytics: {
     viewOpened: (
-      view: 'problems' | 'review' | 'stats' | 'roadmap' | 'help' | 'interview' | 'settings'
+      view:
+        | 'problems'
+        | 'review'
+        | 'stats'
+        | 'roadmap'
+        | 'help'
+        | 'interview'
+        | 'settings'
+        | 'donate'
     ) => Promise<void>;
     reviewSessionFinished: (count: number) => Promise<void>;
     getEnabled: () => Promise<boolean>;

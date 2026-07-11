@@ -56,6 +56,25 @@ export interface InterviewFinishArgs {
   durationSec: number;
 }
 
+export interface InterviewTranscribeArgs {
+  audio: ArrayBuffer;
+  mimeType: string;
+}
+
+export type InterviewTranscribeResult =
+  | { ok: true; text: string }
+  | { ok: false; error: string };
+
+export interface InterviewSpeakArgs {
+  /** Short text chunk, max ~200 chars (Orpheus per-request limit). */
+  text: string;
+  voice: string;
+}
+
+export type InterviewSpeakResult =
+  | { ok: true; audio: ArrayBuffer }
+  | { ok: false; error: string };
+
 export interface InterviewEvaluation {
   overall: 'Strong Hire' | 'Hire' | 'Lean Hire' | 'No Hire';
   scores: {

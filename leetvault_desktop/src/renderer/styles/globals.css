@@ -2,6 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
+:root,
+.dark {
+  --color-bg-0: 33 23 17;
+  --color-bg-50: 42 27 18;
+  --color-bg-100: 56 36 20;
+  --color-bg-200: 30 21 16;
+  --color-bg-300: 26 18 13;
+  --color-bg-400: 34 21 15;
+
+  --color-fg: 247 238 228;
+  --color-fg-soft: 248 241 232;
+
+  --color-brand-50: 255 244 228;
+  --color-brand-100: 255 226 171;
+  --color-brand-200: 255 215 155;
+  --color-brand-300: 255 207 122;
+  --color-brand-400: 255 177 51;
+  --color-brand-500: 255 161 22;
+  --color-brand-600: 230 168 23;
+  --color-brand-700: 217 123 16;
+  --color-brand-800: 184 92 0;
+  --color-brand-900: 46 27 12;
+
+  --color-diff-easy: 0 168 150;
+  --color-diff-medium: 230 168 23;
+  --color-diff-hard: 217 79 61;
+
+  --color-status-solved: 46 139 106;
+  --color-status-inprogress: 255 161 22;
+  --color-status-toreview: 139 92 246;
+
+  --color-glass-stroke: 255 232 194;
+  --color-glass-fill: 255 255 255;
+
+  --gradient-app: linear-gradient(135deg,#211711 0%,#2A1B12 48%,#382414 100%);
+  --gradient-sidebar: linear-gradient(165deg,rgba(255,225,167,0.14) 0%,rgba(255,177,51,0.06) 35%,rgba(255,255,255,0.04) 100%);
+  --gradient-sidebar-sheen: linear-gradient(180deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0.02) 30%,rgba(255,255,255,0) 100%);
+  --gradient-primary: linear-gradient(135deg,rgba(255,239,208,0.88),rgba(255,191,94,0.78));
+  --gradient-nav-active: linear-gradient(135deg,rgba(255,225,167,0.30),rgba(255,255,255,0.12));
+
+  --shadow-outer: 0 25px 50px -12px rgba(0,0,0,0.35);
+  --shadow-panel: 0 8px 40px rgba(0,0,0,0.28);
+  --panel-bg: rgb(247 238 228 / 0.03);
+  --sidebar-bg: rgb(247 238 228 / 0.03);
+}
+
+.light {
+  --color-bg-0: 255 255 255;
+  --color-bg-50: 248 246 242;
+  --color-bg-100: 240 236 230;
+  --color-bg-200: 238 234 227;
+  --color-bg-300: 242 238 232;
+  --color-bg-400: 230 226 220;
+
+  --color-fg: 26 22 18;
+  --color-fg-soft: 55 48 40;
+
+  --color-brand-50: 46 27 12;
+  --color-brand-100: 74 42 15;
+  --color-brand-200: 138 69 0;
+  --color-brand-300: 184 92 0;
+  --color-brand-400: 217 123 16;
+  --color-brand-500: 255 161 22;
+  --color-brand-600: 230 168 23;
+  --color-brand-700: 217 123 16;
+  --color-brand-800: 184 92 0;
+  --color-brand-900: 255 244 228;
+
+  --color-diff-easy: 0 128 111;
+  --color-diff-medium: 184 129 26;
+  --color-diff-hard: 176 58 44;
+
+  --color-status-solved: 35 112 85;
+  --color-status-inprogress: 201 122 0;
+  --color-status-toreview: 107 69 204;
+
+  --color-glass-stroke: 160 150 140;
+  --color-glass-fill: 26 22 18;
+
+  --gradient-app: linear-gradient(135deg,#F6F4EF 0%,#F1EEE8 48%,#EAE6DE 100%);
+  --gradient-sidebar: linear-gradient(165deg,rgba(90,85,80,0.10) 0%,rgba(110,105,100,0.07) 50%,rgba(60,55,50,0.04) 100%);
+  --gradient-sidebar-sheen: linear-gradient(180deg,rgba(255,255,255,0.4) 0%,rgba(255,255,255,0.1) 30%,rgba(255,255,255,0) 100%);
+  --gradient-primary: linear-gradient(135deg,rgba(255,161,22,0.95),rgba(217,123,16,0.90));
+  --gradient-nav-active: linear-gradient(135deg,rgba(255,161,22,0.18),rgba(60,55,50,0.06));
+
+  --shadow-outer: 0 6px 24px rgba(30,25,20,0.06);
+  --shadow-panel: 0 2px 12px rgba(30,25,20,0.04);
+  --panel-bg: rgb(252 250 246 / 0.82);
+  --sidebar-bg: rgb(120 115 110 / 0.10);
+}
+
 @layer base {
   html,
   body,
@@ -18,10 +109,10 @@
 
 @layer components {
   .glass-card {
-    @apply rounded-glass border border-glass-stroke bg-glass-fill shadow-glass backdrop-blur-sm;
+    @apply rounded-glass border border-glass-stroke/10 bg-glass-fill/[0.08] shadow-glass backdrop-blur-sm;
   }
   .glass-card-dim {
-    @apply rounded-glass border border-glass-stroke bg-bg-300/55 shadow-glass backdrop-blur-sm;
+    @apply rounded-glass border border-glass-stroke/10 bg-bg-300/55 shadow-glass backdrop-blur-sm;
   }
   .btn {
     @apply inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium transition;
@@ -33,13 +124,10 @@
     @apply btn bg-diff-hard text-fg hover:opacity-90;
   }
   .nav-btn {
-    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-fgSoft/80 transition hover:bg-white/5;
-  }
-  .nav-btn-active {
-    @apply nav-btn bg-nav-active-grad text-fg;
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-fgSoft/80 transition hover:bg-fg/5;
   }
   .input {
-    @apply h-9 w-full rounded-md border border-glass-stroke bg-bg-200/70 px-3 text-sm text-fg outline-none placeholder:text-fgMuted focus:border-brand-500;
+    @apply h-9 w-full rounded-md border border-glass-stroke/10 bg-bg-200/70 px-3 text-sm text-fg outline-none placeholder:text-fg/[0.68] focus:border-brand-500;
   }
   .scroll-thin {
     scrollbar-width: thin;
@@ -72,3 +160,35 @@
   font-size: 9px;
 }
 
+.light .leetvault-heatmap .react-calendar-heatmap .lv-cell-empty { fill: rgba(0,0,0,0.05); }
+.light .leetvault-heatmap .react-calendar-heatmap .lv-cell-0 { fill: #FCE5C2; }
+.light .leetvault-heatmap .react-calendar-heatmap .lv-cell-1 { fill: #F8C078; }
+.light .leetvault-heatmap .react-calendar-heatmap .lv-cell-2 { fill: #E88A1A; }
+.light .leetvault-heatmap .react-calendar-heatmap .lv-cell-3 { fill: #B85C00; }
+.light .leetvault-heatmap .react-calendar-heatmap .lv-cell-4 { fill: #7A3D00; }
+.light .leetvault-heatmap .react-calendar-heatmap text {
+  fill: rgba(26,22,18,0.55);
+}
+
+.light [role="dialog"] input,
+.light [role="dialog"] textarea,
+.light [role="dialog"] select,
+.light [role="dialog"] [role="combobox"] {
+  background-color: rgb(0 0 0 / 0.06);
+  border-color: rgb(var(--color-glass-stroke) / 0.35);
+}
+
+.light [role="dialog"] input:hover,
+.light [role="dialog"] textarea:hover,
+.light [role="dialog"] select:hover,
+.light [role="dialog"] [role="combobox"]:hover {
+  background-color: rgb(0 0 0 / 0.08);
+}
+
+.light [role="dialog"] input:focus,
+.light [role="dialog"] textarea:focus,
+.light [role="dialog"] select:focus,
+.light [role="dialog"] [role="combobox"]:focus,
+.light [role="dialog"] [role="combobox"][data-state="open"] {
+  border-color: rgb(var(--color-brand-500));
+}

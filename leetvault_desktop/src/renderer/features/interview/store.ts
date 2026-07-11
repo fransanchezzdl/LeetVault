@@ -48,6 +48,7 @@ interface InterviewState {
 
   // Voice prefs (persisted via settings IPC, mirrored in store for UI)
   ttsEnabled: boolean;
+  ttsError: string | null;
 }
 
 interface InterviewActions {
@@ -83,6 +84,7 @@ interface InterviewActions {
   }) => void;
 
   setTtsEnabled: (b: boolean) => void;
+  setTtsError: (msg: string | null) => void;
 }
 
 export type InterviewStore = InterviewState & InterviewActions;
@@ -106,6 +108,7 @@ const initialState: InterviewState = {
   finishing: false,
   streamError: null,
   ttsEnabled: false,
+  ttsError: null,
 };
 
 export const useInterview = create<InterviewStore>((set) => ({
@@ -217,6 +220,7 @@ export const useInterview = create<InterviewStore>((set) => ({
     }),
 
   setTtsEnabled: (b) => set({ ttsEnabled: b }),
+  setTtsError: (msg) => set({ ttsError: msg }),
 }));
 
 function cryptoRandomId(): string {

@@ -205,7 +205,7 @@ function HeroHeader(): JSX.Element {
         <h2 className="mt-2.5 text-2xl font-semibold text-fg">
           Train the way <span className="text-brand-300">FAANG</span> hires.
         </h2>
-        <p className="mt-1.5 max-w-xl text-xs text-fgMuted">
+        <p className="mt-1.5 max-w-xl text-xs text-fg/[0.68]">
           A live AI interviewer reads the problem, takes clarifying questions, and
           scores your communication, problem-solving, code quality, and complexity
           analysis when you finish.
@@ -295,7 +295,7 @@ function SectionRow(props: {
           <span className="text-brand-300">{props.icon}</span>
           {props.title}
         </div>
-        <div className="mt-0.5 text-[11px] leading-snug text-fgMuted">
+        <div className="mt-0.5 text-[11px] leading-snug text-fg/[0.68]">
           {props.subtitle}
         </div>
       </div>
@@ -325,7 +325,7 @@ function Chip(props: {
         'rounded-full border px-3 py-1.5 text-xs font-medium transition ' +
         (props.active
           ? 'border-brand-500/60 bg-brand-500/15 text-fg shadow-sm shadow-brand-500/10'
-          : 'border-glass-stroke bg-bg-200/40 text-fgMuted hover:border-brand-500/30 hover:text-fg')
+          : 'border-glass-stroke/10 bg-fg/[0.05] text-fg/[0.68] hover:border-brand-500/30 hover:bg-fg/[0.08] hover:text-fg')
       }
     >
       {props.children}

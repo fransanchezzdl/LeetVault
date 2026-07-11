@@ -103,7 +103,7 @@ export function CodeEditor({ language, value, onChange, onReady }: Props): JSX.E
 function EditorLoading(): JSX.Element {
   return (
     <div className="flex h-full w-full items-center justify-center bg-[#1A120D]">
-      <div className="flex flex-col items-center gap-3 text-fgMuted">
+      <div className="flex flex-col items-center gap-3 text-fg/[0.68]">
         <Loader2 className="h-6 w-6 animate-spin text-brand-400" />
         <span className="text-xs uppercase tracking-wide">Loading editor…</span>
       </div>

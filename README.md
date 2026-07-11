@@ -30,3 +30,25 @@ LeetVault v2 is a complete rewrite built on a modern, robust foundation:
 
 ---
 *For developer setup, build scripts, and local environment configurations, please see the [src/README.md](./src/README.md).*
+
+---
+
+## Installing Unsigned Releases
+
+LeetVault installers aren't code-signed (code-signing certs cost $99–400/year). Your OS will warn you the first time. It's safe to bypass — here's how:
+
+### Windows
+When SmartScreen shows "Windows protected your PC":
+1. Click **More info**
+2. Click **Run anyway**
+
+### macOS
+If you see "LeetVault is damaged and can't be opened" or "cannot be opened because the developer cannot be verified":
+1. Open **Terminal**
+2. Run: `xattr -cr /Applications/LeetVault.app`
+3. Launch the app normally
+
+Alternatively: right-click the app → **Open** → **Open** in the dialog (works only for the "unverified developer" warning, not the "damaged" one).
+
+### Linux
+No warnings — AppImage and `.deb` just work.

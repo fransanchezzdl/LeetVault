@@ -26,15 +26,15 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
         id={id}
         aria-label={ariaLabel}
         className={cn(
-          'inline-flex h-9 w-full items-center justify-between gap-2 rounded-md border border-glass-stroke bg-bg-200/70 px-3 text-sm text-fg outline-none transition',
+          'inline-flex h-9 w-full items-center justify-between gap-2 rounded-md border border-glass-stroke/10 bg-bg-200/70 px-3 text-sm text-fg outline-none transition',
           'hover:bg-bg-200/90 focus:border-brand-500 data-[state=open]:border-brand-500',
-          'data-[placeholder]:text-fgMuted',
+          'data-[placeholder]:text-fg/[0.68]',
           'disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
       >
         <RSelect.Value placeholder={placeholder} />
-        <RSelect.Icon className="text-fgMuted">
+        <RSelect.Icon className="text-fg/[0.68]">
           <ChevronDown className="h-4 w-4" />
         </RSelect.Icon>
       </RSelect.Trigger>
@@ -45,7 +45,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
           sideOffset={6}
           collisionPadding={8}
           className={cn(
-            'z-50 overflow-hidden rounded-xl border border-glass-stroke bg-bg-200/95 shadow-glass backdrop-blur-md',
+            'z-50 overflow-hidden rounded-xl border border-glass-stroke/10 bg-bg-200/95 shadow-glass backdrop-blur-md',
             'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
             'min-w-[var(--radix-select-trigger-width)]'
           )}
@@ -75,7 +75,7 @@ export const SelectOption = forwardRef<HTMLDivElement, SelectOptionProps>(functi
       disabled={disabled}
       className={cn(
         'relative flex cursor-pointer select-none items-center gap-2 rounded-lg py-1.5 pl-7 pr-3 text-sm text-fgSoft outline-none',
-        'data-[highlighted]:bg-white/8 data-[highlighted]:text-fg',
+        'data-[highlighted]:bg-fg/8 data-[highlighted]:text-fg',
         'data-[state=checked]:text-fg data-[state=checked]:font-medium',
         'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40',
         className

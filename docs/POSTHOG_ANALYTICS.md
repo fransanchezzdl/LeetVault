@@ -55,7 +55,7 @@ Every event carries super-properties: `app_version`, `os`, `os_release`, `locale
 | Event | Payload | Trigger |
 |---|---|---|
 | `app_opened` | `is_first_launch: boolean` | main process boot |
-| `view_opened` | `view: 'problems' \| 'review' \| 'stats' \| 'roadmap' \| 'help' \| 'interview' \| 'settings'` | renderer `ui.setView()` |
+| `view_opened` | `view: 'problems' \| 'review' \| 'stats' \| 'roadmap' \| 'help' \| 'interview' \| 'settings' \| 'donate'` | renderer `ui.setView()` |
 | `problem_created` | `difficulty`, `status`, `has_pattern` | `ipc/problems.ts` |
 | `problem_updated` | `difficulty`, `status` | `ipc/problems.ts` |
 | `problem_deleted` | — | `ipc/problems.ts` |

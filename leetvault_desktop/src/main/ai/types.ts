@@ -1,5 +1,7 @@
 export const GROQ_BASE_URL = 'https://api.groq.com/openai/v1';
 export const GROQ_MODEL = 'llama-3.3-70b-versatile';
+export const GROQ_STT_MODEL = 'whisper-large-v3-turbo';
+export const GROQ_TTS_MODEL = 'canopylabs/orpheus-v1-english';
 
 export interface GroqMessage {
   role: 'system' | 'user' | 'assistant';

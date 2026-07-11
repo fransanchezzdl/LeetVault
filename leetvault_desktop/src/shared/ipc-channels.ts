@@ -44,6 +44,8 @@ export const IpcChannels = {
     List: 'interview:list',
     Pick: 'interview:pick',
     Stats: 'interview:stats',
+    Transcribe: 'interview:transcribe',
+    Speak: 'interview:speak',
   },
   Window: {
     Minimize: 'window:minimize',

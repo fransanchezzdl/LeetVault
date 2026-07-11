@@ -54,13 +54,13 @@ export function HeaderBar({ onFinish, onAbort }: Props): JSX.Element {
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-glass-stroke/60 px-5 py-3">
-      <div className="flex min-w-0 flex-1 items-center gap-2 text-xs text-fgMuted">
+      <div className="flex min-w-0 flex-1 items-center gap-2 text-xs text-fg/[0.68]">
         {problemPublic ? (
           <span
             className={
               'rounded-full border px-2 py-0.5 text-[11px] font-medium ' +
               (DIFFICULTY_STYLE[problemPublic.difficulty] ??
-                'border-glass-stroke bg-bg-200/40')
+                'border-glass-stroke/10 bg-bg-200/40')
             }
           >
             {problemPublic.difficulty}
@@ -78,7 +78,7 @@ export function HeaderBar({ onFinish, onAbort }: Props): JSX.Element {
 
       <div className="flex flex-wrap items-center gap-2">
         {!editorReady ? (
-          <span className="rounded-md bg-bg-200/40 px-2 py-1 text-[10px] uppercase tracking-wide text-fgMuted">
+          <span className="rounded-md bg-bg-200/40 px-2 py-1 text-[10px] uppercase tracking-wide text-fg/[0.68]">
             Editor loading
           </span>
         ) : null}
@@ -97,7 +97,7 @@ export function HeaderBar({ onFinish, onAbort }: Props): JSX.Element {
             {formatMmSs(Math.max(0, timerRemaining))}
           </div>
         ) : (
-          <div className="inline-flex items-center gap-1.5 rounded-md bg-bg-200/40 px-2 py-1 text-sm text-fgMuted">
+          <div className="inline-flex items-center gap-1.5 rounded-md bg-bg-200/40 px-2 py-1 text-sm text-fg/[0.68]">
             <Clock className="h-3.5 w-3.5" /> {formatMmSs(elapsedSec)}
           </div>
         )}
@@ -118,7 +118,7 @@ export function HeaderBar({ onFinish, onAbort }: Props): JSX.Element {
         <button
           type="button"
           onClick={() => setConfirmAbort(true)}
-          className="btn h-8 text-xs text-fgMuted hover:bg-white/5"
+          className="btn h-8 text-xs text-fg/[0.68] hover:bg-fg/5"
           title="Abandon session"
         >
           <Square className="mr-1 h-3.5 w-3.5" /> Abort
@@ -188,12 +188,12 @@ function ConfirmModal(props: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="glass-card-dim w-full max-w-sm p-5">
         <h3 className="text-sm font-semibold">{props.title}</h3>
-        <p className="mt-2 text-xs text-fgMuted">{props.body}</p>
+        <p className="mt-2 text-xs text-fg/[0.68]">{props.body}</p>
         <div className="mt-4 flex justify-end gap-2">
           <button
             type="button"
             onClick={props.onCancel}
-            className="btn text-fgMuted hover:bg-white/5"
+            className="btn text-fg/[0.68] hover:bg-fg/5"
           >
             Cancel
           </button>
