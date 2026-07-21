@@ -12,6 +12,7 @@
   "table.pattern": "Patrón",
   "table.status": "Estado",
   "table.solved": "Resuelto",
+  "table.actions.open": "Abrir en LeetCode",
   "table.actions.edit": "Editar",
   "table.actions.delete": "Eliminar",
   "table.empty": "Sin resultados",

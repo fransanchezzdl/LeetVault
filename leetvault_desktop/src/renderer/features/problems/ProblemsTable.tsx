@@ -9,11 +9,12 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { Pencil, Trash2 } from 'lucide-react';
+import { ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Problem } from '@shared/types/problem';
 import { DifficultyBadge, StatusBadge } from '../../components/badges/Badges';
 import { cn } from '../../lib/cn';
+import { leetcodeProblemUrl } from '../../lib/leetcodeUrl';
 // import { useElasticScroll } from '../../lib/useElasticScroll'; // Unused for now
 import { useUi } from '../../store/ui';
 
@@ -30,7 +31,7 @@ const COL_WIDTHS = {
   pattern: '160px',
   status: '130px',
   date_solved: '110px',
-  actions: '80px',
+  actions: '110px',
 } as const;
 
 function getVisibility(width: number): VisibilityState {
@@ -93,9 +94,17 @@ export function ProblemsTable({ problems }: Props) {
         id: 'actions',
         header: '',
         cell: (c) => {
-          const id = c.row.original.id;
+          const { id, title } = c.row.original;
           return (
             <div className="flex justify-end gap-1">
+              <button
+                type="button"
+                onClick={() => window.lv.app.openExternal(leetcodeProblemUrl(title))}
+                title={t('table.actions.open')}
+                className="rounded p-1 text-fgSoft/70 hover:bg-fg/10 hover:text-fg"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+              </button>
               <button
                 type="button"
                 onClick={() => openEdit(id)}

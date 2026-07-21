@@ -69,7 +69,7 @@ export function InterviewView() {
             Live Coding Interview
           </h1>
           <p className="mt-0.5 text-xs text-fg/[0.68]">
-            Practice with an AI interviewer in English — chat, code, get scored.
+            Practice with an AI interviewer in English
           </p>
         </div>
         <button

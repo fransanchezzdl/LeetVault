@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, Eye, EyeOff } from 'lucide-react';
+import { Check, ExternalLink, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Problem } from '@shared/types/problem';
 import type { Quality } from '@shared/types/review';
 import { Button } from '../../components/ui/Button';
 import { DifficultyBadge } from '../../components/badges/Badges';
 import { cn } from '../../lib/cn';
+import { leetcodeProblemUrl } from '../../lib/leetcodeUrl';
 import {
   useDueReviews,
   useFinishReview,
@@ -190,6 +191,14 @@ function ReviewCard({
               {problem.pattern}
             </span>
           ) : null}
+          <button
+            type="button"
+            onClick={() => window.lv.app.openExternal(leetcodeProblemUrl(problem.title))}
+            title={t('openProblem')}
+            className="rounded p-1 text-fgSoft/70 hover:bg-fg/10 hover:text-fg"
+          >
+            <ExternalLink className="h-4 w-4" />
+          </button>
         </div>
       </div>
 

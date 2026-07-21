@@ -8,6 +8,7 @@
   "toggleReveal.show": "Mostrar",
   "toggleReveal.hide": "Ocultar",
   "toggleReveal.suffix": "solución y notas",
+  "openProblem": "Abrir en LeetCode",
   "section.solution": "Solución",
   "section.notes": "Notas",
   "keepRevising": "Seguir repasando",
