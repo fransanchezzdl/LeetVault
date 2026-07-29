@@ -104,11 +104,7 @@ export function SetupPanel(): JSX.Element {
         <HeroHeader />
 
         <div className="glass-card-dim p-6">
-          <SectionRow
-            icon={<Target className="h-3.5 w-3.5" />}
-            title="Difficulty"
-            subtitle="Pick how spicy the problem should be."
-          >
+          <SectionRow icon={<Target className="h-3.5 w-3.5" />} title="Difficulty">
             <ChipRow>
               {DIFFICULTIES.map((d) => (
                 <Chip
@@ -124,11 +120,7 @@ export function SetupPanel(): JSX.Element {
 
           <Divider />
 
-          <SectionRow
-            icon={<Code2 className="h-3.5 w-3.5" />}
-            title="Language"
-            subtitle="What you'll code in. You can change it mid-session."
-          >
+          <SectionRow icon={<Code2 className="h-3.5 w-3.5" />} title="Language">
             <ChipRow>
               {LANGUAGES.map((l) => (
                 <Chip
@@ -144,11 +136,7 @@ export function SetupPanel(): JSX.Element {
 
           <Divider />
 
-          <SectionRow
-            icon={<Timer className="h-3.5 w-3.5" />}
-            title="Timer"
-            subtitle="The clock starts once the editor is fully loaded."
-          >
+          <SectionRow icon={<Timer className="h-3.5 w-3.5" />} title="Timer">
             <ChipRow>
               {TIMERS.map((t) => (
                 <Chip
@@ -281,19 +269,13 @@ function BrandLogo({
 function SectionRow(props: {
   icon: React.ReactNode;
   title: string;
-  subtitle: string;
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-[180px_1fr] md:items-start md:gap-6">
-      <div>
-        <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-fg">
-          <span className="text-brand-300">{props.icon}</span>
-          {props.title}
-        </div>
-        <div className="mt-0.5 text-[11px] leading-snug text-fg/[0.68]">
-          {props.subtitle}
-        </div>
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-[180px_1fr] md:items-center md:gap-6">
+      <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-fg">
+        <span className="text-brand-300">{props.icon}</span>
+        {props.title}
       </div>
       <div>{props.children}</div>
     </div>
