@@ -21,7 +21,7 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
-    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "test": "npm run rebuild:node && vitest run; code=$?; npm run rebuild:electron; exit $code",
     "test:watch": "npm run rebuild:node && vitest",
