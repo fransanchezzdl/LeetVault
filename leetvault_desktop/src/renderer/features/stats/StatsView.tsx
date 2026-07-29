@@ -12,9 +12,10 @@ import {
 } from 'recharts';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import { Sparkles } from 'lucide-react';
+import { CalendarDays, Flame, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useInterviewStats, useStatsBundle } from './hooks';
+import { BadgesSection, computeStreaks } from './StreakBadges';
 import type { DateCount, DifficultyCount, PatternCount } from '@shared/types/stats';
 import type {
   InterviewStatsBundle,
@@ -106,6 +107,8 @@ export function StatsView() {
         </div>
 
         <ActivityHeatmap data={data.by_date} />
+
+        <BadgesSection bundle={data} />
 
         {interview && interview.total > 0 ? (
           <InterviewStatsSection data={interview} />
@@ -228,13 +231,25 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
   const ct = chartTheme(resolved);
   const palette = resolved === 'light' ? LIGHT_HEATMAP_PALETTE : HEATMAP_PALETTE;
   const countsByDate = new Map(data.map((d) => [d.date_solved, d.cnt]));
+  const { current: streak } = computeStreaks(data.map((d) => d.date_solved));
   const today = new Date();
   const start = new Date(today);
   start.setMonth(start.getMonth() - 6);
 
   return (
     <section className="glass-card-dim p-4">
-      <h2 className="mb-3 text-sm font-semibold">{t('activityTitle')}</h2>
+      <h2 className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
+        {streak >= 2 ? (
+          <>
+            <Flame className="h-4 w-4 text-brand-400" />
+            <span className="tabular-nums text-brand-300">{streak}</span>
+            <span className="text-fg/[0.45]">-</span>
+          </>
+        ) : (
+          <CalendarDays className="h-4 w-4 text-brand-400" />
+        )}
+        {t('activityTitle')}
+      </h2>
       <div className="leetvault-heatmap mx-auto max-w-[640px] px-4">
         <CalendarHeatmap
           startDate={start}
@@ -254,7 +269,7 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
           showWeekdayLabels
         />
       </div>
-      <div className="mt-4 flex items-center justify-center gap-2.5 px-4 text-xs text-fg/[0.68]">
+      <div className="mt-1 flex items-center justify-center gap-2.5 px-4 text-xs text-fg/[0.68]">
         <span>{t('legend.less')}</span>
         <span
           className="h-4 w-4 rounded-[4px] border border-glass-stroke/10"
@@ -338,17 +353,9 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
   const formatRelativeDate = useFormatRelativeDate();
   return (
     <section className="glass-card-dim p-5">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-brand-400" />
-          <h2 className="text-sm font-semibold">{t('interview.title')}</h2>
-        </div>
-        <p className="text-[11px] text-fg/[0.68]">
-          {t('interview.header', {
-            count: data.total,
-            time: formatDuration(data.totalSeconds),
-          })}
-        </p>
+      <div className="mb-4 flex items-center gap-2">
+        <Sparkles className="h-4 w-4 text-brand-400" />
+        <h2 className="text-sm font-semibold">{t('interview.title')}</h2>
       </div>
 
       <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -406,7 +413,7 @@ const InterviewStatsSection = memo(function InterviewStatsSection({
           <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
             {t('interview.recent')}
           </h3>
-          <ul className="divide-y divide-glass-stroke/40 overflow-hidden rounded-md border border-glass-stroke/40">
+          <ul className="divide-y divide-glass-stroke/10 overflow-hidden rounded-md border border-glass-stroke/10">
             {data.recent.map((r) => (
               <li
                 key={r.id}
@@ -451,7 +458,7 @@ function StatTile({
   valueClassName?: string;
 }): JSX.Element {
   return (
-    <div className="rounded-md border border-glass-stroke/40 bg-bg-300/40 px-3 py-2">
+    <div className="rounded-md border border-glass-stroke/10 bg-bg-300/40 px-3 py-2">
       <div className="text-[10px] uppercase tracking-wide text-fg/[0.68]">{label}</div>
       <div className={`mt-0.5 text-sm font-semibold text-fg ${valueClassName ?? ''}`}>
         {value}
@@ -516,7 +523,7 @@ function SplitsBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element 
             data.byDifficulty.map((d) => (
               <li
                 key={d.difficulty}
-                className="rounded-full border border-glass-stroke/60 bg-bg-300/40 px-2.5 py-1 text-[11px] text-fgSoft"
+                className="rounded-full border border-glass-stroke/10 bg-bg-300/40 px-2.5 py-1 text-[11px] text-fgSoft"
               >
                 <span style={{ color: DIFF_COLORS[d.difficulty] ?? '#888' }}>●</span>{' '}
                 {d.difficulty} · {d.cnt}
@@ -536,7 +543,7 @@ function SplitsBreakdown({ data }: { data: InterviewStatsBundle }): JSX.Element 
             data.byLanguage.map((l) => (
               <li
                 key={l.language}
-                className="rounded-full border border-glass-stroke/60 bg-bg-300/40 px-2.5 py-1 text-[11px] text-fgSoft"
+                className="rounded-full border border-glass-stroke/10 bg-bg-300/40 px-2.5 py-1 text-[11px] text-fgSoft"
               >
                 {l.language} · {l.cnt}
               </li>
