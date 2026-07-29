@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, Eye, EyeOff } from 'lucide-react';
+import {
+  CalendarCheck,
+  Check,
+  Code2,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  RotateCcw,
+  StickyNote,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Problem } from '@shared/types/problem';
 import type { Quality } from '@shared/types/review';
-import { Button } from '../../components/ui/Button';
 import { DifficultyBadge } from '../../components/badges/Badges';
 import { cn } from '../../lib/cn';
+import { leetcodeProblemUrl } from '../../lib/leetcodeUrl';
+import { formatDateShort } from '../../i18n/format';
+import { detectLanguage, HighlightedCode, LANGUAGE_LABELS } from './HighlightedCode';
 import {
   useDueReviews,
   useFinishReview,
@@ -28,7 +39,8 @@ export function ReviewView() {
   const { mutate: rate, isPending: rating } = useRateReview();
   const { mutate: finish, isPending: finishing } = useFinishReview();
   const [index, setIndex] = useState(0);
-  const [revealed, setRevealed] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [showSolution, setShowSolution] = useState(false);
   const [keepRevising, setKeepRevising] = useState(true);
   const ratedCount = useRef(0);
   const sessionReported = useRef(false);
@@ -53,7 +65,8 @@ export function ReviewView() {
   const isPending = rating || finishing;
 
   const advance = () => {
-    setRevealed(false);
+    setShowNotes(false);
+    setShowSolution(false);
     setKeepRevising(true);
     setIndex((i) => i + 1);
   };
@@ -98,7 +111,13 @@ export function ReviewView() {
         </div>
       </header>
 
-      <ReviewCard problem={current} revealed={revealed} onToggleReveal={() => setRevealed((r) => !r)} />
+      <ReviewCard
+        problem={current}
+        showNotes={showNotes}
+        showSolution={showSolution}
+        onToggleNotes={() => setShowNotes((v) => !v)}
+        onToggleSolution={() => setShowSolution((v) => !v)}
+      />
 
       <div className="mt-4 flex items-center justify-between gap-3">
         <KeepRevisingToggle checked={keepRevising} onChange={setKeepRevising} />
@@ -168,20 +187,40 @@ function KeepRevisingToggle({
 
 function ReviewCard({
   problem,
-  revealed,
-  onToggleReveal,
+  showNotes,
+  showSolution,
+  onToggleNotes,
+  onToggleSolution,
 }: {
   problem: Problem;
-  revealed: boolean;
-  onToggleReveal: () => void;
+  showNotes: boolean;
+  showSolution: boolean;
+  onToggleNotes: () => void;
+  onToggleSolution: () => void;
 }) {
   const { t } = useTranslation('review');
+  const langLabel = problem.solution
+    ? LANGUAGE_LABELS[detectLanguage(problem.solution)]
+    : undefined;
+
   return (
     <div className="glass-card flex-1 min-h-0 overflow-auto scroll-thin p-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-xs text-fg/[0.68]">#{problem.number ?? '—'}</div>
           <h2 className="text-lg font-semibold">{problem.title}</h2>
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-fg/[0.68]">
+            {problem.date_solved ? (
+              <span className="flex items-center gap-1">
+                <CalendarCheck className="h-3 w-3" />
+                {t('meta.solvedOn', { date: formatDateShort(new Date(problem.date_solved)) })}
+              </span>
+            ) : null}
+            <span className="flex items-center gap-1">
+              <RotateCcw className="h-3 w-3" />
+              {t('meta.reviews', { count: problem.sr_repetitions })}
+            </span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <DifficultyBadge value={problem.difficulty} />
@@ -190,35 +229,94 @@ function ReviewCard({
               {problem.pattern}
             </span>
           ) : null}
+          <button
+            type="button"
+            onClick={() => window.lv.app.openExternal(leetcodeProblemUrl(problem.title))}
+            title={t('openProblem')}
+            className="rounded p-1 text-fgSoft/70 hover:bg-fg/10 hover:text-fg"
+          >
+            <ExternalLink className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
-      <div className="mt-4">
-        <Button variant="outline" onClick={onToggleReveal}>
-          {revealed ? <EyeOff className="mr-1 h-4 w-4" /> : <Eye className="mr-1 h-4 w-4" />}
-          {revealed ? t('toggleReveal.hide') : t('toggleReveal.show')} {t('toggleReveal.suffix')}
-        </Button>
-      </div>
-
-      {revealed ? (
-        <div className="mt-4 space-y-4">
-          {problem.solution ? (
-            <section>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">{t('section.solution')}</h3>
-              <pre className="overflow-x-auto rounded-md border border-glass-stroke/10 bg-bg-300/80 p-3 text-xs text-fgSoft scroll-thin">
-                <code>{problem.solution}</code>
-              </pre>
-            </section>
-          ) : null}
+      <div className="mt-5 space-y-3">
+        <RevealSection
+          icon={<StickyNote className="h-4 w-4 text-brand-400" />}
+          title={t('section.notes')}
+          open={showNotes}
+          onToggle={onToggleNotes}
+        >
           {problem.notes ? (
-            <section>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">{t('section.notes')}</h3>
-              <p className="whitespace-pre-wrap text-sm text-fgSoft">{problem.notes}</p>
-            </section>
-          ) : null}
-        </div>
-      ) : null}
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-fgSoft">
+              {problem.notes}
+            </p>
+          ) : (
+            <p className="text-sm italic text-fg/[0.45]">{t('notes.empty')}</p>
+          )}
+        </RevealSection>
+
+        <RevealSection
+          icon={<Code2 className="h-4 w-4 text-brand-400" />}
+          title={t('section.solution')}
+          badge={langLabel}
+          open={showSolution}
+          onToggle={onToggleSolution}
+        >
+          {problem.solution ? (
+            <HighlightedCode code={problem.solution} />
+          ) : (
+            <p className="text-sm italic text-fg/[0.45]">{t('solution.empty')}</p>
+          )}
+        </RevealSection>
+      </div>
     </div>
+  );
+}
+
+function RevealSection({
+  icon,
+  title,
+  badge,
+  open,
+  onToggle,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  badge?: string;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  const { t } = useTranslation('review');
+  return (
+    <section className="rounded-lg border border-glass-stroke/10 bg-bg-300/40">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center gap-2 rounded-lg px-4 py-3 text-left transition hover:bg-fg/5"
+      >
+        {icon}
+        <span className="text-xs font-semibold uppercase tracking-wide text-fg/[0.68]">
+          {title}
+        </span>
+        {badge ? (
+          <span className="rounded-full bg-fg/5 px-2 py-0.5 text-[10px] text-fg/[0.68]">
+            {badge}
+          </span>
+        ) : null}
+        <span
+          className="ml-auto text-fg/[0.68]"
+          title={open ? t('reveal.hide') : t('reveal.show')}
+        >
+          {open ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+        </span>
+      </button>
+      {open ? (
+        <div className="border-t border-glass-stroke/10 px-4 py-3">{children}</div>
+      ) : null}
+    </section>
   );
 }
 

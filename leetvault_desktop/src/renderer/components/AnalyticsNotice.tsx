@@ -30,7 +30,6 @@ export function AnalyticsNotice() {
     if (!show) return;
     const t = setTimeout(() => dismiss(), 10_000);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
 
   const dismiss = async () => {

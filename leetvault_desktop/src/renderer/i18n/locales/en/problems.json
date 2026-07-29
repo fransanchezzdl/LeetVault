@@ -12,6 +12,7 @@
   "table.pattern": "Pattern",
   "table.status": "Status",
   "table.solved": "Solved",
+  "table.actions.open": "Open on LeetCode",
   "table.actions.edit": "Edit",
   "table.actions.delete": "Delete",
   "table.empty": "No results",

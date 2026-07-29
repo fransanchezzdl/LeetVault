@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, ArrowRight, Sparkles, Target, Code2, Timer } from 'lucide-react';
+import { Play, ArrowRight, Target, Code2, Timer } from 'lucide-react';
 import {
   siAirbnb,
   siApple,
@@ -104,11 +104,7 @@ export function SetupPanel(): JSX.Element {
         <HeroHeader />
 
         <div className="glass-card-dim p-6">
-          <SectionRow
-            icon={<Target className="h-3.5 w-3.5" />}
-            title="Difficulty"
-            subtitle="Pick how spicy the problem should be."
-          >
+          <SectionRow icon={<Target className="h-3.5 w-3.5" />} title="Difficulty">
             <ChipRow>
               {DIFFICULTIES.map((d) => (
                 <Chip
@@ -124,11 +120,7 @@ export function SetupPanel(): JSX.Element {
 
           <Divider />
 
-          <SectionRow
-            icon={<Code2 className="h-3.5 w-3.5" />}
-            title="Language"
-            subtitle="What you'll code in. You can change it mid-session."
-          >
+          <SectionRow icon={<Code2 className="h-3.5 w-3.5" />} title="Language">
             <ChipRow>
               {LANGUAGES.map((l) => (
                 <Chip
@@ -144,11 +136,7 @@ export function SetupPanel(): JSX.Element {
 
           <Divider />
 
-          <SectionRow
-            icon={<Timer className="h-3.5 w-3.5" />}
-            title="Timer"
-            subtitle="The clock starts once the editor is fully loaded."
-          >
+          <SectionRow icon={<Timer className="h-3.5 w-3.5" />} title="Timer">
             <ChipRow>
               {TIMERS.map((t) => (
                 <Chip
@@ -198,11 +186,7 @@ function HeroHeader(): JSX.Element {
       <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-brand-500/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-16 -left-8 h-40 w-40 rounded-full bg-brand-300/10 blur-3xl" />
       <div className="relative">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-brand-200">
-          <Sparkles className="h-3 w-3" />
-          Mock interview
-        </div>
-        <h2 className="mt-2.5 text-2xl font-semibold text-fg">
+        <h2 className="text-2xl font-semibold text-fg">
           Train the way <span className="text-brand-300">FAANG</span> hires.
         </h2>
         <p className="mt-1.5 max-w-xl text-xs text-fg/[0.68]">
@@ -285,19 +269,13 @@ function BrandLogo({
 function SectionRow(props: {
   icon: React.ReactNode;
   title: string;
-  subtitle: string;
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-[180px_1fr] md:items-start md:gap-6">
-      <div>
-        <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-fg">
-          <span className="text-brand-300">{props.icon}</span>
-          {props.title}
-        </div>
-        <div className="mt-0.5 text-[11px] leading-snug text-fg/[0.68]">
-          {props.subtitle}
-        </div>
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-[180px_1fr] md:items-center md:gap-6">
+      <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-fg">
+        <span className="text-brand-300">{props.icon}</span>
+        {props.title}
       </div>
       <div>{props.children}</div>
     </div>
