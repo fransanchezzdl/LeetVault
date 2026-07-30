@@ -45,7 +45,7 @@ function dayNum(iso: string): number {
   return Math.floor(new Date(`${iso}T00:00:00Z`).getTime() / 86400000);
 }
 
-function localTodayIso(): string {
+export function localTodayIso(): string {
   const now = new Date();
   const y = now.getFullYear();
   const m = String(now.getMonth() + 1).padStart(2, '0');
