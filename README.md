@@ -1,11 +1,6 @@
-```text
-  _                 _   __      __         _  _   
- | |               | |  \ \    / /        | || |  
- | |      ___  ___ | |_  \ \  / /_ _ _   _| || |_ 
- | |     / _ \/ _ \| __|  \ \/ / _` | | | | | __|
- | |____|  __/  __/| |_    \  / (_| | |_| | | |_ 
- |______|\___|\___|\__|     \/ \__,_|\__,_|_|\__|
-```                         
+<p align="center">
+  <img src="./leetvault_desktop/src/renderer/assets/banner.jpeg" alt="LeetVault" />
+</p>
 
 Welcome to **LeetVault**, the local-first desktop application designed to supercharge your LeetCode problem-solving journey. 
 
@@ -29,9 +24,8 @@ LeetVault v2 is a complete rewrite built on a modern, robust foundation:
 * **Packaging:** `electron-builder` (NSIS, DMG, AppImage)
 
 ---
-*For developer setup, build scripts, and local environment configurations, please see the [src/README.md](./src/README.md).*
 
----
+*For developer setup, build scripts, and local environment configurations, please see the [src/README.md](./src/README.md).*
 
 ## Installing Unsigned Releases
 
