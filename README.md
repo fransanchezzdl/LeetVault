@@ -3,6 +3,7 @@
 </p>
 
 Welcome to **LeetVault**, the local-first desktop application designed to supercharge your LeetCode problem-solving journey. 
+* Developed by Francisco Sánchez de León Acevedo*
 
 ### What is LeetVault?
 LeetVault is a standalone desktop companion that tracks, manages, and optimizes your LeetCode practice. Instead of relying on manual spreadsheets or third-party cloud trackers, LeetVault runs completely locally. It pairs with a browser extension, seamlessly capturing your completed problems and submissions in real-time, right from your browser, while keeping your data entirely in your own hands.
@@ -26,6 +27,8 @@ LeetVault v2 is a complete rewrite built on a modern, robust foundation:
 ---
 
 *For developer setup, build scripts, and local environment configurations, please see the [docs/*.md](./docs/*.md).*
+
+---
 
 ## Installing Unsigned Releases
 
