@@ -15,7 +15,6 @@ import type { Problem } from '@shared/types/problem';
 import { DifficultyBadge, StatusBadge } from '../../components/badges/Badges';
 import { cn } from '../../lib/cn';
 import { leetcodeProblemUrl } from '../../lib/leetcodeUrl';
-// import { useElasticScroll } from '../../lib/useElasticScroll'; // Unused for now
 import { useUi } from '../../store/ui';
 
 const col = createColumnHelper<Problem>();
