@@ -2,7 +2,8 @@
   <img src="./leetvault_desktop/src/renderer/assets/banner.jpeg" alt="LeetVault" />
 </p>
 
-Welcome to **LeetVault**, the local-first desktop application designed to supercharge your LeetCode problem-solving journey. 
+Welcome to **LeetVault**, the local-first desktop application designed to supercharge your LeetCode problem-solving journey.
+
 *Developed by Francisco Sánchez de León Acevedo*
 
 ### What is LeetVault?
