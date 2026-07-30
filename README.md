@@ -25,7 +25,7 @@ LeetVault v2 is a complete rewrite built on a modern, robust foundation:
 
 ---
 
-*For developer setup, build scripts, and local environment configurations, please see the [src/README.md](./src/README.md).*
+*For developer setup, build scripts, and local environment configurations, please see the [docs/*.md](./docs/*.md).*
 
 ## Installing Unsigned Releases
 
