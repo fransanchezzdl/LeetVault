@@ -62,11 +62,13 @@ Every event carries super-properties: `app_version`, `os`, `os_release`, `locale
 | `review_rated` | `quality: 0 \| 2 \| 3 \| 4 \| 5` | `ipc/reviews.ts` |
 | `review_session_finished` | `count: number` | renderer when `due.length === 0` |
 | `extension_saved` | `action: 'created' \| 'updated'` | HTTP `/save` |
-| `interview_started` | `difficulty`, `language`, `timer_min` | `ipc/interview.ts` |
-| `interview_finished` | `duration_sec`, `verdict`, `had_evaluation` | `ipc/interview.ts` |
+| `interview_started` | `difficulty`, `language` | `ipc/interview.ts` |
+| `interview_finished` | `duration_sec`, `verdict`, `had_evaluation`, `language` | `ipc/interview.ts` |
 | `interview_aborted` | `elapsed_sec` | `ipc/interview.ts` |
 | `groq_key_set` | — | `ipc/settings.ts` (when key is `groq_api_key`) |
 | `analytics_opted_out` | — | fired once on toggle-off, then telemetry goes silent |
+| `update_prompt_shown` | `latest: string` (version) | `ipc/updater.ts`, when the update modal appears |
+| `update_prompt_action` | `action: 'opened' \| 'dismissed'` | `ipc/updater.ts`, user's choice in the update modal |
 
 Hard exclusions enforced by code review and types:
 

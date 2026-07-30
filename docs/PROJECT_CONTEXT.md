@@ -5,9 +5,10 @@ LeetVault is a local-first desktop app to capture, organize, and review LeetCode
 ## Repo layout
 
 ```
-LeetVault_Setup/
+LeetVault/
 ├── leetvault_desktop/   Electron + React + TypeScript app (v2 — current)
 ├── leetcode_extension/  Chrome MV3 extension (captures problems from leetcode.com)
+├── .github/workflows/   CI (typecheck + test + build) and tag-driven release
 └── docs/                This folder
 ```
 
@@ -26,7 +27,7 @@ The extension and the app never communicate over the public internet — they me
 
 - **Main process** — boot, single-instance lock, frameless window, SQLite (via `better-sqlite3`), Fastify HTTP server, IPC handlers.
 - **Preload** — `contextBridge` exposes a typed `window.lv` API to the renderer. No `nodeIntegration`.
-- **Renderer** — React 18 + Tailwind + shadcn/Radix primitives. TanStack Query for cache, TanStack Table + Virtual for the (now virtualized) problems list, Recharts + react-calendar-heatmap for stats.
+- **Renderer** — React 18 + Tailwind + shadcn/Radix primitives. TanStack Query for cache, TanStack Table + Virtual for the (now virtualized) problems list, Recharts + react-calendar-heatmap for stats. Fully bilingual (English/Spanish) via i18next with a runtime language switcher in Settings.
 
 Cache invalidation is **event-driven**: every write (UI or extension) emits an IPC broadcast (`events:problems-changed` / `events:reviews-changed`), and the renderer invalidates the relevant query keys. There is no polling.
 
@@ -43,7 +44,7 @@ Cache invalidation is **event-driven**: every write (UI or extension) emits an I
   - **macOS** — `~/Library/Application Support/LeetVault/leetcode.db` (matches v1)
   - **Linux** — `~/.config/LeetVault/leetcode.db` (v1 lived at `~/.local/share/LeetVault/`; first launch performs a one-shot copy)
 - Schema matches v1 byte-for-byte. v2 adds two indexes (`idx_problems_number`, `idx_problems_next_review`) and a `schema_meta` table. Schema v3 adds two more tables, `settings` (encrypted Groq key + UI prefs) and `interview_sessions` (every finished mock interview). All DDL is `CREATE … IF NOT EXISTS`, so older DBs auto-upgrade on first launch with zero data loss.
-- The **Settings → Privacy & Data** section exposes an **Import v1 DB** button that backs up the current DB and copies in a v1 file from anywhere on disk.
+- The **Settings → Data** section exposes an **Import v1 DB** button that backs up the current DB and copies in a v1 file from anywhere on disk.
 
 ## Live Coding Interview (new in v2.1)
 
@@ -72,20 +73,22 @@ Cache invalidation is **event-driven**: every write (UI or extension) emits an I
 | IPC handlers (problems, reviews, stats, import) | `leetvault_desktop/src/main/ipc/` |
 | Typed bridge | `leetvault_desktop/src/preload/index.ts` |
 | Renderer entry | `leetvault_desktop/src/renderer/main.tsx` |
-| Problems list (virtualized + elastic scroll) | `leetvault_desktop/src/renderer/features/problems/` |
+| Problems list (virtualized) | `leetvault_desktop/src/renderer/features/problems/` |
 | Review queue + Keep-revising toggle | `leetvault_desktop/src/renderer/features/review/` |
-| Stats + heatmap + legend | `leetvault_desktop/src/renderer/features/stats/` |
+| Stats + heatmap + solving streaks & badge collection | `leetvault_desktop/src/renderer/features/stats/` |
 | Roadmap (NeetCode 150/250, Blind 75, LC 75) | `leetvault_desktop/src/renderer/features/roadmap/` |
 | Help view (usage guide, extension path) | `leetvault_desktop/src/renderer/features/help/` |
-| Settings (Language, Appearance, Privacy & Data — incl. DB import) | `leetvault_desktop/src/renderer/features/settings/` |
-| Donate view (placeholder — to be developed) | `leetvault_desktop/src/renderer/features/donate/` |
+| Settings (Language, Appearance, Data — incl. DB import —, Analytics) | `leetvault_desktop/src/renderer/features/settings/` |
+| Donate view (Ko-fi + GitHub Sponsors) | `leetvault_desktop/src/renderer/features/donate/` |
 | Live Coding Interview feature | `leetvault_desktop/src/renderer/features/interview/` |
 | Sidebar nav (grouped: primary + secondary) | `leetvault_desktop/src/renderer/components/chrome/Sidebar.tsx` |
 | Theme resolution + application | `leetvault_desktop/src/renderer/hooks/{useResolvedTheme,useApplyTheme}.ts` |
 | Groq client + interviewer/evaluator prompts | `leetvault_desktop/src/main/ai/` |
 | Interview session lifecycle + curated problems | `leetvault_desktop/src/main/interview/` |
 | Settings + interview persistence | `leetvault_desktop/src/main/db/{settings,interview}.repo.ts` |
-| Reusable elastic-scroll hook | `leetvault_desktop/src/renderer/lib/useElasticScroll.ts` |
+| Update check against GitHub releases | `leetvault_desktop/src/main/updater/` |
+| Anonymous analytics (PostHog, opt-out) | `leetvault_desktop/src/main/analytics/` |
+| Renderer i18n (en/es) | `leetvault_desktop/src/renderer/i18n/` |
 | Extension popup + Groq prompt | `leetcode_extension/popup.js` |
 | Extension content scraper | `leetcode_extension/content.js` |
 
