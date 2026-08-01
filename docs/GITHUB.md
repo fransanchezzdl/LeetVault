@@ -1,47 +1,29 @@
 # LeetVault — GitHub & Releases
 
-How to push this repo to GitHub from scratch, how the CI release workflow works, and what to verify before tagging.
+How the repo is laid out on GitHub, how the CI release workflow works, and what to verify before tagging.
 
-## Initial push (if the repo isn't on GitHub yet)
+## Repo layout on GitHub
 
-The local checkout is currently not a git repo at the root (`leetvault_desktop/` is the actual project — the parent `LeetVault_Setup/` is a working folder). Decide first which layout you want on GitHub:
+The repo lives at `github.com/fransanchezzdl/LeetVault` and pushes the whole tree — `leetvault_desktop/` (the app), `leetcode_extension/` (the extension), `docs/`, and `.github/workflows/` stay together, which is how everything is cross-referenced from the docs.
 
-- **Option A (recommended)** — push the whole `LeetVault_Setup/` tree, so the docs, `leetvault_desktop/`, and `leetcode_extension/` stay together. This matches how everything is referenced from the docs.
-- **Option B** — push only `leetvault_desktop/` (the app) and `leetcode_extension/` (the extension) as separate repos. Cleaner per-project, but the cross-references in `docs/` break.
-
-Steps for Option A from a Windows PowerShell or Linux/macOS shell:
-
-```bash
-cd /path/to/LeetVault_Setup
-
-git init -b main
-git add .
-git status                       # eyeball what's about to be committed
-git commit -m "Initial import of LeetVault v2.1"
-
-# Create an empty repo on github.com first (no README, no .gitignore — we have ours).
-# Then:
-git remote add origin git@github.com:<your-user>/leetvault.git
-git push -u origin main
-```
-
-Before that first `git add .` confirm a `.gitignore` exists at the repo root with at least:
+The root `.gitignore` (mirrored in `leetvault_desktop/.gitignore`) keeps machine-specific build output out of git:
 
 ```
-node_modules/
-out/
-release/
-.dev-userdata/
+node_modules
+out
+out-types
+dist
+.dev-userdata
+release
+.env
+.env.local
 *.log
 .DS_Store
-Thumbs.db
-.vscode/
-.idea/
+.vscode/* (except extensions.json)
+.idea
 ```
 
-The Electron build outputs (`out/`, `release/`, dev-only `.dev-userdata/leetcode.db`) are large and machine-specific — keep them out.
-
-If `leetvault_desktop/` already has its own `.gitignore`, the root one only needs to add the top-level dev folders.
+The Electron build outputs (`out/`, `release/`, dev-only `.dev-userdata/leetcode.db`) are large and machine-specific — keep them out. Nothing under `node_modules/` is tracked; all dependencies (including `lucide-react`) are declared in `leetvault_desktop/package.json` and installed via `npm ci`.
 
 ## Secrets — never commit these
 
@@ -99,7 +81,7 @@ git push --follow-tags
 What happens next:
 
 1. GitHub Actions spins up three matrix jobs (`ubuntu-latest`, `macos-latest`, `windows-latest`).
-2. Each runs `npm ci` in `leetvault_desktop/`, then `npm run package:<os>`.
+2. Each runs `npm ci --ignore-scripts` in `leetvault_desktop/`, rebuilds `better-sqlite3` for Electron, generates platform icons, then `npm run package:<os>`.
 3. Artifacts (`.exe`, `.dmg`, `.AppImage`, `.deb`) upload to a **draft** GitHub Release named `v2.3.0`.
 4. You open the draft, smoke-test each artifact on its OS (see the BUILD.md checklist), then click **Publish release**.
 
@@ -123,7 +105,7 @@ There is no auto-publish to the Chrome Web Store; users pull the latest from a `
 The repo is structured so a fork can:
 
 - Replace `resources/icon.png` + rebuild icons (`node scripts/icons.cjs`) to rebrand.
-- Swap the curated `src/main/interview/data/problems.ts` for their own set without touching anything else.
+- Swap the curated `src/main/interview/problems.ts` for their own set without touching anything else.
 - Adjust the Tailwind color tokens in `tailwind.config.ts` to retheme.
 
 Anything beyond that (different DB schema, different IPC contract, different extension wire format) crosses into "different project" territory — at that point a fresh repo with a credit-back link is cleaner than a long-lived fork.

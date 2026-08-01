@@ -15,7 +15,7 @@ import 'react-calendar-heatmap/dist/styles.css';
 import { CalendarDays, Flame, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useInterviewStats, useStatsBundle } from './hooks';
-import { BadgesSection, computeStreaks } from './StreakBadges';
+import { BadgesSection, computeStreaks, localTodayIso } from './StreakBadges';
 import type { DateCount, DifficultyCount, PatternCount } from '@shared/types/stats';
 import type {
   InterviewStatsBundle,
@@ -232,6 +232,7 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
   const palette = resolved === 'light' ? LIGHT_HEATMAP_PALETTE : HEATMAP_PALETTE;
   const countsByDate = new Map(data.map((d) => [d.date_solved, d.cnt]));
   const { current: streak } = computeStreaks(data.map((d) => d.date_solved));
+  const solvedToday = (countsByDate.get(localTodayIso()) ?? 0) > 0;
   const today = new Date();
   const start = new Date(today);
   start.setMonth(start.getMonth() - 6);
@@ -241,7 +242,9 @@ const ActivityHeatmap = memo(function ActivityHeatmap({
       <h2 className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
         {streak >= 2 ? (
           <>
-            <Flame className="h-4 w-4 text-brand-400" />
+            <Flame
+              className={`h-4 w-4 ${solvedToday ? 'text-brand-400' : 'text-fg/[0.40]'}`}
+            />
             <span className="tabular-nums text-brand-300">{streak}</span>
             <span className="text-fg/[0.45]">-</span>
           </>

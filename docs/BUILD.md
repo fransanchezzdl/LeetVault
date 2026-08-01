@@ -6,10 +6,12 @@ How to produce installers for Windows, macOS, and Linux.
 
 | OS      | Format    | Filename pattern                          | Size (approx) |
 |---------|-----------|-------------------------------------------|---------------|
-| Windows | NSIS .exe | `LeetVault-<version>-Setup.exe`           | ~80 MB |
-| macOS   | .dmg      | `LeetVault-<version>-{x64,arm64}.dmg`     | ~110 MB |
-| Linux   | AppImage  | `LeetVault-<version>.AppImage`            | ~116 MB |
-| Linux   | .deb      | `leetvault_<version>_amd64.deb`           | ~80 MB |
+| Windows | NSIS .exe | `LeetVault-<version>-Setup.exe`           | ~95 MB |
+| macOS   | .dmg      | `LeetVault-<version>-{x64,arm64}.dmg`     | ~115 MB |
+| Linux   | AppImage  | `LeetVault-<version>.AppImage`            | ~130 MB |
+| Linux   | .deb      | `leetvault_<version>_amd64.deb`           | ~101 MB |
+
+Sizes vary per release and Electron version (Linux values measured on v2.2.x after the dependency slimming — renderer-only packages are no longer shipped raw inside `app.asar`; Windows/macOS values are estimates).
 
 All artifacts land in `leetvault_desktop/release/`.
 
@@ -39,7 +41,7 @@ node scripts/icons.cjs
 #   resources/icon.icns  (macOS, multi-resolution)
 ```
 
-It uses [`png-to-ico`](https://www.npmjs.com/package/png-to-ico) and [`png2icons`](https://www.npmjs.com/package/png2icons). Both are dev-only deps; the script is idempotent.
+It uses [`png-to-ico`](https://www.npmjs.com/package/png-to-ico) and [`png2icons`](https://www.npmjs.com/package/png2icons). Neither is a permanent dependency — install them on demand (`npm i --no-save png-to-ico@^2 png2icons`), exactly as the release workflow does. The script is idempotent.
 
 When changing the icon: replace `resources/icon.png`, rerun the script, commit all three files.
 
@@ -48,7 +50,8 @@ When changing the icon: replace `resources/icon.png`, rerun the script, commit a
 `leetvault_desktop/electron-builder.yml` is annotated below. Highlights:
 
 - `asarUnpack: ["**/node_modules/better-sqlite3/**"]` — the native binding must live outside `app.asar`; `dlopen` can't open from inside an archive.
-- `files: ["out/**", "resources/**", "!**/{tests,scripts,.dev-userdata}"]` — keep dev junk out of the bundle.
+- `files: ["out/**", "resources/**", "!**/{.DS_Store,.git,.vscode,.idea,tests,scripts,.dev-userdata}"]` — keep dev junk out of the bundle. Only main-process runtime deps live in `package.json` `dependencies`; everything renderer-only is a devDependency (Vite bundles it into `out/renderer`), so it never ships raw in `app.asar`.
+- `extraResources` — bundles `../leetcode_extension` into `<resources>/leetcode_extension/`, excluding `icon.png` and `README.md` (not needed at runtime; the manifest only uses `icon16/48/128.png`).
 - `directories.output: release` — where artifacts go.
 - `publish: null` — we don't auto-upload to anywhere.
 
@@ -83,7 +86,7 @@ git push origin v2.0.1
 What happens:
 
 1. Three matrix jobs spin up — `ubuntu-latest`, `macos-latest`, `windows-latest`.
-2. Each installs Node 20 + native deps, runs `npm ci` in `leetvault_desktop/`, then `npm run package:<os>`.
+2. Each installs Node 22, runs `npm ci --ignore-scripts` in `leetvault_desktop/`, rebuilds `better-sqlite3` for the Electron ABI (`scripts/rebuild-electron.cjs`), generates platform icons (`scripts/icons.cjs`), then runs `npm run package:<os>` with the PostHog secrets in the env.
 3. Artifacts upload to a draft GitHub Release named after the tag.
 
 You then promote the draft to public from the GitHub Releases UI after a smoke test on each OS.
@@ -117,7 +120,7 @@ The schema is identical between v1 and v2 — v2 just adds two indexes (`idx_pro
 
 ### Manual fallback if a v1 DB lives somewhere unusual
 
-The **Ayuda → Datos → Importar leetcode.db…** button in the running app lets the user pick any `.db` file from disk. It validates the schema and replaces the current DB after a timestamped backup. Use this for users who installed v1 to a custom path or want to import from a backup drive.
+The **Ajustes → Datos → Importar leetcode.db…** button (Settings → Data) in the running app lets the user pick any `.db` file from disk. It validates the schema and replaces the current DB after a timestamped backup. Use this for users who installed v1 to a custom path or want to import from a backup drive.
 
 ### Adding automatic v1 uninstall on Windows (future)
 
@@ -131,7 +134,7 @@ Before promoting a release, on each OS:
 2. App launches; no console error dialog.
 3. Empty state shows in Problems / Stats / Review.
 4. Add a problem manually → it appears in the table.
-5. Open `chrome://extensions` → load `leetcode_extension/` unpacked.
+5. Open `chrome://extensions` → load the bundled extension unpacked (the Help view shows the absolute path and has an "open folder" button).
 6. From leetcode.com, save a problem → the app updates without manual refresh.
 7. Mark a problem `To Review` → it appears in Repaso → rate it → next-review date updates.
 8. Quit and relaunch → data persists.

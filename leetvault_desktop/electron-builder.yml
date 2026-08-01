@@ -12,6 +12,8 @@ extraResources:
     to: leetcode_extension
     filter:
       - "**/*"
+      - "!icon.png"
+      - "!README.md"
 directories:
   buildResources: build
   output: release

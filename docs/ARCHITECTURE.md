@@ -32,31 +32,41 @@ Security defaults: `contextIsolation: true`, `nodeIntegration: false`, `sandbox:
 ```
 leetvault_desktop/src/
 ├── main/
-│   ├── index.ts                  app boot, single-instance, window, server start
-│   ├── window.ts                 frameless config per OS
-│   ├── ipc/   register.ts, problems.ts, reviews.ts, stats.ts, import.ts, window.ts
+│   ├── index.ts                  app boot, single-instance, frameless window, server start
+│   ├── i18n.ts + locales/        main-process strings (en/es) for native menus & dialogs
+│   ├── ipc/   register.ts, problems.ts, reviews.ts, stats.ts, import.ts, window.ts,
+│   │          settings.ts, interview.ts, analytics.ts, updater.ts
 │   ├── server/  fastify.ts, routes.ts, save.ts, cors.ts
 │   ├── db/    path.ts, connection.ts, migrations.ts, statements.ts,
-│   │          problems.repo.ts, reviews.repo.ts, stats.repo.ts
+│   │          problems.repo.ts, reviews.repo.ts, stats.repo.ts,
+│   │          settings.repo.ts, interview.repo.ts
+│   ├── ai/    groq.ts, prompts.ts, types.ts
+│   ├── interview/  problems.ts (curated dataset), problems.schema.ts, picker.ts,
+│   │               session.ts, evaluation.ts
+│   ├── analytics/  posthog.ts, identity.ts, events.ts (see POSTHOG_ANALYTICS.md)
+│   ├── updater/    check.ts, github.ts, semver.ts   update check against GitHub releases
+│   ├── events/     bus.ts
 │   └── domain/ sm2.ts            pure SM-2 algorithm (no DB, no IO)
 ├── preload/  index.ts            contextBridge → window.lv
-├── shared/   ipc-channels.ts, types/{problem,review,stats}.ts
+├── shared/   ipc-channels.ts, types/
 └── renderer/
     ├── main.tsx, App.tsx
-    ├── lib/   ipc.ts, queryClient.ts, useElasticScroll.ts, cn.ts
+    ├── lib/   queryClient.ts, cn.ts, leetcodeUrl.ts
+    ├── i18n/  index.ts + locales/{en,es}/ (one JSON namespace per feature)
     ├── hooks/ useApplyTheme.ts, useResolvedTheme.ts
     ├── store/ ui.ts              Zustand: nav, filters, modal state, theme
     ├── styles/ globals.css, fonts.css
-    ├── components/  chrome/{TitleBar,Sidebar (grouped nav)}, ui/, badges/
+    ├── components/  chrome/{TitleBar,Sidebar (grouped nav)}, ui/, badges/, glass/,
+    │                AnalyticsNotice.tsx, UpdateModal.tsx
     └── features/
-        ├── problems/  ProblemsView, ProblemsTable, ProblemFormDialog, FilterBar, hooks.ts
-        ├── review/    ReviewView, ReviewCard, hooks.ts
-        ├── stats/     StatsView (theme-aware charts + heatmap), hooks.ts
-        ├── roadmap/   RoadmapView, RoadmapTree (theme-aware SVG), CategoryPanel, data.ts
+        ├── problems/  ProblemsView, ProblemsTable, ProblemFormDialog, DeleteProblemDialog, FilterBar, hooks.ts
+        ├── review/    ReviewView, HighlightedCode, hooks.ts
+        ├── stats/     StatsView (theme-aware charts + heatmap), StreakBadges (solving streaks + badge collection), hooks.ts
+        ├── roadmap/   RoadmapView, RoadmapTree (theme-aware SVG), CategoryPanel, data.ts + data/
         ├── interview/ InterviewView (setup/live/evaluation), voice.ts, store.ts
-        ├── settings/  SettingsView (Language, Appearance, Privacy & Data)
-        ├── help/      HelpView
-        └── donate/    DonateView (placeholder)
+        ├── settings/  SettingsView + LanguageCard, AppearanceCard, DataCard, AnalyticsCard
+        ├── help/      HelpView, ExtensionPathBlock
+        └── donate/    DonateView (Ko-fi + GitHub Sponsors links)
 ```
 
 ## IPC contract
@@ -86,6 +96,8 @@ The renderer never touches Node APIs directly. Everything is `window.lv.*`, defi
 |             | `extensionPath()`          | `app:extensionPath`           | `string` — bundled extension dir |
 |             | `openExtensionFolder()`    | `app:openExtensionFolder`     | `void` — opens it in OS file manager |
 | `window`    | `minimize()` etc.          | `window:minimize` etc.        | `void`                           |
+
+Later versions added more groups following the same pattern: `settings:*` (encrypted Groq key + UI prefs), `interview:*` (see the [Live Coding Interview](#live-coding-interview-v21) section), `analytics:*` (renderer-triggered telemetry, see [`POSTHOG_ANALYTICS.md`](POSTHOG_ANALYTICS.md)), and `updater:*` (GitHub release check feeding `UpdateModal`). All are defined in `src/shared/ipc-channels.ts` and bridged in `src/preload/index.ts`.
 
 ### Broadcasts (main → renderer)
 
@@ -216,17 +228,11 @@ This is what makes the UI feel instant after an extension save — no debounce, 
 
 ## Frameless window
 
-Per-OS config in `src/main/window.ts`:
+Per-OS config in `src/main/index.ts` (window creation):
 
 - **Windows / Linux**: `frame: false` + custom `<TitleBar />` with drag region (`-webkit-app-region: drag`). Controls have `no-drag`.
 - **macOS**: `titleBarStyle: 'hiddenInset'` — keep the native traffic-light buttons, just hide the title bar.
 - **Linux escape hatch**: set env `LV_NATIVE_FRAME=1` to fall back to a native frame (some Wayland compositors mishandle drag regions).
-
-## Elastic scroll (`renderer/lib/useElasticScroll.ts`)
-
-Shared hook used by the problems table, stats, and help views. Asymptotic damping (`resistance = 1 - |bounce|/BOUNCE_MAX`) so the further you push past the edge, the smaller each step gets — feels like an infinite-limit pull. Springs back with `cubic-bezier(.2,.9,.25,1.15)` over 520 ms.
-
-Important pattern: sticky headers must live **outside** the transformed bounce wrapper. Otherwise the transform shifts them along with the content and `position: sticky` stops working. See `ProblemsTable.tsx` for the canonical layout.
 
 ## Chrome extension (companion)
 
@@ -247,7 +253,7 @@ Main:
 ├── ai/groq.ts         fetch wrapper + SSE parser + retry/timeout
 ├── ai/prompts.ts      interviewer + evaluator system prompts (English-only)
 ├── interview/
-│   ├── data/problems.ts    25-30 hand-curated problems (Zod-validated at boot)
+│   ├── problems.ts         25-30 hand-curated problems (Zod-validated at boot, schema in problems.schema.ts)
 │   ├── picker.ts           random pick excluding recent ids
 │   ├── session.ts          per-session state + history + Groq streaming
 │   └── evaluation.ts       evaluator-JSON parser w/ fallback
@@ -295,7 +301,7 @@ Renderer (features/interview/):
 
 | Functionality | File |
 |---|---|
-| Curated problem dataset | `src/main/interview/data/problems.ts` |
+| Curated problem dataset | `src/main/interview/problems.ts` |
 | Interviewer + evaluator prompts | `src/main/ai/prompts.ts` |
 | Groq streaming client | `src/main/ai/groq.ts` |
 | Session lifecycle | `src/main/interview/session.ts` |
@@ -317,18 +323,20 @@ Renderer (features/interview/):
 | IPC handlers | `src/main/ipc/` |
 | Typed bridge | `src/preload/index.ts` |
 | Renderer entry | `src/renderer/main.tsx` |
-| Problems list (virtualized + elastic scroll) | `src/renderer/features/problems/` |
+| Problems list (virtualized) | `src/renderer/features/problems/` |
 | Review queue + Keep-revising toggle | `src/renderer/features/review/` |
-| Stats + heatmap + legend (theme-aware) | `src/renderer/features/stats/` |
+| Stats + heatmap + streaks & badge collection (theme-aware) | `src/renderer/features/stats/` |
 | Roadmap (NeetCode 150/250, Blind 75, LC 75) | `src/renderer/features/roadmap/` |
 | Help view (usage guide, extension path) | `src/renderer/features/help/` |
-| Settings (Language, Appearance, Privacy & Data — incl. DB import) | `src/renderer/features/settings/` |
-| Donate view (placeholder — to be developed) | `src/renderer/features/donate/` |
+| Settings (Language, Appearance, Data, Analytics) | `src/renderer/features/settings/` |
+| Donate view (Ko-fi + GitHub Sponsors) | `src/renderer/features/donate/` |
 | Live Coding Interview feature | `src/renderer/features/interview/` |
 | Sidebar nav (primary + secondary groups) | `src/renderer/components/chrome/Sidebar.tsx` |
 | Theme resolution (`useResolvedTheme`) + application | `src/renderer/hooks/` |
+| Renderer i18n (en/es, runtime switcher) | `src/renderer/i18n/` |
+| Update check (GitHub releases) + prompt | `src/main/updater/` + `src/renderer/components/UpdateModal.tsx` |
+| Anonymous analytics (PostHog, opt-out) | `src/main/analytics/` — see [`POSTHOG_ANALYTICS.md`](POSTHOG_ANALYTICS.md) |
 | Design tokens + CSS variables (`--shadow-*`, `--panel-bg`, `--sidebar-bg`, per-theme palette) | `src/renderer/styles/globals.css` |
-| Reusable elastic-scroll hook | `src/renderer/lib/useElasticScroll.ts` |
 
 ## Further reading
 

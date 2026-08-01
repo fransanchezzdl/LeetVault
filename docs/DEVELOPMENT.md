@@ -6,7 +6,7 @@ How to get the desktop app running on a fresh machine and the everyday dev loop.
 
 | Tool | Version | Notes |
 |---|---|---|
-| Node.js | ≥ 20 LTS | `nvm install 20` is the easiest path |
+| Node.js | ≥ 20 (repo pins **22** via `.nvmrc`; CI uses 22) | `nvm install 22` is the easiest path |
 | npm     | bundled with Node | yarn/pnpm aren't tested |
 | Git     | any | |
 | Python  | 3.x | only needed by `node-gyp` to compile `better-sqlite3` |
@@ -23,14 +23,14 @@ How to get the desktop app running on a fresh machine and the everyday dev loop.
 
 The repo is platform-agnostic, but the native rebuild step is the most common stumbling block on Windows. Follow this exactly:
 
-1. **Install [Node 20 LTS](https://nodejs.org/)** via the official installer. Check "Automatically install the necessary tools" on the optional-tools page — it pulls in Chocolatey + the Windows Build Tools, which covers most of the next two bullets. Restart the shell afterwards so `node`, `npm`, and `python` resolve on PATH.
+1. **Install [Node 22 LTS](https://nodejs.org/)** via the official installer. Check "Automatically install the necessary tools" on the optional-tools page — it pulls in Chocolatey + the Windows Build Tools, which covers most of the next two bullets. Restart the shell afterwards so `node`, `npm`, and `python` resolve on PATH.
 2. **Install [Visual Studio Build Tools 2022](https://visualstudio.microsoft.com/visual-cpp-build-tools/)** — pick the "Desktop development with C++" workload. Visual Studio Code is NOT the same thing. The MSVC compiler is what `node-gyp` invokes to compile `better-sqlite3`.
 3. **Install Python 3.x** if step 1 didn't (`winget install Python.Python.3.12`). `node-gyp` calls it during the rebuild.
 4. **Install [Git for Windows](https://git-scm.com/download/win)**. Use the default settings; the bundled bash shell works fine if you prefer it over PowerShell.
 5. Clone and install:
    ```powershell
-   git clone <your-fork-url> LeetVault_Setup
-   cd LeetVault_Setup\leetvault_desktop
+   git clone <your-fork-url> LeetVault
+   cd LeetVault\leetvault_desktop
    npm install
    ```
    The `postinstall` step rebuilds `better-sqlite3` against Electron's Node ABI. Let it finish.
@@ -50,12 +50,12 @@ Windows-specific gotchas:
 ## First-time setup
 
 ```bash
-git clone <your-fork-url> LeetVault_Setup
-cd LeetVault_Setup/leetvault_desktop
+git clone <your-fork-url> LeetVault
+cd LeetVault/leetvault_desktop
 npm install
 ```
 
-`postinstall` runs `electron-builder install-app-deps`, which rebuilds `better-sqlite3` against Electron's bundled Node. Wait for it to finish — if you Ctrl-C, the native binding will be ABI-mismatched and dev will throw `NODE_MODULE_VERSION` errors.
+`postinstall` runs `scripts/rebuild-electron.cjs` (via `@electron/rebuild`), which rebuilds `better-sqlite3` against Electron's bundled Node ABI. Wait for it to finish — if you Ctrl-C, the native binding will be ABI-mismatched and dev will throw `NODE_MODULE_VERSION` errors.
 
 ## Dev loop
 
@@ -75,13 +75,16 @@ The dev launcher is `scripts/run.cjs`. It does two things before spawning Electr
 | Command | Purpose |
 |---|---|
 | `npm run dev`              | start Electron + Vite with HMR |
-| `npm run build`            | type-check + bundle main / preload / renderer into `out/` |
-| `npm run preview`          | run the built app from `out/` |
+| `npm run build`            | bundle main / preload / renderer into `out/` (no typecheck — run it separately) |
+| `npm run preview` / `start`| run the built app from `out/` |
 | `npm run typecheck`        | strict TS on both `tsconfig.node.json` and `tsconfig.web.json` |
 | `npm run lint`             | eslint, max 0 warnings |
 | `npm run format`           | prettier write |
 | `npm test`                 | rebuild `better-sqlite3` for Node, run Vitest, rebuild for Electron |
+| `npm run rebuild:node`     | switch the native binding to the Node ABI (for Vitest) |
+| `npm run rebuild:electron` | switch it back to the Electron ABI (default after install) |
 | `npm run seed:dev-db`      | drop a sample dataset into `.dev-userdata/leetcode.db` |
+| `npm run icons`            | regenerate `icon.ico` / `icon.icns` from `resources/icon.png` (see [`BUILD.md`](BUILD.md)) |
 | `npm run package`          | host-OS installer via `electron-builder` (see [`BUILD.md`](BUILD.md)) |
 | `npm run package:win\|mac\|linux` | target-specific installer |
 
@@ -95,7 +98,7 @@ To start fresh: stop the app, delete `.dev-userdata/leetcode.db` (+ any `-wal` /
 
 To pre-fill: `npm run seed:dev-db` writes a representative dataset (different difficulties, statuses, dates, SR states).
 
-To import a real v1 DB: open the running app → Ayuda → "Importar leetcode.db…". The current DB is backed up first.
+To import a real v1 DB: open the running app → Ajustes → Datos → "Importar leetcode.db…" (Settings → Data). The current DB is backed up first.
 
 ## Project structure cheat-sheet
 
@@ -105,7 +108,7 @@ leetvault_desktop/
 ├── src/preload/       # contextBridge → window.lv
 ├── src/renderer/      # React app
 ├── src/shared/        # types + IPC channels (imported by both sides)
-├── scripts/           # dev launcher, seed script
+├── scripts/           # dev launcher, native rebuild, seed script, icon generator
 ├── tests/             # vitest specs + fixtures
 ├── resources/         # app icons (icon.png; icon.ico/icns generated at build time)
 ├── build/             # electron-builder resources (entitlements, NSIS hook)
