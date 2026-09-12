@@ -10,11 +10,10 @@ Welcome to **LeetVault**, the local desktop application designed to supercharge 
 LeetVault is a standalone desktop companion that tracks, manages, and optimizes your LeetCode practice. Instead of relying on manual spreadsheets or third-party cloud trackers, LeetVault runs completely locally. It pairs with a browser extension, seamlessly capturing your completed problems and submissions in real-time, right from your browser, while keeping your data entirely in your own hands.
 
 ### Key Functionalities
-* **Seamless Browser Integration:** Runs a lightweight local server (`localhost:7842`) to silently catch submissions and metadata sent from the LeetVault browser extension.
-* **Spaced Repetition Learning:** Implements the SM-2 spaced repetition algorithm (similar to Anki) to surface the right problems for review at the optimal time, cementing algorithmic patterns in your memory.
-* **100% Local & Private:** Your progress is stored locally in a highly performant SQLite database (`leetcode.db`). No accounts, no cloud syncs, no subscription fees. 
+* **Seamless Browser Integration:** Runs a lightweight local server (`localhost:7842`) to catch submissions sent from the LeetVault browser extension.
+* **Spaced Repetition Learning:** Implements the SM-2 spaced repetition algorithm to review at the optimal time, to practice study.
+* **100% Local & Private:** Your progress is stored locally in a SQLite database (`leetcode.db`). No accounts, no cloud syncs, no subscription fees. 
 * **True Cross-Platform:** Available and natively optimized for Windows, macOS (x64 & Apple Silicon), and Linux (AppImage & deb). It smartly migrates and manages your database location based on your OS.
-* **Legacy Compatible:** Fully preserves the existing `leetcode.db` schema and extension HTTP wire format from v1 (`leetcode_tracker`), ensuring a smooth upgrade path.
 
 ### The Tech Stack
 LeetVault v2 is a complete rewrite built on a modern, robust foundation:
@@ -31,7 +30,7 @@ LeetVault v2 is a complete rewrite built on a modern, robust foundation:
 
 ---
 
-## Installing Unsigned Releases
+## How to install
 
 LeetVault installers aren't code-signed (code-signing certs cost $99–400/year). Your OS will warn you the first time. It's safe to bypass — here's how:
 
