@@ -7,24 +7,25 @@ Welcome to **LeetVault**, the local desktop application designed to supercharge 
 *Developed by Francisco Sánchez de León Acevedo*
 
 ### What is LeetVault?
-LeetVault is a standalone desktop companion that tracks, manages, and optimizes your LeetCode practice. Instead of relying on manual spreadsheets or third-party cloud trackers, LeetVault runs completely locally. It pairs with a browser extension, seamlessly capturing your completed problems and submissions in real-time, right from your browser, while keeping your data entirely in your own hands.
+LeetVault is a standalone desktop companion that tracks, manages, and optimizes your LeetCode practice. Instead of relying on manual spreadsheets or third-party cloud trackers, LeetVault runs completely locally. It pairs with a browser extension, capturing your completed problems and submissions in real-time, right from your browser, while keeping your data entirely in your own hands.
 
 ### Key Functionalities
-* **Seamless Browser Integration:** Runs a lightweight local server (`localhost:7842`) to catch submissions sent from the LeetVault browser extension.
+* **Browser Integration:** Runs a lightweight local server (`localhost:7842`) to catch submissions sent from the LeetVault browser extension.
 * **Spaced Repetition Learning:** Implements the SM-2 spaced repetition algorithm to review at the optimal time, to practice study.
 * **100% Local & Private:** Your progress is stored locally in a SQLite database (`leetcode.db`). No accounts, no cloud syncs, no subscription fees. 
 * **True Cross-Platform:** Available and natively optimized for Windows, macOS (x64 & Apple Silicon), and Linux (AppImage & deb). It smartly migrates and manages your database location based on your OS.
+* **AI Interviewer:** Link your AI API (stored locally) to practice coding live interviews, selecting language, difficulty, duration and the voice of your interviewer. Ask him clarifying questions, solutions, and get evaluated at the end.
+* **Roadmaps:** Follow many integrated roadmaps such as NeetCode 150 or Blind 75 and keep track for all of them, getting redirected to each problem in the LeetCode website.
 
-### The Tech Stack
-LeetVault v2 is a complete rewrite built on a modern, robust foundation:
+---
+
+### Tech Stack
 * **Core & Windowing:** Electron
 * **UI Interface:** React + Vite (for lightning-fast HMR)
 * **Language:** End-to-end TypeScript
 * **Database:** `better-sqlite3`
 * **Testing:** Vitest
 * **Packaging:** `electron-builder` (NSIS, DMG, AppImage)
-
----
 
 *For developer setup, build scripts, and local environment configurations, please see the [/docs](./docs) folder.*
 
